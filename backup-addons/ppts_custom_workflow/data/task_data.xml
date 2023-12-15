@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+		
+		<!-- Assign/ Reassign User -->
+		<record id="task_data_new" model="tasks.master">
+            <field name="name">New</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">New</field>
+        </record>
+        <record id="task_data_assigned_to_user" model="tasks.master">
+            <field name="name">Assigned to User</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Assigned to User</field>
+        </record>
+        <record id="task_data_request_reassign" model="tasks.master">
+            <field name="name">Request Re-assign</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Request Re-assign</field>
+        </record>
+
+        <record id="task_data_create_loaner" model="tasks.master">
+            <field name="name">Loaner</field>
+            <field name="category">action</field>
+            <field name="python_code">create_loaner</field>
+            <field name="description">Create Loaner Request Button will enable and User Can Create Loaner Request</field>
+        </record>
+        <record id="task_data_loaner_transfer_request" model="tasks.master">
+            <field name="name">Loaner Transfer Request</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Transfer Request</field>
+        </record>
+        <record id="task_data_loaner_transfer_approved" model="tasks.master">
+            <field name="name">Loaner Transfer Approved</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Transfer Approved</field>
+        </record>
+        <record id="task_data_loaner_transfer_rejected" model="tasks.master">
+            <field name="name">Loaner Transfer Rejected</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Transfer Rejected</field>
+        </record>
+        <record id="task_data_loaner_transfer_waiting" model="tasks.master">
+            <field name="name">Loaner Transfer Waiting Availability</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Transfer Waiting Availablity</field>
+        </record>
+        <record id="task_data_loaner_transfer_ready" model="tasks.master">
+            <field name="name">Loaner Transfer Ready</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Transfer Ready</field>
+        </record>
+        <record id="task_data_loaner_transfer_done" model="tasks.master">
+            <field name="name">Loaner Transfer Done</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Transfer Done</field>
+        </record>
+        <record id="task_data_loaner_available" model="tasks.master">
+            <field name="name">Loaner Available</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Available</field>
+        </record>
+        <record id="task_data_loaner_not_available" model="tasks.master">
+            <field name="name">Loaner Not Available</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Not Available</field>
+        </record>
+        <record id="task_data_loaner_return_transfer_request" model="tasks.master">
+            <field name="name">Loaner Return Transfer Request</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Return Transfer Request</field>
+        </record>
+        <record id="task_data_loaner_return_transfer_approved" model="tasks.master">
+            <field name="name">Loaner Return Transfer Approved</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Return Transfer Approved</field>
+        </record>
+        <record id="task_data_loaner_return_transfer_rejected" model="tasks.master">
+            <field name="name">Loaner Return Transfer Rejected</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Return Transfer Rejected</field>
+        </record>
+        <record id="task_data_loaner_return_transfer_waiting" model="tasks.master">
+            <field name="name">Loaner Return Transfer Waiting Availability</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Return Transfer Waiting Availability</field>
+        </record>
+        <record id="task_data_loaner_return_transfer_ready" model="tasks.master">
+            <field name="name">Loaner Return Transfer Ready</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Return Transfer Ready</field>
+        </record>
+        <record id="task_data_loaner_return_transfer_done" model="tasks.master">
+            <field name="name">Loaner Return Transfer Done</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Return Transfer Done</field>
+        </record>
+        <record id="task_data_loaner_return_available" model="tasks.master">
+            <field name="name">Loaner Return Available</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Return Available</field>
+        </record>
+        <record id="task_data_loaner_return_not_available" model="tasks.master">
+            <field name="name">Loaner Return Not Available</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Loaner Return Not Available</field>
+        </record>
+        
+        <!--Installation -->
+        
+        <record id="task_data_request_installation" model="tasks.master">
+<!--            <field name="name">Request Installation</field>-->
+            <field name="name">Initiated Installation</field>
+            <field name="category">action</field>
+            <field name="python_code">create_installation</field>
+            <field name="description">Initiated Installation</field>
+        </record>
+        <record id="task_data_create_installation" model="tasks.master">
+            <field name="name">Installation Started</field>
+            <field name="category">action</field>
+            <field name="python_code">installation_started</field>
+            <field name="description">Installation Started</field>
+        </record>
+        <record id="task_data_installation_inprogress" model="tasks.master">
+            <field name="name">Installation In Progress</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Installation Inprogress</field>
+        </record>
+        <record id="task_data_installation_waiting_for_approval" model="tasks.master">
+            <field name="name">Installation Waiting for Approval</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Waiting for Approval</field>
+        </record>
+        <record id="task_data_installation_approved" model="tasks.master">
+            <field name="name">Installation Approved</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Approved</field>
+        </record>
+        <record id="task_data_installation_rejected" model="tasks.master">
+            <field name="name">Installation Rejected</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Rejected</field>
+        </record>
+        <record id="task_data_installation_asset_details_updated" model="tasks.master">
+            <field name="name">Installation Asset Details updated</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Asset Details updated</field>
+        </record>
+        <record id="task_data_installation_installation_on_hold" model="tasks.master">
+            <field name="name">Installation On hold</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Installation On hold</field>
+        </record>
+        <record id="task_data_installation_cancelled" model="tasks.master">
+            <field name="name">Installation Cancelled</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Installation Cancelled</field>
+        </record>
+        <record id="task_data_installation_completed" model="tasks.master">
+            <field name="name">Installation Completed</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Installation Completed</field>
+        </record>
+
+<!--        Maintenance Installed-->
+         <record id="task_data_maintenance_installated" model="tasks.master">
+            <field name="name">Maintenance Installed</field>
+            <field name="category">status</field>
+            <field name="is_maintenance_completed">True</field>
+            <field name="description">Installation Completed</field>
+        </record>
+
+
+<!--        Warranty and Repair Warranty -->
+
+        <record id="oem_warranty_check" model="tasks.master">
+            <field name="name">Check OEM Warranty Status</field>
+            <field name="category">status</field>
+            <field name="is_check_oem_warranty">True</field>
+            <field name="description">OEM WARRANTY</field>
+        </record>
+
+        <record id="oem_repair_warranty_check" model="tasks.master">
+            <field name="name">Check OEM Repair Warranty Status</field>
+            <field name="category">status</field>
+            <field name="is_check_oem_repair_status">True</field>
+            <field name="description">OEM REPAIR WARRANTY</field>
+        </record>
+        <record id="request_to_send_invoice" model="tasks.master">
+            <field name="name">Request to Send Invoice</field>
+            <field name="category">status</field>
+            <field name="is_request_raise_invoice">True</field>
+            <field name="description">Request to Send Invoice</field>
+        </record>
+
+        <record id="engineer_started_for_site" model="tasks.master">
+            <field name="name">Started for Job site</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Engineer Started for job Site</field>
+        </record>
+
+         <record id="engineer_reached_site" model="tasks.master">
+            <field name="name">Reached Site</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Engineer Reached Site</field>
+        </record>
+
+         <record id="job_start_time" model="tasks.master">
+            <field name="name">Work Start</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Work Start</field>
+        </record>
+
+         <record id="job_end_time" model="tasks.master">
+            <field name="name">Work End</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Work End</field>
+        </record>
+        <record id="task_repairs_required" model="tasks.master">
+            <field name="name">Repair Required</field>
+            <field name="category">action</field>
+            <field name="python_code">repairs_required</field>
+            <field name="description">Repairs Required Action</field>
+        </record>
+        <record id="received_by_engineer" model="tasks.master">
+            <field name="name">Received by Engineer</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Received by Engineer</field>
+        </record>
+        <record id="sr_created" model="tasks.master">
+            <field name="name">SR Created</field>
+            <field name="category">system</field>
+            <field name="python_code"></field>
+            <field name="description">SR Created</field>
+        </record>
+        <record id="sr_converted_to_ticket" model="tasks.master">
+            <field name="name">SR Converted to Ticket</field>
+            <field name="category">system</field>
+            <field name="python_code"></field>
+            <field name="description">SR Converted to Ticket</field>
+        </record>
+
+
+
+    </data>
+</odoo>

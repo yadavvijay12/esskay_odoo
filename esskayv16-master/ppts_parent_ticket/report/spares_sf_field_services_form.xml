@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="spares_sf_field_services_report_paper_format" model="report.paperformat">
+            <field name="name">Spares SF Paper Format</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">29.75</field>
+            <field name="margin_bottom">28.75</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="spares_sf_fields_services_form_report_print" model="ir.actions.report">
+            <field name="name">Spares SF</field>
+            <field name="model">request</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">ppts_parent_ticket.spares_sf_field_services_form_report_print_document</field>
+            <field name="report_file">ppts_parent_ticket.spares_sf_field_services_form_report_print_document</field>
+            <field name="print_report_name">'Spares SF'</field>
+            <field name="binding_model_id" ref="model_request"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="spares_sf_field_services_report_paper_format"/>
+        </record>
+
+
+        <template id="spares_sf_field_services_form_report_print">
+
+            <t t-call="web.basic_layout">
+                <style>table{ font-size:15px; width:100%; } tr,td,th{ border:1px solid #dcdcdc; font-size:15px;
+                    padding:8px; }
+                </style>
+
+                <div class="header">
+                    <div class="row">
+                        <table style="width:100%; border:1px solid #dcdcdc;">
+                            <tr>
+                                <th>
+                                    <center>
+                                        <h1>
+                                            <b>Stryker</b>
+                                        </h1>
+                                        <p style="color:#ff8c00;font-size:20px">SIPL FORM</p>
+                                    </center>
+                                </th>
+                                <th>
+                                    <center>
+                                        <br/>
+                                        <p>TECHNICAL SERVICE SPARE PARTS INDENT FORM</p>
+                                    </center>
+                                </th>
+                                <th>
+                                    <p style="text-align:left;padding:5px;">Document Number: IQF-CPMS-007-02</p>
+                                    <p style="text-align:left;padding:5px;">Revision No:01</p>
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+                    <!--                        </div>-->
+                </div>
+                <br/>
+                <br></br>
+                <br></br>
+                <div class="page">
+                    <table style="height:150px;">
+                        <tbody>
+                            <tr>
+                                <td width="25%">
+                                    <strong>Requested Date:</strong>
+                                </td>
+                                <td width="75%">
+                                    <t t-esc="doc.create_date" t-options="{'widget': 'date'}" class="m-0"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <strong>Requested By:</strong>
+                                </td>
+                                <td width="75%">
+                                    <t t-esc="doc.user_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <strong>Customer Ref:</strong>
+                                </td>
+                                <td width="75%">
+                                    <span t-field="doc.partner_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <strong>JDE Call No:</strong>
+                                </td>
+                                <td width="75%">
+                                    <t t-if="doc.parent_ticket_id">
+                                        <t t-esc="doc.parent_ticket_id.parent_ticket_id_alias"/>
+                                    </t>
+                                    <t t-elif="doc.child_ticket_id">
+                                        <t t-esc="doc.child_ticket_id.child_ticket_id_alias"/>
+                                    </t>
+                                    <t t-else="">
+
+                                    </t>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <hr/>
+                    <table border="1">
+
+                        <tr style="background-color:#bfbbbb;height:35px;">
+                            <th class="text-center">
+                                <span>SN</span>
+                            </th>
+                            <th class="text-center">
+                                <span>Cat No</span>
+                            </th>
+                            <th class="text-center">
+                                <span>Description</span>
+                            </th>
+                            <th class="text-center">
+                                <span>Qty Required</span>
+                            </th>
+                            <th class="text-center">
+                                <span>Qty issued</span>
+                            </th>
+                            <th class="text-center">
+                                <span>Date Issued</span>
+                            </th>
+                            <th class="text-center">
+                                <span>Returned Quantity</span>
+                            </th>
+                        </tr>
+                        <t t-set="serial_number" t-value="0"></t>
+                        <t t-set="spare"
+                           t-value="request.env['spare.request'].sudo().search([('request_id', '=', doc.id)],limit=1)"/>
+
+                        <t t-if="spare">
+                            <tr t-foreach="spare.spare_request_line" t-as="line">
+                                <t t-set="serial_number" t-value="serial_number+1"/>
+                                <tr style="height:35px;">
+                                    <td>
+                                        <center>
+                                            <t t-esc="serial_number"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-if="line.product_id">
+                                                <t t-esc="line.product_id.product_part"/>
+                                            </t>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="line.description"/>
+
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="line.product_uom_qty"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="line.product_uom_qty_issued"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="line.write_date" t-options="{'widget': 'date'}" class="m-0"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="line.return_quantity"/>
+                                        </center>
+                                    </td>
+                                </tr>
+                            </tr>
+                        </t>
+                        <t t-else="">
+                            <tr t-foreach="doc.asset_ids" t-as="d">
+                                <t t-set="serial_number" t-value="serial_number+1"/>
+                                <tr style="height:35px;">
+                                    <td>
+                                        <center>
+                                            <t t-esc="serial_number"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="d.part_number"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="d.description"/>
+
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="d.quantity"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="d.available"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="d.write_date" t-options="{'widget': 'date'}" class="m-0"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="d.return_quantity"/>
+                                        </center>
+                                    </td>
+                                </tr>
+                            </tr>
+                        </t>
+                    </table>
+                </div>
+                <div class="footer">
+                    <center>
+                        <b>
+                            TEMPLATE IQF_C SUP_001_03,Rev 01-Page No:
+                            <span class="page"/>
+                            of
+                            <span class="topage"/>
+                        </b>
+                    </center>
+                </div>
+            </t>
+        </template>
+
+
+        <template id="spares_sf_field_services_form_report_print_document">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ppts_parent_ticket.spares_sf_field_services_form_report_print"/>
+
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

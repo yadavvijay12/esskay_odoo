@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="module_spare_request_user" model="res.groups">
+            <field name="name">Spare Request User</field>
+        </record>
+    </data>
+</odoo>

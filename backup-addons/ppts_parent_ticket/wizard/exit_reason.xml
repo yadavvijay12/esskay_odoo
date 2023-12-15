@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="exit_reasons_wizard_form" model="ir.ui.view">
+		<field name="name">reason.reason.wizard.form</field>
+		<field name="model">reason.reason</field>
+		<field name="arch" type="xml">
+			<form string="Cancel Reasons">
+				<group>
+					<field name="cancel_reason"/>
+				</group>
+				<footer>
+					<button name="action_cancel_ct" string="Confirm" type="object" class="btn btn-primary"/>
+					<button string="Cancel" class="btn btn-danger" special="cancel" />
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="exit_reasons_action" model="ir.actions.act_window">
+		<field name="name">Cancel Reasons</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">reason.reason</field>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="exit_reasons_wizard_form"/>
+		<field name="target">new</field>
+	</record>
+
+</odoo>

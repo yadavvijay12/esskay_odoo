@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_users_form_inherit_sales" model="ir.ui.view">
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <!--                <xpath expr="//page[@name='access_rights']"-->
+                <!--                       position="inside">-->
+
+                <!--                </xpath>-->
+                <xpath expr="//page[@name='access_rights']"
+                       position="before">
+
+                    <page name="assigned_teams" string="Teams" invisible="1">
+                        <group string="Assigned Teams">
+                            <field string="Assigned Teams" name="team_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"/>
+                        </group>
+
+
+                    </page>
+
+                </xpath>
+                 <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="customer_account_ids" widget="many2many_tags"/>
+                </xpath>
+
+
+            </field>
+        </record>
+
+        <record id="website_menus_form_view_web-form" model="ir.ui.view">
+            <field name="name">website.menu.web-form</field>
+            <field name="model">website.menu</field>
+            <field name="inherit_id" ref="website.website_menus_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='is_mega_menu']" position="after">
+                    <field name="is_web_form"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="res_company_web-form" model="ir.ui.view">
+            <field name="name">res.company.web-form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//group[@name='social_media']" position="after">
+                    <group string="Website">
+                        <field name="website_menu_id"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

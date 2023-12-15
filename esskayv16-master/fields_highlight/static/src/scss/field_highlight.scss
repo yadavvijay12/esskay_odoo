@@ -1,0 +1,106 @@
+
+
+.o_required_modifier.o_input, .o_required_modifier .o_input {
+        border-bottom: 2px solid #109fdd;
+    }
+
+
+    .o_wrap_input input, .o_field_widget input  {
+
+        border-bottom: 1px solid #666666 !important;
+
+        }
+
+
+    .d-inline-flex  {
+        display: -webkit-inline-box !important;
+    }
+
+
+
+.o_required_modifier .o_input {
+    border-bottom: 2px solid #109fdd !important;
+    }
+
+
+.o_field_invalid:not(:focus-within) .o_input {
+    border-bottom: 1px solid #d23f3a !important;
+}
+
+
+
+
+.o_field_invalid.o_input:not(:focus-within), .o_field_invalid:not(:focus-within) .o_input{
+ border-bottom: 1px solid #d23f3a !important;
+}
+
+
+
+
+
+
+.o_field_sol_product_many2one
+.o_field_many2one_selection
+.o-autocomplete--input
+{
+     border-bottom: 0px solid #666666 !important;
+ }
+
+
+
+
+.o_field_widget .o_required_modifier .o_field_section_and_note_text .o_field_text  {
+     border-bottom: 0px solid #109fdd !important;
+}
+
+
+.o_field_invalid:not(:focus-within) .o_input {
+    border-bottom: 0px solid #d23f3a !important;
+}
+
+
+
+
+.o_required_modifier
+.o_field_float
+.o_input{
+     border-bottom: 0px solid #109fdd !important;
+}
+
+.o_field_many2many_tags
+.o_field_many2many_selection
+.o-autocomplete--input
+
+{
+  border-bottom: 0px solid #666666 !important;
+}
+
+
+
+.o_field_widget .o_required_modifier .o_field_res_partner_many2one{
+    border-bottom: 2px solid #109fdd;
+}
+
+.o_field_widget .o_required_modifier .o_field_section_and_note_text .o_field_text .o_input{
+       border-bottom: 0px solid #109fdd !important;
+}
+
+.o_field_widget .o_required_modifier .o_field_section_and_note_text .o_input{
+       border-bottom: none !important;
+}
+
+
+.o_field_invalid:not(:focus-within) .o_input {
+    border-bottom: 2px solid #d23f3a !important;
+}
+.o_field_statusbar .o_statusbar_status .o_arrow_button.o_arrow_button_current.disabled {
+    background-color: #71639e;
+    color: #FFFFFF;
+}
+.o_field_statusbar .o_statusbar_status .o_arrow_button.o_arrow_button_current.disabled:after, .o_field_statusbar .o_statusbar_status .o_arrow_button.o_arrow_button_current.disabled:before {
+    border-left-color: #71639e;
+}
+
+.o_field_selection:not(:hover):not(:focus-within) select:not(:hover) {
+    border-bottom: 1px solid #666666;
+}

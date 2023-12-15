@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_spare_request_form" model="ir.ui.view">
+            <field name="name">spare.request.form</field>
+            <field name="model">spare.request</field>
+            <field name="arch" type="xml">
+                <form string="Spare Request">
+                    <header>
+                        <field name="is_send_for_approvals" invisible="1"/>
+                        <field name="request_id" invisible="1"/>
+                        <button name="action_check_availability"
+                                attrs="{'invisible': [('state', 'not in',['draft','not_available', 'partially_available'])]}"
+                                string="Check Stock"
+                                type="object" class="btn btn-warning" groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>/>
+                        <button name="action_confirm"
+                                attrs="{'invisible': [('state', 'not in',['available','partially_available'])]}"
+                                string="Confirm"
+                                type="object" class="btn btn-warning" groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>/>
+                        <button name="action_open_approval_wizard"
+                                attrs="{'invisible': ['|',('state', 'not in',['confirmed']),('is_send_for_approvals', '=',False)]}"
+                                string="Send For Approval"
+                                type="object" class="btn btn-warning" groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>/>
+                        <button name="action_approve"
+                                attrs="{'invisible': ['|',('state', '!=','approved'),('is_send_for_approvals', '=',False)]}"
+                                string="Issue Spares" type="object" class="btn btn-warning" groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>/>
+                        <button name="action_approve"
+                                attrs="{'invisible': ['|',('state', '!=','confirmed'),('is_send_for_approvals', '=',True)]}"
+                                string="Issue Spares" type="object" class="btn btn-warning" groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>/>
+                        <button name="action_reject" attrs="{'invisible': [('state', '!=','waiting_approval')]}"
+                                string="Reject" type="object" groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>/>
+                        <!--                        <button name="action_issue_products"-->
+                        <!--                                attrs="{'invisible': [('state', 'not in',['inprogress','partially_issued'])]}"-->
+                        <!--                                string="Issue Product(s)" type="object"/>-->
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,waiting_approval,inprogress,partially_issued,issued"/>
+                    </header>
+                    <sheet>
+
+                        <div class="oe_button_box" name="button_box">
+                            <field name="request_count" invisible="1"/>
+                            <button name="action_view_requests" type="object" class="oe_stat_button" icon="fa-list"
+                                    attrs="{'invisible': [('request_count', '=', 0)]}">
+                                <field name="request_count" widget="statinfo" string="Requests"/>
+                            </button>
+                            <button name="show_quality_checks"
+                                    attrs="{'invisible': [('transfer_count', '=',0)]}"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-arrow-up">
+                                <field name="transfer_count" widget="statinfo" string="Transfer(s)"/>
+                            </button>
+                            <button name="action_view_approvals" type="object" class="oe_stat_button" string="Approvals"
+                                    icon="fa-users">
+                                <field name="approvals_count" widget="statinfo" string="Approvals"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+
+                        </div>
+                        <group>
+                            <group>
+                                <field name="sequence_id" invisible="1"/>
+                                <field name="partner_id"/>
+                                <field name="customer_account_id"/>
+                                <field name="requested_by_id" attrs="{'readonly': [('state', '!=','draft')]}"/>
+                                <!--								<field name="requested_ids" widget="many2many_tags" attrs="{'readonly': [('state', '!=','draft')]}"/>-->
+                                <field name="request_type" attrs="{'readonly': [('state', '!=','draft')]}"
+                                       invisible="1"/>
+                                <field name="department_id" attrs="{'readonly': [('state', '!=','draft')]}"/>
+                                <!--<field name="location_id" required='1' attrs="{'readonly': [('state', '!=','draft')]}"/>-->
+                                <field name="company_id"/>
+                                <field name="picking_ids" invisible="1" widget="many2many_tags"/>
+                                <field name="parent_ticket_id" readonly="1"
+                                       attrs="{'invisible': [('parent_ticket_id', '=', False)]}"/>
+                                <field name="child_ticket_id" readonly="1"
+                                       attrs="{'invisible': [('child_ticket_id', '=', False)]}"/>
+                                <field name="warehouse_id"
+                                       attrs="{'readonly': [('state', '!=','draft')]}"
+                                       options="{'no_create': True,'no_create_edit': True,'no_open': True}"
+                                       readonly='1'/>
+                                <field name="picking_type_id"
+                                       attrs="{'readonly': [('state', '!=','draft')]}"
+                                       options="{'no_create': True,'no_create_edit': True,'no_open': True}"/>
+                            </group>
+                            <group>
+                                <field name="indent_date" attrs="{'readonly': [('state', '!=','draft')]}" required="1"/>
+                                <field name="required_date" attrs="{'readonly': [('state', '!=','draft')]}"
+                                       required="1"/>
+                                <field name="approve_date" readonly="1" invisible='1'/>
+                                <field name="requirement" attrs="{'readonly': [('state', '!=','draft')]}" required="1"/>
+                                <field name="type" attrs="{'readonly': [('state', '!=','draft')]}" required="1"
+                                       invisible="1"/>
+                                <field name="product_from" attrs="{'readonly': [('state', '!=','draft')]}"
+                                       required="1"/>
+                                <field name="prepared_user_id" readonly="1"/>
+                                <field name="prepared_date" readonly="1"/>
+                                <field name="team_id"/>
+                                <field name="destination_location_id" domain="[('warehouse_id', '=', warehouse_id)]" options="{'no_open':True,'no_create': True}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Products">
+                                <field name="spare_request_line" context="{'default_destination_location_id': destination_location_id}"
+                                       attrs="{'readonly': [('state', 'not in',('draft','not_available','partially_available'))]}">
+                                    <tree string="Spare lines" editable="bottom" >
+                                        <field name="description"/>
+                                        <field name="product_id"/>
+                                        <field name="source_location_id" required="1"/>
+                                        <field name="destination_location_id" required="1"/>
+                                        <field name="qty_available"/>
+                                        <field name="product_uom_qty" required="1"/>
+                                        <field name="product_uom_qty_issued"/>
+                                        <field name="remaining_qty"/>
+                                        <field name="product_uom_id"/>
+                                        <!--                                        <field name="required_  on"/>-->
+                                        <field name="state"/>
+                                        <field name="picking_id" invisible="1"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="description"/>
+                                                <field name="product_id"
+                                                       attrs="{'readonly': [('state', 'in',('inprogress','issued','rejected'))]}"/>
+                                                <!--                                                <field name="required_on"-->
+                                                <!--                                                       attrs="{'readonly': [('state', 'in',('inprogress','issued','rejected'))]}"/>-->
+                                                <field name="product_uom_qty"
+                                                       attrs="{'readonly': [('state', 'in',('inprogress','issued','rejected'))]}"/>
+                                                <field name="source_location_id" required="1"/>
+                                                <field name="destination_location_id" required="1"/>
+                                                <field name="name"
+                                                       attrs="{'readonly': [('state', 'in',('inprogress','issued','rejected'))]}"/>
+                                            </group>
+                                            <group>
+                                                <field name="product_uom_id"
+                                                       attrs="{'readonly': [('state', 'in',('inprogress','issued','rejected'))]}"/>
+                                                <field name="product_uom_qty_issued"
+                                                       attrs="{'readonly': [('state', 'in',('inprogress','issued','rejected'))]}"/>
+                                                <field name="remaining_qty"/>
+                                                <field name="remarks"
+                                                       attrs="{'readonly': [('state', 'in',('inprogress','issued','rejected'))]}"/>
+                                                <field name="qty_available" readonly="1"/>
+                                                <field name="state" string='Status'/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_spare_request_tree" model="ir.ui.view">
+            <field name="name">spare.request.tree</field>
+            <field name="model">spare.request</field>
+            <field name="arch" type="xml">
+                <tree string="Spare Request ">
+                    <field name="name"/>
+                    <field name="indent_date"/>
+                    <field name="department_id"/>
+                    <field name="type"/>
+                    <field name="required_date"/>
+                    <field name="approve_date"/>
+                    <field name="state"/>
+                    <field name="approve_date" invisible='1'/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_spare_request_form"
+                model="ir.actions.act_window">
+            <field name="name">Spare Request</field>
+            <field name="res_model">spare.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a Spare Request
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_action_spare_request_form"
+                  name="Spare Request" parent="stock.menu_stock_root" sequence="10"
+                  action="action_spare_request_form"
+                  groups="stock.group_stock_manager"/>
+
+    </data>
+</odoo>

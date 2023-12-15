@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_api_access_token,access_api_access_token,model_api_access_token,,1,1,1,1
+access_product_template_api_public,product.template.api.public,product.model_product_template,base.group_public,1,0,0,0
+access_request_type_api_public,request.type.api.public,ppts_service_request.model_request_type,base.group_public,1,0,0,0
+access_hr_employee_api_public,hr.employee.api.public,hr.model_hr_employee,base.group_public,1,0,0,0

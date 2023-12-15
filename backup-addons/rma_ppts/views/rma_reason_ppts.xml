@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record model="ir.ui.view" id="rma_reason_ppts_tree_view">
+        <field name="name">RMA Reason ppts Tree</field>
+        <field name="model">rma.reason.ppts</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="action"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="rma_reason_ppts_form_view">
+        <field name="name">RMA Reason ppts Tree</field>
+        <field name="model">rma.reason.ppts</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="action"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="rma_reason_ppts_action">
+        <field name="name">RMA Reasons</field>
+        <field name="res_model">rma.reason.ppts</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_rma_reason_ppts" name="RMA Reasons" parent="rma_ppts.menu_crm_claim_ppts_after_sale"
+        action="rma_reason_ppts_action" groups="rma_ppts.group_rma_user_ppts" sequence="2"/>
+
+</odoo>

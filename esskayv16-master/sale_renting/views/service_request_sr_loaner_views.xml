@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_renting_inherit_service_request_sr_loaner_form_view" model="ir.ui.view">
+        <field name="name">service.request.sr.loaner.form.inherit</field>
+        <field name="model">service.request</field>
+        <field name="inherit_id" ref="ppts_service_request.service_request_sr_loaner_form_view"/>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="sr_loaner_count" invisible="1"/>
+<!--                <button string="Create Loaner" name="action_create_loaner" type="object" class="oe_highlight"-->
+<!--                        attrs="{'invisible': [('sr_loaner_count','!=',0),('state', '!=', 'approved')]}"-->
+<!--                        groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"-->
+<!--                       />-->
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_loaner_order" type="object" class="oe_stat_button"
+                        icon="fa-pencil-square-o" attrs="{'invisible': [('sr_loaner_count', '=', 0)]}"
+                        groups="ppts_service_request.service_request_group_user">
+                    <field name="sr_loaner_count" widget="statinfo" string="Loaner"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

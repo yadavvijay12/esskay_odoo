@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="service_request_sequence" model="ir.sequence">
+        <field name="name">Service Request Sequences</field>
+        <field name="code">service.request</field>
+        <field name="prefix">SR/</field>
+        <field eval="4" name="padding"/>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="service_request_search_view" model="ir.ui.view">
+        <field name="name">service.request.search.view</field>
+        <field name="model">service.request</field>
+        <field name="arch" type="xml">
+            <search string="Search in requests">
+                <field name="name"/>
+                <field name="service_request_id_alias"/>
+                <field name="customer_name"/>
+                <field name="dealer_distributor_name"/>
+                <field name="company_id"/>
+                <separator/>
+                <filter string="New" name="draft" domain="[('state','in',('draft', 'new'))]"/>
+                <filter string="In Review" name="in_review" domain="[('state','=','in_review')]"/>
+                <filter string="Converted To Ticket" name="converted_to_ticket" domain="[('state','=','converted_to_ticket')]"/>
+                <filter string="Closed" name="closed" domain="[('state','=','closed')]"/>
+                <separator/>
+                <filter string="Service Request Date" name="filter_service_request_date" date="service_request_date"/>
+                <separator/>
+                <filter string="Website Order" name="is_website_order" domain="[('is_website_order','=',True)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Service Type" name="service_type_id" domain="[]"
+                            context="{'group_by': 'service_type_id'}"/>
+                    <filter string="Service Category" name="service_category_id" domain="[]"
+                            context="{'group_by': 'service_category_id'}"/>
+                    <filter string="Approval Type" name="request_type_id" domain="[]"
+                            context="{'group_by': 'request_type_id'}"/>
+                    <filter string="Team" name="team_id" domain="[]"
+                            context="{'group_by': 'team_id'}"/>
+                    <filter string="Milestone" name="state" domain="[]"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Customer" name="partner_id" domain="[]"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter string="Responsible" name="user_id" domain="[]"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter string="Company" name="company_id" domain="[]"
+                            context="{'group_by': 'company_id'}"/>
+                    <filter string="Website Order" name="is_website_order" domain="[]"
+                            context="{'group_by': 'is_website_order'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="service_request_form_view" model="ir.ui.view">
+        <field name="name">service.request.request.form</field>
+        <field name="model">service.request</field>
+        <field name="arch" type="xml">
+            <form string="Service Request Form" create="false">
+                <header>
+                    <field name="is_child_ticket_created" invisible="1"/>
+                    <field name="is_parent_ticket_created" invisible="1"/>
+                    <field name="is_required_approval" invisible="1"/>
+                    <button string="Submit" name="action_submit" type="object"
+                            attrs="{'invisible': [('state','!=','draft')]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
+                            class="oe_highlight"/>
+                    <button string="In Review" name="action_for_review" type="object"
+                            attrs="{'invisible': [('state','!=','new')]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
+                            class="oe_highlight"/>
+                    <button string="Send for Approval" name="action_for_approval" type="object"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=',False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head" class="oe_highlight"/>
+                    <!--                    <button string="Approve" name="action_approved" type="object"-->
+                    <!--                            attrs="{'invisible': ['|',('state','!=','waiting_for_approval'),('is_required_approval', '=',False)]}"-->
+                    <!--                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head" class="oe_highlight"/>-->
+                    <!--                    <button string="Reject" name="action_rejected" type="object"-->
+                    <!--                            attrs="{'invisible': ['|',('state','!=','waiting_for_approval'),('is_required_approval', '=',False)]}"-->
+                    <!--                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head" class="oe_highlight"/>-->
+                    <!--                    <button string="Hold" name="action_hold" type="object"-->
+                    <!--                            attrs="{'invisible': ['|',('state','!=','waiting_for_approval'),('is_required_approval', '=',False)]}"-->
+                    <!--                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head" class="oe_highlight"/>-->
+                    <button string="Close" name="action_ticket_close" type="object"
+                            attrs="{'invisible': [('state','!=','approved')]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head" class="oe_highlight"/>
+                    <button name="action_send_mail" string="SEND BY MAIL" type="object"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!--Without Approval-->
+                    <!--<button name="create_parent_ticket" string="Convert to PT" type="object" class="oe_highlight" invisible="1"/>-->
+                    <!--With Approval-->
+                    <!--<button name="create_child_ticket" string="Convert to CT" type="object" class="oe_highlight" invisible="1"/>-->
+                    <!--Without Approval-->
+                    <!--<button name="create_parent_ticket" string="Convert to PT" type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            help="Convert to Parent Ticket Without Approval"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>-->
+                    <!--Without Approval-->
+                    <!--<button name="create_child_ticket" string="Convert to CT" type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|','|','|',('is_parent_ticket_created', '=', False),('is_child_ticket_created', '=', True),('state','!=','converted_to_ticket'),('is_required_approval', '=', True)]}"
+                            help="Convert to Child Ticket Without Approval" groups="ppts_service_request.service_request_group_ct_user"/>-->
+                    <!--Without Approval-->
+                    <button string="Close" name="action_ticket_close" type="object"
+                            attrs="{'invisible': ['|', ('state','not in',('converted_to_ticket', 'in_review')),('is_required_approval','=',False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user" class="oe_highlight"/>
+                    <button string="Cancel" name="action_request_cancel" type="object"
+                            attrs="{'invisible':[('state','in',['cancelled','new'])]}"
+                            groups="ppts_service_request.service_request_group_ct_user"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="new,in_review,converted_to_ticket,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_parent_tickets" type="object" class="oe_stat_button"
+                                icon="fa-pencil-square-o" attrs="{'invisible': [('parent_count', '=', 0)]}">
+                            <field name="parent_count" widget="statinfo" string="Parent Ticket"/>
+                        </button>
+                        <button name="action_view_child_tickets" type="object" class="oe_stat_button"
+                                icon="fa-pencil-square-o" attrs="{'invisible': [('child_count', '=', 0)]}">
+                            <field name="child_count" widget="statinfo" string="Child Ticket"/>
+                        </button>
+                        <button name="action_view_service_request_approval" type="object" class="oe_stat_button"
+                                icon="fa-pencil-square-o" attrs="{'invisible': [('service_ticket_count', '=', 0)]}">
+                            <field name="service_ticket_count" widget="statinfo" string="Approvals"/>
+                        </button>
+
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="service_request_information" style="color:black"
+                               string="Service Request Information">
+                            <field name="service_request_id_alias"
+                                   attrs="{'readonly': [('state','not in',('draft','new', 'in_review'))]}"
+                                   groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                            <field name="service_request_date"
+                                   attrs="{'readonly': [('state','not in',('draft','new', 'in_review'))]}"/>
+                            <field name="approver_id"
+                                   attrs="{'readonly': [('state','not in',('draft','new', 'in_review'))],'invisible': [('is_required_approval','=',False)], 'required': [('state', '=','in_review'),('is_required_approval', '=', True)]}" groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                        </group>
+                        <group name="customer_information" style="color:black" string="Customer information">
+                            <label for="customer_name"/>
+                            <div class="o_row">
+                                <field name="customer_name"
+                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                <button name="customer_selection" invisible="1" type="object"
+                                        string="Customer Selection" class="oe_highlight"
+                                        groups="ppts_service_request.service_request_group_ct_user"/>
+                            </div>
+                            <field name="customer_email"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                            <span class="o_form_label o_td_label" name="address_name"
+                                  attrs="{'readonly': [('state','not in',('new','in_review'))]}">Customer Address
+                            </span>
+                            <div class="o_address_format">
+                                <field name="customer_street" placeholder="Street..." class="o_address_street"
+                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                <field name="customer_street2" placeholder="Street 2..." class="o_address_street"
+                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                <field name="customer_state_id" class="o_address_state" placeholder="State"
+                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                <field name="customer_zip" placeholder="ZIP" class="o_address_zip"
+                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                <field name="customer_country_id" placeholder="Country" class="o_address_country"
+                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                <field name="customer_country_code" invisible="1"
+                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                            </div>
+                            <field name="dealer_distributor_name"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   groups="ppts_service_request.service_request_group_ct_user"/>
+                        </group>
+                        <group name="call_details" style="color:black" string="Call details">
+                            <field name="call_source_id" attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="service_type_id" attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="service_category_id"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="request_type_id" attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="problem_reported"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                            <field name="requested_by_name"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                            <field name="requested_by_contact_number"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                            <field name="requested_by_email"
+                                   attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="requested_by_title"
+                                   attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="call_received_id"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="user_team_ids" invisible="1"/>
+                            <field name="team_id" attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                        </group>
+                        <group name="asset_details" style="color:black" string="Asset details">
+                            <field name="product_name" attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                            <field name="custom_product_serial"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                            <field name="product_category_id"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                            <field name="product_category_alias"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   groups="ppts_service_request.service_request_group_ct_user"/>
+                            <field name="model" attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                            <field name="oem_warranty_status_id"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="repair_warranty_status_id"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                        </group>
+                        <group name="other_information" style="color:black" string="Other information">
+                            <field name="remarks" attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                            <field name="issue_noticed" attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   groups="ppts_service_request.service_request_group_ct_user"/>
+                            <field name="case_completed_successfully_id"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   options='{"no_open": True, "no_create": True}'
+                                   groups="ppts_service_request.service_request_group_ct_user"/>
+                            <field name="medical_intervention_id"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   options='{"no_open": True, "no_create": True}'
+                                   groups="ppts_service_request.service_request_group_ct_user"/>
+                            <field name="patient_involved_id"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   options='{"no_open": True, "no_create": True}'
+                                   groups="ppts_service_request.service_request_group_ct_user"/>
+                            <field name="surgical_delay_id"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   options='{"no_open": True, "no_create": True}'
+                                   groups="ppts_service_request.service_request_group_ct_user"/>
+                        </group>
+                        <group name="other_information2" style="color:black" string="Other information">
+                            <field name="bio_medical_engineer_id"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   groups="ppts_service_request.service_request_group_ct_user"/>
+                            <field name="dispatch_location_id"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   options='{"no_open": True, "no_create": True}'
+                                   groups="ppts_service_request.service_request_group_ct_user" invisible="1"/>
+                            <field name="survey_id" attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   groups="ppts_service_request.service_request_group_ct_user"/>
+                            <field name="external_reference"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"
+                                   groups="ppts_service_request.service_request_group_ct_user"/>
+                            <field name="company_id" readonly="1"/>
+                            <field name="user_id" readonly="1"/>
+                            <field name="is_website_order" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="service_properties" nolabel="1" columns="2" hideKanbanOption="1"
+                           groups="ppts_service_request.service_request_group_ct_user"/>
+                    <notebook>
+                        <page string="Customer Selection" name="customer_selection"
+                              groups="ppts_service_request.service_request_group_ct_user">
+                            <div class="oe_title">
+                                <label for="partner_id"/>
+                                <h1>
+                                    <field name="partner_id"
+                                           attrs="{'readonly': [('state','not in',('new','in_review'))], 'required': [('state','=', 'in_review')]}"/>
+                                </h1>
+                            </div>
+                            <group>
+                                <group>
+                                    <span class="o_form_label o_td_label" name="address_name"
+                                          attrs="{'readonly': [('state','not in',('new','in_review'))]}">
+                                        <b>Address</b>
+                                    </span>
+                                    <div class="o_address_format">
+                                        <field name="street" placeholder="Street..." class="o_address_street"
+                                               attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                        <field name="street2" placeholder="Street 2..." class="o_address_street"
+                                               attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                        <field name="state_id" class="o_address_state" placeholder="State"
+                                               attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                        <field name="zip" placeholder="ZIP" class="o_address_zip"
+                                               attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                        <field name="country_id" placeholder="Country" class="o_address_country"
+                                               attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                        <field name="country_code" invisible="1"
+                                               attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                    </div>
+                                </group>
+                                <group>
+                                    <field name="phone" widget="phone"
+                                           attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                    <field name="mobile" widget="phone"
+                                           attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                    <field name="email" widget="email"
+                                           attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                    <field name="dealer_distributor_id"
+                                           attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Loaner" groups="ppts_service_request.service_request_group_user">
+                        </page>
+                        <page string="Parts" groups="ppts_service_request.service_request_group_user">
+                        </page>
+                        <page string="Description" name="description"
+                              groups="ppts_service_request.service_request_group_user">
+                            <field name="description" placeholder="Description" nolabel="1"
+                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                        </page>
+                        <!--Need to remove this entire setup since used default approval-->
+<!--                        <page string="Approvals" groups="ppts_service_request.service_request_group_ct_user"-->
+<!--                              invisible="1">-->
+<!--                            <field name="approver_ids" readonly="1">-->
+<!--                                <tree string="Approvals" create="false" delete="false" edit="false">-->
+<!--                                    <field name="sequence" invisible="1"/>-->
+<!--                                    <field name="user_id"/>-->
+<!--                                    <field name="require_opt"/>-->
+<!--                                    <field name="state"/>-->
+<!--                                    <field name="approved_on"/>-->
+<!--                                    <field name="reject_reason"/>-->
+<!--                                    <field name="rejected_on"/>-->
+<!--                                    <field name="hold_reason"/>-->
+<!--                                    <field name="hold_on"/>-->
+<!--                                </tree>-->
+<!--                                <form string="Approvals" name="approvals">-->
+<!--                                    <group>-->
+<!--                                        <group>-->
+<!--                                            <field name="user_id"/>-->
+<!--                                            <field name="require_opt"/>-->
+<!--                                            <field name="state"/>-->
+<!--                                        </group>-->
+<!--                                        <group>-->
+<!--                                            <field name="approved_on"/>-->
+<!--                                            <field name="reject_reason"/>-->
+<!--                                            <field name="rejected_on"/>-->
+<!--                                            <field name="hold_reason"/>-->
+<!--                                            <field name="hold_on"/>-->
+<!--                                        </group>-->
+<!--                                    </group>-->
+<!--                                </form>-->
+<!--                            </field>-->
+<!--                        </page>-->
+                        <page name="hold_reason" string="Hold Reason"
+                              attrs="{'invisible':[('state', '!=', 'hold')]}">
+                            <field name="request_hold_reason" readonly="1"/>
+                        </page>
+                        <page name="close_reason" string="Close Reason"
+                              attrs="{'invisible':[('state', '!=', 'closed')]}">
+                            <field name="close_reason" readonly="1"/>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="service_request_view_kanban" model="ir.ui.view">
+        <field name="name">service.request.kanban</field>
+        <field name="model">service.request</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column" create="false" delete="false">
+                <field name="id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div>
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div class="text-muted o_kanban_record_subtitle">
+                                    <field name="customer_name"/>
+                                    <br/>
+                                    <field name="state"/>
+                                </div>
+                            </div>
+                            <div class="oe_clear"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="service_request_tree_view" model="ir.ui.view">
+        <field name="name">service.request.tree</field>
+        <field name="model">service.request</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="state == 'rejected'" default_order="name desc" create="false">
+                <button name="action_open_request_view" type="object" string="Open" class="btn btn-link"
+                        icon="fa-angle-double-left"/>
+                <field name="name" readonly="1"/>
+                <field name="service_request_date" readonly="1"/>
+                <field name="customer_name" readonly="1"/>
+                <field name="state" readonly="1"/>
+                <field name="company_id" readonly="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_service_request" model="ir.actions.act_window">
+        <field name="name">Service Request</field>
+        <field name="res_model">service.request</field>
+        <field name="view_mode">tree,kanban</field>
+        <!--<field name="domain">[('state','!=','waiting_for_approval')]</field>-->
+        <field name="search_view_id" ref="service_request_search_view"/>
+        <field name="view_id" ref="service_request_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_service_request_tree_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="service_request_tree_view"/>
+        <field name="act_window_id" ref="action_service_request"/>
+    </record>
+    <!--    <record id="action_service_request_form_view" model="ir.actions.act_window.view">-->
+    <!--        <field name="sequence" eval="2"/>-->
+    <!--        <field name="view_mode">form</field>-->
+    <!--        <field name="view_id" ref="service_request_form_view"/>-->
+    <!--        <field name="act_window_id" ref="action_service_request"/>-->
+    <!--    </record>-->
+    <record id="action_service_request_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="service_request_view_kanban"/>
+        <field name="act_window_id" ref="action_service_request"/>
+    </record>
+
+    <record id="action_service_request_approval" model="ir.actions.act_window">
+        <field name="name">Waiting for Approval Request</field>
+        <field name="res_model">service.request</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="search_view_id" ref="service_request_search_view"/>
+        <field name="view_id" ref="service_request_tree_view"/>
+        <field name="domain">[('state','=','waiting_for_approval'), ('approver_ids.user_id', '=',
+            uid),('approver_ids.state', 'in', ('rejected','hold','new'))]
+        </field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+    <record id="service_ticket_approval_tree_view" model="ir.ui.view">
+        <field name="name">service.ticket.approval.tree</field>
+        <field name="model">service.ticket.approval</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="user_id"/>
+                <field name="require_opt"/>
+                <field name="state"/>
+                <field name="approved_on"/>
+                <field name="reject_reason"/>
+                <field name="rejected_on"/>
+                <field name="hold_reason"/>
+                <field name="hold_on"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--    Overview Kanban view-->
+
+    <record id="overview_service_request_view_kanban" model="ir.ui.view">
+        <field name="name">request.type.kanban</field>
+        <field name="model">request.type</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column" create="false" delete="false">
+                <field name="team_id"/>
+                <field name="ticket_type"/>
+                <field name="assigned_count"/>
+                <field name="unassigned_count"/>
+                <field name="closed_count"/>
+                <field name="rejected_count"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card ">
+                            <div class="container o_kanban_card_content">
+                                <div style="font-size:15px;margin-top:5%;">
+                                    <h1 class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </h1>
+                                </div>
+                                <div class="o_kanban_manage_button_section" t-if="!selection_mode">
+                                    <a class="o_kanban_manage_toggle_button" href="#">
+                                        <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/>
+                                    </a>
+                                </div>
+                                <div class="row my-4">
+                                    <div class="col-4 o_kanban_primary_left ">
+
+                                        <button name="overview_ticket_request_type" type="object"
+                                                class="btn btn-info oe_kanban_action oe_kanban_action_button">
+                                            TICKETS
+                                        </button>
+                                    </div>
+
+                                    <div class="col-6 o_kanban_primary_right ">
+
+                                        <div role="menuitem">
+                                            <a style=" color: #148a9c; font-weight: 500; float: right;" name="get_closed_tickets"
+
+                                               type="object">Tickets Closed
+                                            </a>
+                                        </div>
+
+                                        <div role="menuitem">
+                                            <a style=" color: #148a9c; font-weight: 500; float: right;" name="get_rejected_tickets"
+
+                                               type="object">Rejected Tickets
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-2 o_kanban_primary_right ">
+                                        <div style="padding-left:0%;">
+                                            <span class="o_value">
+                                                <t t-esc="record.closed_count.value"/>
+                                            </span>
+                                            <br/>
+                                        </div>
+                                        <div style="padding-left:0%;">
+                                            <span class="o_value">
+                                                <t t-esc="record.rejected_count.value"/>
+                                            </span>
+                                            <br/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-lg-6" style="border-right:1px solid;">
+                                        <div style=" padding-left: 13%; ">
+                                            <span class="o_value">
+                                                <t t-esc="record.assigned_count.value"/>
+                                            </span>
+                                            <br/>
+                                        </div>
+
+
+                                        <div style="font-size:14px;">
+
+                                            <div role="menuitem">
+                                                <a style=" color: #148a9c; font-weight: 500; " name="assigned_tickets"
+                                                   context="{'is_assigned': True}"
+                                                   type="object">Assigned
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div style=" padding-left: 23%; ">
+                                            <span class="o_value">
+                                                <t t-esc="record.unassigned_count.value"/>
+                                            </span>
+                                            <br/>
+                                        </div>
+                                        <div style="font-size:14px;">
+                                            <div role="menuitem">
+                                                <a style=" color: #148a9c; font-weight: 500; " name="unassigned_tickets"
+                                                   context="{'is_unassigned': True}"
+                                                   type="object">Unassigned
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="dropdown-menu" style="overflow:hidden;width:7%;" role="menu">
+
+                                <div t-if="widget.editable" class="o_kanban_card_manage_settings row">
+
+                                    <div role="menuitem" class="col-lg-12">
+                                        <a class="dropdown-item" role="menuitem" type="edit">Configuration</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="oe_clear"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+</odoo>

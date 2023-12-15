@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="ppts_custom_call_history_form_view" model="ir.ui.view">
+            <field name="name">call.history.form</field>
+            <field name="model">call.history</field>
+            <field name="arch" type="xml">
+                <form create="0" delete="0">
+                    <header>
+                        <button name="action_close" string="Close Manually" type="object" class="btn btn-success" groups="base.group_system" attrs="{'invisible': [('state', '=', 'closed')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="in_progress,closed"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group string="Agent Details">
+                                <field name="agent_id" force_save="1"/>
+                                <field name="agent_name" force_save="1"/>
+                                <field name="agent_phone_number" force_save="1"/>
+                                <field name="agent_status" force_save="1"/>
+                                <field name="agent_unique_id" force_save="1"/>
+                            </group>
+                            <group name="customer_details" string="Customer Details">
+                                <field name="partner_id" force_save="1"/>
+                                <field name="ticket_ref" invisible="0" force_save="1"/>
+                                <field name="phone_number" force_save="1"/>
+                                <field name="customer_status" force_save="1"/>
+                                <!-- <field name="child_ticket_id" force_save="1" />
+                                <field name="parent_ticket_id" force_save="1"/> -->
+                            </group>
+                            <group string="API Source Details">
+                                <field name="api_key" force_save="1"/>
+                                <field name="username" force_save="1"/>
+                                <field name="audio_file" force_save="1" invisible="1"/>
+                                <label for="audio_file" string="Call Recording"/>
+                                <div class="o_row" name="audio_rec">
+                                    <span>
+                                        <button name="action_play_recording" type="object" icon="fa-solid fa-play"/>
+                                    </span>
+                                </div>
+                                <!-- <field name="file_audio" force_save="1" widget="audio_omar_widget"/> -->
+                                <field name="caller_audio_file" force_save="1" widget="url"/>
+                                <field name="caller_id" force_save="1" invisible="1"/>
+                            </group>
+                            <group string="Campaign Details">
+                                <field name="campaign_name" force_save="1"/>
+                                <field name="campaign_status" force_save="1"/>
+                                <field name="conf_duration" force_save="1"/>
+                                <field name="comments" force_save="1"/>
+                            </group>
+                            <group string="Dial Details">
+                                <field name="dialed_number" force_save="1"/>
+                                <field name="did" force_save="1"/>
+                                <field name="dial_status" force_save="1"/>
+                                <field name="disposition" force_save="1"/>
+                                <field name="start_datetime" force_save="1"/>
+                                <field name="answered_datetime" force_save="1"/>
+                                <field name="hangup_by" force_save="1"/>
+                                <field name="end_times" force_save="1"/>
+                                <field name="duration" force_save="1"/>
+                                <field name="call_duration" force_save="1"/>
+                                <field name="location" force_save="1"/>
+                            </group>
+                            <group string="Other Details">
+                                <field name="call_type" readonly="1" force_save="1"/>
+                                <field name="status" force_save="1"/>
+                                <field name="fall_back_rule" force_save="1"/>
+                                <field name="monitor_ucid" force_save="1"/>
+                                <field name="skill" force_save="1"/>
+                                <field name="transfer_type" force_save="1"/>
+                                <field name="transfer_to" force_save="1"/>
+                                <field name="type" force_save="1"/>
+                                <field name="uui" force_save="1"/>
+                                <field name="unique_code" force_save="1" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="ppts_custom_call_histories_tree_view" model="ir.ui.view">
+            <field name="name">call.history.tree</field>
+            <field name="model">call.history</field>
+            <field name="arch" type="xml">
+                <tree create="0" delete="0" decoration-success="state == 'in_progress'" decoration-muted="state == 'closed'">
+                    <field name="create_date" string="Date"/>
+                    <field name="agent_id" />
+                    <field name="agent_name"/>
+                    <field name="partner_id" />
+                    <field name="phone_number" />
+                    <field name="campaign_name"/>
+                    <field name="state"/>
+                    <field name="ticket_ref"/>
+                    <!-- <field name="child_ticket_id" optional="hide"/>
+                    <field name="parent_ticket_id" optional="hide"/> -->
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_call_history_filter" model="ir.ui.view">
+            <field name="name">call.history.list.select</field>
+            <field name="model">call.history</field>
+            <field name="priority" eval="15"/>
+            <field name="arch" type="xml">
+                <search string="Search Call History">
+                    <field name="agent_id"/>
+                    <field name="agent_name"/>
+                    <field name="agent_phone_number"/>
+                    <field name="partner_id"/>
+                    <field name="phone_number"/>
+                    <field name="username"/>
+
+                    <separator/>
+                    <filter string="Today" name="today" domain="[('create_date', '&gt;', (context_today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <filter string="Agent" name="agent" domain="[('agent_id', '=', True)]"/>
+                    <separator/>
+                    <filter string="Agent Unique ID" name="agent_unique_id" domain="[('agent_unique_id', '=', True)]"/>
+
+                    <separator/>
+
+                    <group expand="0" string="Group By">
+                        <filter string="AgentID" name="agent_id" domain="[]" context="{'group_by': 'agent_id'}"/>
+                        <filter name="partner_id" string="Customer" domain="[]" context="{'group_by': 'partner_id'}"/>
+                        <filter name="customer_status" string="Customer Call Status" domain="[]" context="{'group_by': 'customer_status'}"/>
+                        <filter name="disposition" string="Disposition" domain="[]" context="{'group_by': 'disposition'}"/>
+                        <filter string="Date" name="start_datetime" domain="[]" context="{'group_by': 'create_date'}"/>
+                        <filter name="type" string="Type" domain="[]" context="{'group_by': 'type'}"/>
+
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_call_histories" model="ir.actions.act_window">
+            <field name="name">Call History</field>
+            <field name="res_model">call.history</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="ppts_custom_call_histories_tree_view"/>
+            <field name="context">{'search_default_today': 1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Call History" id="call_history_main_menu" parent="cti_integration.menu_root_cti_integration" action="action_call_histories" sequence="1"/>
+
+    </data>
+</odoo>

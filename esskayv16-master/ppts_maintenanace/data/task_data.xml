@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--        Maintenance Request-->
+        <record id="task_data_maintenance_request_action" model="tasks.master">
+            <field name="name">Maintenance</field>
+            <field name="category">action</field>
+            <field name="python_code">maintenance_request</field>
+            <field name="description">Maintenance Request</field>
+        </record>
+
+
+        <record id="task_data_maintenance_started" model="tasks.master">
+            <field name="name">Maintenance Started</field>
+            <field name="category">system</field>
+            <field name="python_code"></field>
+            <field name="description">Maintenance  Started</field>
+        </record>
+
+        <record id="task_data_maintenance_in_progress" model="tasks.master">
+            <field name="name">Maintenance In Progress</field>
+            <field name="category">system</field>
+            <field name="python_code"></field>
+            <field name="description">Maintenance In Progress</field>
+        </record>
+
+        <record id="task_data_maintenance_completed" model="tasks.master">
+            <field name="name">Maintenance Completed</field>
+            <field name="category">system</field>
+            <field name="python_code"></field>
+            <field name="description">Maintenance Completed</field>
+        </record>
+
+        <record id="task_data_maintenance_on_hold" model="tasks.master">
+            <field name="name">Maintenance On hold</field>
+            <field name="category">system</field>
+            <field name="python_code"></field>
+            <field name="description">Maintenance On hold</field>
+        </record>
+
+        <record id="task_data_maintenance_cancelled" model="tasks.master">
+            <field name="name">Maintenance Cancelled</field>
+            <field name="category">system</field>
+            <field name="python_code"></field>
+            <field name="description">Maintenance Cancelled</field>
+        </record>
+
+        <record id="task_data_maintenance_rescheduled" model="tasks.master">
+            <field name="name">Maintenance Re-Scheduled</field>
+            <field name="category">system</field>
+            <field name="python_code"></field>
+            <field name="description">Maintenance ReScheduled</field>
+        </record>
+
+    </data>
+</odoo>

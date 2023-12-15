@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2020 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="nsm_group_members" model="res.groups">
+        <field name="name">N.S.M</field>
+    </record>
+
+    <record id="rsm_group_members" model="res.groups">
+        <field name="name">R.S.M</field>
+    </record>
+</odoo>

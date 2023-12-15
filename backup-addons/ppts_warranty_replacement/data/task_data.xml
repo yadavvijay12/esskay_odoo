@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+<!--		<record id="task_data_wr_replacement_request" model="tasks.master">-->
+<!--            <field name="name">Replacement Request</field>-->
+<!--            <field name="category">action</field>-->
+<!--            <field name="python_code">sr_wr</field>-->
+<!--            <field name="description"></field>-->
+<!--        </record>-->
+		<record id="task_data_wr_transfer_request" model="tasks.master">
+            <field name="name">WR Transfer Request</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description"></field>
+        </record>
+		<record id="task_data_wr_transfer_approved" model="tasks.master">
+            <field name="name">WR Transfer Approved</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description"></field>
+        </record>
+		<record id="task_data_wr_transfer_rejected" model="tasks.master">
+            <field name="name">WR Transfer Rejected</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description"></field>
+        </record>
+		<record id="task_data_wr_transfer_waiting" model="tasks.master">
+            <field name="name">WR Transfer Waiting Availability</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description"></field>
+        </record>
+		<record id="task_data_wr_transfer_ready" model="tasks.master">
+            <field name="name">WR Transfer Ready</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description"></field>
+        </record>
+		<record id="task_data_wr_transfer_done" model="tasks.master">
+            <field name="name">WR Transfer Done</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description"></field>
+        </record>
+		<record id="task_data_wr_transfer_delivered" model="tasks.master">
+            <field name="name">WR Transfer Delivered</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description"></field>
+        </record>
+		<record id="task_data_wr_installation_started" model="tasks.master">
+            <field name="name">WR Installation Started</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description"></field>
+        </record>
+		<record id="task_data_wr_installation_in-progress" model="tasks.master">
+            <field name="name">WR Installation In Progress</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description"></field>
+        </record>
+		<record id="task_data_wr_installation_completed" model="tasks.master">
+            <field name="name">WR Installation Completed</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description"></field>
+        </record>
+		<record id="task_data_wr_installation_on-hold" model="tasks.master">
+            <field name="name">WR Installation On Hold</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description"></field>
+        </record>
+		<record id="task_data_wr_installation_cancelled" model="tasks.master">
+            <field name="name">WR Installation Cancelled</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description"></field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="fill_survey_view_form" model="ir.ui.view">
+        <field name="name">fill_survey.view.form</field>
+        <field name="model">fill.survey.ticket</field>
+        <field name="arch" type="xml">
+            <form string="Fill Survey for Tickets">
+                <group>
+                    <field name="name" invisible="1"/>
+                    <field name="url" invisible="1"/>
+                    <field name="ticket_type" />
+                    <field name="parent_ticket_id" attrs="{'invisible':[('ticket_type', '=', 'child')]}"/>
+                    <field name="child_ticket_id" attrs="{'invisible':[('ticket_type', '=', 'parent')]}"/>
+                </group>
+                <footer>
+                    <button name="open_survey_page" string="Open Survey" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

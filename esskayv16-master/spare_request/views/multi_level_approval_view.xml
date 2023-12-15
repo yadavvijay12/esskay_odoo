@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="multi_approval_view_form_inherit_spare_request_id" model="ir.ui.view">
+            <field name="name">multi.approval.spare_request_id</field>
+            <field name="model">multi.approval</field>
+            <field name="inherit_id" ref="multi_level_approval.multi_approval_view_form"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='contact_id']" position="before">
+                    <label for="spare_request_id" attrs="{'invisible': [('spare_request_id','=', False)]}"/>
+                    <div class="o_row" attrs="{'invisible': [('spare_request_id','=', False)]}">
+                        <h4>
+                            <field class="text-break" name="spare_request_id" default_focus="1" readonly="1"/>
+                        </h4>
+                    </div>
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <record id="multi_approval_view_form_inherit_spare_request_id_test" model="ir.ui.view">
+            <field name="name">multi.approval.spare_request_id.test</field>
+            <field name="model">multi.approval</field>
+            <field name="inherit_id" ref="ppts_parent_ticket.multi_approval_view_form_inherit_child_ticket_id"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='supporting_details']/group" position="after">
+                    <notebook>
+                        <page string='Spare Details'>
+                            <field name="spare_request_line_ids" widget="many2many" readonly="1">
+                                <tree string="Spare lines">
+                                    <field name="description"/>
+                                    <field name="product_id"/>
+                                    <field name="source_location_id"/>
+                                    <field name="destination_location_id"/>
+                                    <field name="qty_available"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom_qty_issued"/>
+                                    <field name="remaining_qty"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="state"/>
+                                    <field name="picking_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

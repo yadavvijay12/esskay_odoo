@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="stock.action_production_lot_form" model="ir.actions.act_window">
+            <field name="name">Assets With Serial Numbers</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.lot</field>
+            <field name="view_ids"
+                   eval="[(5, 0, 0),
+                                  (0, 0, {'view_mode': 'tree', 'view_id': ref('stock.view_production_lot_tree')}),
+                                  (0, 0, {'view_mode': 'form', 'view_id': ref('stock.view_production_lot_form')})]"/>
+            <field name="search_view_id" ref="stock.search_product_lot_filter"/>
+            <field name="context">{'search_default_group_by_product': 1, 'display_complete': True, 'default_company_id':
+                allowed_company_ids[0],'default_is_serial':True}
+            </field>
+<!--            <field name="domain">[('product_id.is_can_be_assets', '=',False)]</field>-->
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Add a Serial number
+                </p>
+                <p>
+                    Serial numbers help you tracking the path followed by your products.
+                    From their traceability report you will see the full history of their use, as well as their
+                    composition.
+                </p>
+            </field>
+        </record>
+
+        <record id="view_production_serial_tree" model="ir.ui.view">
+            <field name="name">stock.production.lot.tree</field>
+            <field name="model">stock.lot</field>
+            <field name="arch" type="xml">
+                <tree string="Lots/Serial Numbers" multi_edit="1">
+                    <field name="name" decoration-bf="1" string="Lot Number"/>
+                    <field name="ref" optional="show"/>
+                    <field name="product_id" readonly="1"/>
+                    <field name="create_date" optional="show"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="last_delivery_partner_id" optional="hide" string="Transfer to"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_production_lot_only_form" model="ir.actions.act_window">
+            <field name="name">Asset With Lot Numbers</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.lot</field>
+            <field name="view_ids"
+                   eval="[(5, 0, 0),
+                                  (0, 0, {'view_mode': 'tree', 'view_id': ref('view_production_serial_tree')}),
+                                  (0, 0, {'view_mode': 'form', 'view_id': ref('stock.view_production_lot_form')})]"/>
+            <field name="search_view_id" ref="stock.search_product_lot_filter"/>
+            <field name="domain">[('product_id.tracking', '=', 'lot'),('is_lot','=','True')]
+            </field>
+            <field name="context">{'search_default_group_by_product': 1, 'display_complete': True, 'default_company_id':
+                allowed_company_ids[0], 'default_is_lot':True}
+            </field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Add a Lot number
+                </p>
+                <p>
+                    Lot numbers help you tracking the path followed by your products.
+                    From their traceability report you will see the full history of their use, as well as their
+                    composition.
+                </p>
+            </field>
+        </record>
+
+
+        <record id="product_product_asset_true" model="ir.actions.act_window">
+            <field name="name">Asset With Serial Number</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">kanban,tree,form,activity</field>
+            <field name="domain" eval="[('tracking', '=', 'serial')]"/>
+            <field name="search_view_id" eval="False"/>
+            <field name="view_id" ref="product.product_product_tree_view"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new product variant
+                </p>
+            </field>
+        </record>
+
+        <record id="product_product_asset_false" model="ir.actions.act_window">
+            <field name="name">Product With Serial Number</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">kanban,tree,form,activity</field>
+            <field name="domain" eval="[('tracking', '=', 'serial')]"/>
+            <field name="search_view_id" eval="False"/>
+            <field name="view_id" ref="product.product_product_tree_view"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new product variant
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="mail_template_confirmed_installation" model="mail.template">
+        <field name="name">Installation Order: Approval</field>
+        <field name="model_id" ref="model_project_task"/>
+        <field name="subject">Installation Completed {{object.installation_product_serial}}</field>
+        <field name="email_to">akashc@esskay.in,ittechsupport@esskay.in,indark@esskay.in</field>
+        <field name="email_cc">akashc@esskay.in,indark@esskay.in</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Hi Team,<br/><br/>
+                    SO Call No : : <t t-out="object.installation_stock_lot_id or ''"></t>,<br/>
+                    Installation is Completed. <br/>
+
+                    Regards,<br/>
+                    Stryker Support Team.
+
+                    <t t-if="object.user_id">
+                        <t t-out="object.user_id.signature or ''"/>
+                    </t>
+                    <t t-else="">
+
+                    </t>
+
+                </p>
+            </div>
+        </field>
+    </record>
+</odoo>

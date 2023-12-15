@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+      <menuitem id="whatsapp_history_main_menu"
+              name="Whatsapp"
+              sequence="5"/>
+    <menuitem id="menu_whatsapp_history"
+              name="Whatsapp History"
+              parent="whatsapp_history_main_menu"
+              action="action_whatsapp_history"
+              sequence="10"/>
+</odoo>

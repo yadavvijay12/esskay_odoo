@@ -1,0 +1,1097 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+
+        <!--Parent Ticket Email Template -->
+        <record id="email_template_parent_ticket" model="mail.template">
+            <field name="name">Parent Ticket Email</field>
+            <field name="model_id" ref="ppts_parent_ticket.model_parent_ticket"/>
+            <field name="email_from">{{ object.company_id.email }}</field>
+            <field name="email_to">{{ ctx.get('email_to') if ctx.get('email_to') else object.partner_id.email }}</field>
+            <field name="subject">Ref {{ object.name }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="html">
+                <p>Hello
+                    <b>
+                        <t t-out="object.partner_id.name or ''"></t>
+                    </b>
+                    ,
+                </p>
+                <p>Your Parent Ticket for
+                    <b>
+                        <t t-out="object.name or ''"></t>
+                    </b>
+                    has been processed.
+                </p>
+                <p>If you have any questions, please let us know.</p>
+                <p>Best regards,</p>
+            </field>
+        </record>
+
+
+        <!--Child Ticket Email Template -->
+        <record id="email_template_child_ticket" model="mail.template">
+            <field name="name">Child Ticket Email</field>
+            <field name="model_id" ref="ppts_parent_ticket.model_child_ticket"/>
+            <field name="email_from">{{ object.company_id.email }}</field>
+            <field name="email_to">{{ ctx.get('email_to') if ctx.get('email_to') else object.partner_id.email }}</field>
+            <field name="subject">Ref {{ object.name }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="html">
+                <p>Hello
+                    <b>
+                        <t t-out="object.partner_id.name or ''"></t>
+                    </b>
+                    ,
+                </p>
+                <p>Your Ticket for
+                    <b>
+                        <t t-out="object.name or ''"></t>
+                    </b>
+                    has been processed.
+                </p>
+                <p>If you have any questions, please let us know.</p>
+                <p>Best regards,</p>
+            </field>
+        </record>
+
+        <record id="notify_email_template" model="mail.template">
+            <field name="name">Team Notification</field>
+            <field name="model_id" ref="ppts_custom_workflow.model_tasks_master_line"/>
+            <field name="email_from">{{ user.company_id.email }}</field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="email_cc">{{ ctx.get('email_cc') }}</field>
+            <field name="subject">New Task {{ object.task_id.name }} on Status</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <p>Hello Team
+                    <b>
+                        <t t-out="object.task_id.team_id.name or ''"></t>
+                    </b>
+                    ,
+                </p>
+                <p>New Status
+                    <b>
+                        <t t-out="object.task_id.name or ''"></t>
+                    </b>
+                    <t t-if="object.child_ticket_id">
+                        have updated on Parent Ticket
+                        <b>
+                            <t t-out="object.child_ticket_id.name or ''"></t>
+                        </b>
+                    </t>
+                    <t t-if="object.child_ticket_id">
+                        have updated on Child Ticket
+                        <b>
+                            <t t-out="object.child_ticket_id.name or ''"></t>
+                        </b>
+                    </t>
+                </p>
+                <p>If you have any questions, please let us know.</p>
+                <p>Best regards,</p>
+            </field>
+        </record>
+
+        <record id="mail_template_pi_required_parent_ticket" model="mail.template">
+            <field name="name">Parent Ticket : PI Required</field>
+            <field name="model_id" ref="model_parent_ticket"/>
+            <field name="subject">EXP_PI INTAKE FORM - {{object.parent_ticket_id_alias}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="email_cc">{{ ctx.get('email_cc') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        Cat No : <t t-out="object.cat_no or ''"></t>,
+                        <br/>
+                        Product Sr. No : <t t-out="object.stock_lot_id.name or ''"></t>,
+                        <br/>
+                        <br/>
+                        This Ticket is PI required.
+                        <br/>
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+                        <t t-if="object.assign_engineer_ids">
+                            <t t-out="object.assign_engineer_ids[0].name or ''"/>
+                        </t>
+                        <t t-else="">
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_pi_required_child_ticket" model="mail.template">
+            <field name="name">Child Ticket : PI Required</field>
+            <field name="model_id" ref="model_child_ticket"/>
+            <field name="subject">EXP_PI INTAKE FORM - {{object.child_ticket_id_alias}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="email_cc">{{ ctx.get('email_cc') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        Cat No : <t t-out="object.parent_ticket_id.cat_no or ''"></t>,
+                        <br/>
+                        Product Sr. No : <t t-out="object.stock_lot_id.name or ''"></t>,
+                        <br/>
+                        This Ticket is PI required.
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+                        <t t-if="object.child_assign_engineer_ids">
+                            <t t-out="object.child_assign_engineer_ids[0].name or ''"/>
+                        </t>
+                        <t t-else="">
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_create_wor_order_child_ticket" model="mail.template">
+            <field name="name">Child Ticket : Work Order</field>
+            <field name="model_id" ref="model_child_ticket"/>
+            <field name="subject">In-House Repair Request  - {{object.stock_lot_id.name}} | {{object.service_type_id.name}} | {{object.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="email_cc">{{ ctx.get('email_cc') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        Cat No : <t t-out="object.parent_ticket_id.cat_no or ''"></t>,
+                        <br/>
+                        Product Sr. No : <t t-out="object.stock_lot_id.name or ''"></t>,
+                        <br/>
+                        This work order has been created.
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+                        <t t-if="object.child_assign_engineer_ids">
+                            <t t-out="object.child_assign_engineer_ids[-1].name or ''"/>
+                        </t>
+                        <t t-else="">
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+
+        <record id="mail_template_check_oem_warranty_parent_ticket" model="mail.template">
+            <field name="name">Parent Ticket : OEM Warranty Check</field>
+            <field name="model_id" ref="model_parent_ticket"/>
+            <field name="subject">{{object.name}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="email_cc">{{ ctx.get('email_cc') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        The parent ticket <t t-out="object.name or ''"></t> status is
+                        <t t-out="ctx['oem_warranty_status'] or ''"></t>
+                        <br/>
+                        <t t-out="object.product_code_no or ''"></t>,
+                        <br/>
+
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.assign_engineer_ids">
+                            <t t-out="object.assign_engineer_ids[0].name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_check_oem_warranty_child_ticket" model="mail.template">
+            <field name="name">Child Ticket : OEM Warranty Check</field>
+            <field name="model_id" ref="model_child_ticket"/>
+            <field name="subject">{{object.name}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.parent_ticket_id.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="email_cc">{{ ctx.get('email_cc') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        The child ticket <t t-out="object.name or ''"></t> status is
+                        <t t-out="ctx['oem_warranty_status'] or ''"></t>
+                        <br/>
+                        <!--                        <t t-out="object.product_code_no or ''"></t>,-->
+                        <!--                        <br/>-->
+
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.child_assign_engineer_ids">
+                            <t t-out="object.child_assign_engineer_ids[0].name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+        <record id="mail_template_installation_completed_child_ticket" model="mail.template">
+            <field name="name">Child Ticket : Installation Completed</field>
+            <field name="model_id" ref="model_child_ticket"/>
+            <field name="subject">{{object.name}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.parent_ticket_id.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        SO Call No : : <t t-out="object.child_ticket_id_alias or ''"></t>,
+                        <br/>
+                        Installation is Completed.
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Esskay Team.
+
+                        <t t-if="object.user_id">
+                            <t t-out="object.user_id.signature or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+
+                    </p>
+                </div>
+            </field>
+            <field name="report_template" ref="report_esskay_config"/>
+            <field name="report_name">Installation Completed{{ (object.name or '').replace('/','_') }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <!--    SR Factory Repair Email Template    -->
+        <record id="mail_template_fr_factory_repair_child_ticket" model="mail.template">
+            <field name="name">Child Ticket : Service Report Inhouse</field>
+            <field name="model_id" ref="model_child_ticket"/>
+            <field name="subject">SE TSR - {{object.child_ticket_id_alias}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.parent_ticket_id.partner_id.name}} | {{object.child_assign_engineer_ids[-1].name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        Cat No : <t t-out="object.product_id.product_part or ''"></t>,
+                        <br/>
+                        Product Sr. No : <t t-out="object.stock_lot_id.name or ''"></t>,
+                        <br/>
+                        SE Ticket is Completed.
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+
+                        <t t-if="object.user_id">
+                            <t t-out="object.user_id.signature or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+
+                    </p>
+                </div>
+            </field>
+            <field name="report_template" ref="service_request_inhouse_report_config"/>
+            <field name="report_name">Service Report Inhouse{{ (object.name or '').replace('/','_') }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+
+        <record id="mail_template_check_oem_repair_status_parent_ticket" model="mail.template">
+            <field name="name">Parent Ticket : OEM Repair Warranty Check</field>
+            <field name="model_id" ref="model_parent_ticket"/>
+            <field name="subject">{{object.name}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="email_cc">{{ ctx.get('email_cc') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        The parent ticket <t t-out="object.name or ''"></t> status is
+                        <t t-out="ctx['oem_repair_status'] or ''"></t>
+                        <br/>
+                        <t t-out="object.product_code_no or ''"></t>,
+                        <br/>
+
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.assign_engineer_ids">
+                            <t t-out="object.assign_engineer_ids[0].name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_check_extended_status_parent_ticket" model="mail.template">
+            <field name="name">Parent Ticket : Extended Warranty Check</field>
+            <field name="model_id" ref="model_parent_ticket"/>
+            <field name="subject">Parent Ticket Extended Warranty Check : {{object.name}}</field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="email_cc">{{ ctx.get('email_cc') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi ,
+                        <br/>
+                        <br/>
+                        The parent ticket <t t-out="object.name or ''"></t>  Extended Warranty status is
+                        <t t-out="ctx['extended_warranty_status'] or ''"></t>
+                        <br/>
+                        <t t-if="object.product_code_no" t-out="object.product_code_no or ''">,</t>
+                        <br/>
+
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.assign_engineer_ids">
+                            <t t-out="object.assign_engineer_ids[0].name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+        <record id="mail_template_check_extended_status_child_ticket" model="mail.template">
+            <field name="name">Child Ticket : Extended Warranty Check</field>
+            <field name="model_id" ref="model_child_ticket"/>
+            <field name="subject">Child Ticket Extended Warranty Check : {{object.name}}</field>
+            <field name="email_to">akashc@esskay.in,ittechsupport@esskay.in,indark@esskay.in</field>
+            <field name="email_cc">akashc@esskay.in,indark@esskay.in</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi ,
+                        <br/>
+                        <br/>
+                        The child ticket <t t-out="object.name or ''"></t> Extended Warranty status is
+                        <t t-out="ctx['extended_warranty_status'] or ''"></t>
+                        <br/>
+                        <t t-out="object.parent_ticket_id.product_code_no or ''">,</t>
+                        <br/>
+
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.assign_engineer_ids">
+                            <t t-out="object.assign_engineer_ids[0].name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_check_oem_repair_status_child_ticket" model="mail.template">
+            <field name="name">Child Ticket : OEM Repair Warranty Check</field>
+            <field name="model_id" ref="model_child_ticket"/>
+            <field name="subject">{{object.name}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.parent_ticket_id.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="email_cc">{{ ctx.get('email_cc') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        The child ticket <t t-out="object.name or ''"></t> status is
+                        <t t-out="ctx['oem_repair_status'] or ''"></t>
+                        <br/>
+                        <t t-out="object.parent_ticket_id.product_code_no or ''"></t>,
+                        <br/>
+
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.child_assign_engineer_ids">
+                            <t t-out="object.child_assign_engineer_ids[0].name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+
+        <record id="mail_template_closed_parent_ticket" model="mail.template">
+            <field name="name">Parent Ticket : Closed</field>
+            <field name="model_id" ref="model_parent_ticket"/>
+            <field name="subject">{{object.name}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="email_cc">{{ ctx.get('email_cc') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        Cat No : <t t-out="object.name or ''"></t>,
+                        <br/>
+                        Product Sr. No : <t t-out="object.product_code_no or ''"></t>,
+                        <br/>
+                        Ticket is Closed
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.assign_engineer_ids">
+                            <t t-out="object.assign_engineer_ids[0].name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+        <record id="mail_template_closed_child_ticket" model="mail.template">
+            <field name="name">Child Ticket : Closed</field>
+            <field name="model_id" ref="model_child_ticket"/>
+            <field name="subject">PM TSR - {{object.name}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.parent_ticket_id.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="email_cc">{{ ctx.get('email_cc') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        Cat No : <t t-out="object.name or ''"></t>,
+                        <br/>
+                        Ticket is Closed
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.child_assign_engineer_ids">
+                            <t t-out="object.child_assign_engineer_ids[0].name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+<!--            <field name="report_template" ref="report_esskay_config"/>-->
+<!--            <field name="report_name">Installation Completed{{ (object.name or '').replace('/','_') }}</field>-->
+            <field name="auto_delete" eval="True"/>
+        </record>
+        <record id="mail_template_closed_child_ticketsr_factory_repair" model="mail.template">
+            <field name="name">Child Ticket : Closed Factory Repair</field>
+            <field name="model_id" ref="model_child_ticket"/>
+            <field name="subject">In-House Repair - {{object.name}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.parent_ticket_id.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="email_cc">{{ ctx.get('email_cc') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        Cat No : <t t-out="object.name or ''"></t>,
+                        <br/>
+                        <!--                        Product Sr. No : <t t-out="object.product_code_no or ''"></t>,-->
+                        <!--                        <br/>-->
+                        Ticket is Closed
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.child_assign_engineer_ids">
+                            <t t-out="object.child_assign_engineer_ids[0].name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+            <field name="report_template" ref="action_service_report_config"/>
+            <field name="report_name">In-House Repair{{ (object.name or '').replace('/','_') }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+        <record id="fsm_child_ticket_closed_mail_template" model="mail.template">
+            <field name="name">FSM Child Ticket : Closed</field>
+            <field name="model_id" ref="model_child_ticket"/>
+            <field name="subject">SF TSR - {{object.name}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="email_cc">{{ ctx.get('email_cc') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        Cat No : <t t-out="object.name or ''"></t>,
+                        <br/>
+                        <!--                        Product Sr. No : <t t-out="object.product_code_no or ''"></t>,-->
+                        <!--                        <br/>-->
+                        Ticket is Closed
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.child_assign_engineer_ids">
+                            <t t-out="object.child_assign_engineer_ids[0].name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email,Please do not reply***
+                        </span>
+                    </p>
+                </div>
+            </field>
+            <field name="report_template" ref="action_field_service_report_config"/>
+            <field name="report_name">Field Service Completed{{ (object.name or '').replace('/','_') }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="pt_mail_template_notify_approvers" model="mail.template">
+            <field name="name">Parent Ticket : Approval Request</field>
+            <field name="model_id" ref="multi_level_approval.model_multi_approval"/>
+            <field name="email_from">{{ object.company_id.email }}</field>
+            <field name="email_to">{{ ctx.get('email_to')}}</field>
+            <field name="subject">Ref {{ object.name }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Dear
+                        <t t-out="object.user_id.name or ''"></t>,
+                        <br/>
+                        This ticket
+                        <t t-out="object.parent_ticket_id.name or ''"></t>
+                        is waiting for an approval.
+                        <br/>
+                        <br/>
+                        <strong>Equipment details : </strong>
+                        <br/>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>Product Name</td>
+                                    <td>: <t t-out="object.parent_ticket_id.product_id.name or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>Serial Number</td>
+                                    <td>: <t t-out="object.parent_ticket_id.stock_lot_id.name or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>Product Part Number</td>
+                                    <td>: <t t-out="object.parent_ticket_id.cat_no or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>Product Part Code</td>
+                                    <td>: <t t-out="object.parent_ticket_id.product_code_no or ''"></t></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <br/>
+                        <strong>Warranty and Contract Details : </strong>
+                        <br/>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>AMC Status</td>
+                                    <td>: <t t-out="ctx['amc'] or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>CMC Status</td>
+                                    <td>: <t t-out="ctx['cmc'] or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>OEM Warranty Status</td>
+                                    <td>: <t t-out="ctx['warranty'] or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>OEM Repair Status</td>
+                                    <td>: <t t-out="ctx['repair'] or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>Extended Warranty Status</td>
+                                    <td>: <t t-out="ctx['extended'] or ''"></t></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <br/>
+                        <strong>Problem reported : </strong><t t-out="object.parent_ticket_id.problem_description or ''"></t>
+                        <br/>
+                        <br/>
+                        <strong>Engineer comment/reason : </strong><t t-out="object.parent_ticket_id.remarks or ''"></t>
+                        <br/>
+                        <br/>
+                        CLick on the below link to open the respective record to approve.
+                        <p style="margin: 16px 0px 16px 0px">
+                            <a t-attf-href="{{ ctx.get('rec_url')}}"
+                               style="background-color: #875A7B; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 15px;text-transform:uppercase;">
+                                View Approval Request
+                            </a>
+                        </p>
+                        <br/>
+                        Thank you,
+                        <br/>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="ct_mail_template_notify_approvers" model="mail.template">
+            <field name="name">Child Ticket : Approval Request</field>
+            <field name="model_id" ref="multi_level_approval.model_multi_approval"/>
+            <field name="email_from">{{ object.company_id.email }}</field>
+            <field name="email_to">{{ ctx.get('email_to')}}</field>
+            <field name="subject">Ref {{ object.name }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Dear
+                        <t t-out="object.user_id.name or ''"></t>,
+                        <br/>
+                        This ticket
+                        <t t-out="object.child_ticket_id.name or ''"></t>
+                        is waiting for an approval.
+                        <br/>
+                        <br/>
+                        <strong>Equipment details : </strong>
+                        <br/>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>Product Name</td>
+                                    <td>: <t t-out="object.child_ticket_id.product_id.name or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>Serial Number</td>
+                                    <td>: <t t-out="object.child_ticket_id.stock_lot_id.name or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>Product Part Number</td>
+                                    <td>: <t t-out="object.child_ticket_id.product_part_number or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>Product Part Code</td>
+                                    <td>: <t t-out="object.child_ticket_id.parent_ticket_id.product_code_no or ''"></t></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <br/>
+                        <strong>Warranty and Contract Details : </strong>
+                        <br/>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>AMC Status</td>
+                                    <td>: <t t-out="ctx['amc'] or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>CMC Status</td>
+                                    <td>: <t t-out="ctx['cmc'] or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>OEM Warranty Status</td>
+                                    <td>: <t t-out="ctx['warranty'] or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>OEM Repair Status</td>
+                                    <td>: <t t-out="ctx['repair'] or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>Extended Warranty Status</td>
+                                    <td>: <t t-out="ctx['extended'] or ''"></t></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <br/>
+                        <strong>Problem reported : </strong><t t-out="object.child_ticket_id.problem_description or ''"></t>
+                        <br/>
+                        <br/>
+                        <strong>Engineer comment/reason : </strong><t t-out="object.child_ticket_id.remarks or ''"></t>
+                        <br/>
+                        <br/>
+                        CLick on the below link to open the respective record to approve.
+                        <p style="margin: 16px 0px 16px 0px">
+                            <a t-attf-href="{{ ctx.get('rec_url')}}"
+                               style="background-color: #875A7B; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 15px;text-transform:uppercase;">
+                                View Approval Request
+                            </a>
+                        </p>
+                        <br/>
+                        Thank you,
+                        <br/>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="approve_template_parent_ticket" model="mail.template">
+            <field name="name">Approve Email</field>
+            <field name="model_id" ref="ppts_parent_ticket.model_multi_approval"/>
+            <field name="email_from">{{ object.user_id.email }}</field>
+            <field name="email_to">{{ ctx.get('email_to')}}</field>
+            <field name="subject">Ref {{ object.name }}</field>
+            <field name="lang">{{object.user_id.lang}}</field>
+            <field name="body_html" type="html">
+                <p>Dear</p>
+                <t t-out="ctx.get('email_to')">
+                </t>
+                <p>
+                    <b>
+                        You have Received a new request for an approval please find the details below.
+                    </b>
+                </p>
+                <p>
+                    <b>Request by:
+                        <t t-out="object.user_id.name"/>
+                    </b>
+                </p>
+                <p>
+                    <b>Request Date:
+                        <t t-out="object.request_date"/>
+                    </b>
+                </p>
+                <p>
+                    <t t-if="object.parent_ticket_id">
+                        <b>Parent Ticket:
+                            <t t-out="object.parent_ticket_id.name"/>
+                        </b>
+                    </t>
+                    <t t-if="object.service_request_id">
+                        <b>Service Ticket:
+                            <t t-out="object.service_request_id.name"/>
+                        </b>
+                    </t>
+                    <t t-if="object.child_ticket_id">
+                        <b>Child Ticket:
+                            <t t-out="object.child_ticket_id.name"/>
+                        </b>
+                    </t>
+                </p>
+<!--                <t t-if="object.parent_ticket_id">-->
+<!--                    <br/>-->
+<!--                    <br/>-->
+<!--                    <strong>Equipment details :</strong>-->
+<!--                    <br/>-->
+<!--                    <table>-->
+<!--                        <tbody>-->
+<!--                            <tr>-->
+<!--                                <td>Product Name</td>-->
+<!--                                <td>:-->
+<!--                                    <t t-out="object.parent_ticket_id.product_id.name or ''"></t>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>Serial Number</td>-->
+<!--                                <td>:-->
+<!--                                    <t t-out="object.parent_ticket_id.stock_lot_id.name or ''"></t>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>Product Part Number</td>-->
+<!--                                <td>:-->
+<!--                                    <t t-out="object.parent_ticket_id.cat_no or ''"></t>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>Product Part Code</td>-->
+<!--                                <td>:-->
+<!--                                    <t t-out="object.parent_ticket_id.product_code_no or ''"></t>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                    <br/>-->
+<!--                    <br/>-->
+<!--                    <strong>Warranty and Contract Details :</strong>-->
+<!--                    <br/>-->
+<!--                    <table>-->
+<!--                        <tbody>-->
+<!--                            <tr>-->
+<!--                                <td>AMC Status</td>-->
+<!--                                <td>: <t t-out="ctx['amc'] or ''"></t></td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>CMC Status</td>-->
+<!--                                <td>: <t t-out="ctx['cmc'] or ''"></t></td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>OEM Warranty Status</td>-->
+<!--                                <td>: <t t-out="ctx['warranty'] or ''"></t></td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>OEM Repair Status</td>-->
+<!--                                <td>: <t t-out="ctx['repair'] or ''"></t></td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>Extended Warranty Status</td>-->
+<!--                                <td>: <t t-out="ctx['extended'] or ''"></t></td>-->
+<!--                            </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+
+<!--                    <br/>-->
+<!--                    <br/>-->
+<!--                    <strong>Problem reported :</strong>-->
+<!--                    <t t-out="object.parent_ticket_id.problem_description or ''"></t>-->
+<!--                    <br/>-->
+<!--                    <br/>-->
+<!--                    <strong>Engineer comment/reason :</strong>-->
+<!--                    <t t-out="object.parent_ticket_id.remarks or ''"></t>-->
+<!--                    <br/>-->
+<!--                    <br/>-->
+<!--                </t>-->
+            </field>
+        </record>
+
+        <record id="mail_template_requests" model="mail.template">
+            <field name="name">Requests Approval</field>
+            <field name="model_id" ref="ppts_parent_ticket.model_request"/>
+            <field name="subject">Ref {{ object.name }}</field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="body_html" type="html">
+
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+
+                    Dear
+                    <t t-out="object.user_id.name or ''"></t>,
+                    <p>
+                        <b>
+                            You have Received a new request please find the details below.
+                        </b>
+                    </p>
+                    <strong t-if="ctx.get('amc')">AMC Status :
+                        <t t-out="ctx['amc'] or ''"></t>
+                    </strong>
+                    <br/>
+                    <strong t-if="ctx.get('cmc')">CMC Status :
+                        <t t-out="ctx['cmc'] or ''"></t>
+                    </strong>
+                    <br/>
+                    <strong t-if="ctx.get('warranty')">OEM Warranty Status :
+                        <t t-out="ctx['warranty'] or ''"></t>
+                    </strong>
+                    <br/>
+                    <strong t-if="ctx.get('repair')">OEM Repair Status :
+                        <t t-out="ctx['repair'] or ''"></t>
+                    </strong>
+                    <br/>
+                    <strong t-if="ctx.get('extended')">Extended Warranty Status :
+                        <t t-out="ctx['extended'] or ''"></t>
+                    </strong>
+                    <p>
+                        <t t-if="object.parent_ticket_id">
+                            <b>Parent Ticket:
+                                <t t-out="object.parent_ticket_id.name"/>
+                            </b>
+                        </t>
+                        <t t-if="object.service_request_id">
+                            <b>Service Ticket:
+                                <t t-out="object.service_request_id.name"/>
+                            </b>
+                        </t>
+                        <t t-if="object.child_ticket_id">
+                            <b>Child Ticket:
+                                <t t-out="object.child_ticket_id.name"/>
+                            </b>
+                        </t>
+                    </p>
+
+                    <strong>Signature :
+                        <t t-out="object.user_id.signature"></t>
+                    </strong>
+                </div>
+            </field>
+        </record>
+
+
+
+
+    </data>
+
+</odoo>

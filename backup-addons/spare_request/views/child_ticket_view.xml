@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="child_ticket_form_view_inherit_spare_request" model="ir.ui.view">
+        <field name="name">child.ticket.inherit.view.form</field>
+        <field name="model">child.ticket</field>
+        <field name="inherit_id" ref="ppts_parent_ticket.child_ticket_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header[2]" position="inside">
+                <button name="action_spare_request" string="Spare Request" type="object"
+                        groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user"
+                        class="btn btn-success" attrs="{'invisible': ['|',('id', '=', False),('state', 'in', ('cancel','closed'))]}"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="view_spare_request" type="object" class="oe_stat_button" icon="fa-wrench"
+                        string="Spare Request" attrs="{'invisible': [('is_create_spare_request','=', False)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+<!--                <field name="spare_request_id"/>-->
+                <field name="is_create_spare_request" invisible="1"/>
+            </xpath>
+            <xpath expr="//page[@name='spares']" position="inside">
+                <field name="spare_request_ids" mode="kanban" readonly="1">
+                    <kanban class="o_kanban_mobile">
+                        <field name="id"/>
+                        <field name="name"/>
+                        <field name="location_id"/>
+                        <field name="required_date"/>
+                        <field name="state"/>
+                        <progressbar field="state" colors="{&quot;issued&quot;: &quot;success&quot;, &quot;inprogress&quot;: &quot;warning&quot;, &quot;reject&quot;: &quot;danger&quot;}"/>
+                        <templates>
+                            <t t-name="kanban-box">
+                                <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                    <div class="o_kanban_record_top mb16">
+                                        <div class="o_kanban_record_headings mt4">
+                                            <strong class="o_kanban_record_title">
+                                                <span t-out="record.name.value"/>
+                                            </strong>
+                                        </div>
+                                        <strong>
+                                            <field name="requirement"/>
+                                        </strong>
+                                    </div>
+                                    <div class="o_kanban_record_bottom">
+                                        <div class="oe_kanban_bottom_left text-muted">
+                                            <span>
+                                                <t t-out="record.location_id.value"/>
+                                            </span>
+                                            Required Date : <field name="required_date" widget="date"/>
+                                        </div>
+                                        <div class="oe_kanban_bottom_right">
+                                            <field name="state" widget="label_selection" options="{'classes': {'draft': 'default', 'cancel': 'danger', 'issued': 'success', 'inprogress': 'warning'}}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </templates>
+                    </kanban>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

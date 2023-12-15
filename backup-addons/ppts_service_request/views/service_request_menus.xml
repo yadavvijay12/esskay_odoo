@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Service Request -->
+    <menuitem id="service_request_main_menu" name="Service Support" sequence="20"/>
+    <menuitem action="overview_action_service_request_type" id="overview_service_support"
+              parent="service_request_main_menu" name="Overview" sequence="1"/>
+    <menuitem action="contract.action_customer_contract" id="contract_contract"
+              parent="service_request_main_menu" name="Contracts" sequence="3"
+              groups="-ppts_service_request.service_request_group_ct_user,-ppts_service_request.service_request_group_manager,-ppts_service_request.service_request_national_head"/>
+
+
+    <menuitem id="service_request_sub_menu" parent="service_request_main_menu" name="Service Requests" sequence="2"/>
+    <menuitem id="service_request_action_menu" parent="service_request_sub_menu" name="Requests" sequence="1"/>
+    <menuitem action="action_service_request" id="service_request_action_menu" parent="service_request_sub_menu"
+              name="All Service Request" sequence="1"/>
+    <!--    <menuitem action="action_service_request_approval" id="service_approval_action_menu"-->
+    <!--              parent="service_request_sub_menu" name="Waiting for Approval" sequence="2"/>-->
+    <!-- Configuration -->
+    <menuitem id="service_request_configuration" parent="service_request_main_menu" name="Configuration" sequence="10"
+              groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+    <menuitem action="action_service_request_call_source" id="service_request_call_source"
+              parent="service_request_configuration" name="Call Source" sequence="1"/>
+    <menuitem action="action_service_request_service_category" id="service_request_service_category"
+              parent="service_request_configuration" name="Service Category" sequence="2"/>
+    <menuitem action="action_service_request_service_type" id="service_request_service_type"
+              parent="service_request_configuration" name="Service Type" sequence="3"/>
+    <menuitem action="action_service_request_type" id="service_request_type" parent="service_request_configuration"
+              name="Approval Types" sequence="4"/>
+    <menuitem action="action_service_request_call_received" id="service_request_call_received"
+              parent="service_request_configuration" name="Call Received" sequence="5"/>
+    <menuitem action="action_service_request_bio_medical_engineer" id="service_request_bio_medical_engineer"
+              parent="service_request_configuration" name="Bio Medical Engineer" sequence="6"/>
+    <!--    <menuitem action="action_service_request_status" id="service_request_status" parent="service_request_configuration"-->
+    <!--              name="Service Request Status" sequence="7"/>-->
+    <menuitem action="action_service_request_dispatch_location" id="service_request_dispatch_location"
+              parent="service_request_configuration" name="Dispatch Location" sequence="8"/>
+    <menuitem action="action_service_request_oem_warranty_status" id="service_request_oem_warranty_status"
+              parent="service_request_configuration" name="OEM Warranty Status" sequence="9"/>
+    <menuitem action="action_service_request_repair_warranty_status" id="service_request_repair_warranty_status"
+              parent="service_request_configuration" name="Repair Warranty Status" sequence="10"/>
+    <menuitem action="action_repair_center_location" id="service_request_repair_center_location"
+              parent="service_request_configuration" name="Repair Center Location" sequence="11"/>
+
+    <menuitem action="action_case_completed_successfully" id="service_request_case_completed_successfully"
+              parent="service_request_configuration" name="Was the case completed successfully" sequence="12"/>
+    <menuitem action="action_medical_intervention" id="service_request_medical_intervention"
+              parent="service_request_configuration" name="Was medical intervention needed" sequence="13"/>
+    <menuitem action="action_patient_involved" id="service_request_patient_involved"
+              parent="service_request_configuration" name="Was a patient involved" sequence="14"/>
+    <menuitem action="action_surgical_delay" id="service_request_surgical_delay" parent="service_request_configuration"
+              name="Was there a surgical delay" sequence="15"/>
+    <menuitem action="action_child_ticket_type" id="parent_ticket_child_ticket_type"
+              parent="service_request_configuration" name="Child Ticket Type" sequence="16"/>
+
+    <!-- Master -->
+    <menuitem id="service_request_masters" parent="service_request_main_menu" name="Assets" sequence="9"
+              groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+    <menuitem action="action_production_lot_only_form" id="service_request_asset_lot_list_menu"
+              parent="service_request_masters" name="Asset With Lot Number" sequence="1"
+              groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+    <menuitem action="stock.action_production_lot_form" id="service_request_asset_list_menu"
+              parent="service_request_masters" name="Assets With Serial Number" sequence="2"
+              groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+    <menuitem action="product.product_template_action" id="service_request_product_template_menu"
+              parent="service_request_main_menu" name="Products" sequence="3"
+              groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+    <menuitem action="account.res_partner_action_customer" id="service_request_customer_menu"
+              parent="service_request_main_menu" name="Customer" sequence="4"
+              groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+    <menuitem action="product_product_asset_true" id="asset_serial"
+              parent="stock.menu_stock_inventory_control" name="Asset With Serial Number" sequence="10"/>
+    <menuitem action="product_product_asset_false" id="product_serial"
+              parent="stock.menu_stock_inventory_control" name="Product With Serial Number" sequence="11"/>
+    p
+    <menuitem id="stock.menu_action_production_lot_form" active="false"/>
+    <menuitem id="work_flow"
+              parent="service_request_main_menu" name="Work Flow" sequence="2"
+              groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_national_head"/>
+    <menuitem id="work_flow_sub_menu" action="ppts_custom_workflow.action_custom_workflow"
+              parent="work_flow" name="Work Flow" sequence="2"/>
+    <menuitem id="configuration_menu" parent="work_flow" name="Configuration" sequence="3"/>
+    <menuitem action="ppts_custom_workflow.action_task_master" id="configurations_sub_menu"
+              parent="configuration_menu" name="Tasks" sequence="2"/>
+
+</odoo>

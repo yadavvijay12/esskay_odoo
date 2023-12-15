@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="child_ticket_inherit_views" model="ir.ui.view">
+        <field name="name">child_ticket_inherit.view.form_2</field>
+        <field name="model">child.ticket</field>
+        <field name="inherit_id" ref="ppts_parent_ticket.child_ticket_form_view"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//button[@name='action_send_mail']" position="after">
+                <button name="action_close" string="Close Ticket" type="object" attrs="{'invisible': [('state', '=', 'closed')]}"/>
+            </xpath> -->
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="survey_id"/>
+                <!-- <field name="whatsapp_template_id" /> -->
+                <field name="ticket_closure" invisible="1"/>
+                <field name="survey_sent" invisible="1"/>
+                <field name="url" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="context">{'ticket_ref': name}</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_view_service_request']" position="after">
+                <button name="view_survey_feedback" type="object" class="oe_stat_button"
+                        attrs="{'invisible': [('survey_sent', '=', False)]}" icon="fa-comment"
+                        string="Survey Feedback"/>
+            </xpath>
+            <xpath expr="//page[@name='spares']" position="before">
+                <page string="Survey" name="survey">
+                    <field name="survey_ids" widget="many2many_kanban" readonly="1">
+                        <tree string="Survey List">
+                            <field name="title"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="parent_ticket_inherit_views_new" model="ir.ui.view">
+        <field name="name">Parent Ticket Inherit View</field>
+        <field name="model">parent.ticket</field>
+        <field name="inherit_id" ref="ppts_parent_ticket.parent_ticket_form_view"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//button[@name='action_send_mail']" position="after">
+                <button name="action_close" string="Close Ticket" type="object" attrs="{'invisible': [('state', '=', 'closed')]}"/>
+            </xpath> -->
+            <xpath expr="//button[@name='action_view_child_tickets']" position="after">
+                <button name="view_survey_feedback" type="object" class="oe_stat_button"
+                        attrs="{'invisible': [('survey_sent', '=', False)]}" icon="fa-comment"
+                        string="Survey Feedback"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="context">{'ticket_ref': name}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="survey_id"/>
+                <!-- <field name="whatsapp_template_id" /> -->
+                <field name="ticket_closure" invisible="1"/>
+                <field name="survey_sent" invisible="1"/>
+                <field name="url" invisible="1"/>
+            </xpath>
+            <xpath expr="//page[@name='child']" position="before">
+                <page string="Survey" name="survey">
+                    <field name="survey_ids" widget="many2many_kanban" readonly="1">
+                        <tree string="Survey List">
+                            <field name="title"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="task_master_form_view_inherit" model="ir.ui.view">
+        <field name="name">task_master_form.view</field>
+        <field name="model">tasks.master</field>
+        <field name="inherit_id" ref="ppts_custom_workflow.task_master_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='is_schedule']" position="after">
+                <field name="is_survey_passed"/>
+                <field name="is_sr_escalation_open"/>
+                <field name="is_sr_escalation_progress"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="reason_reason_view_form_inherit" model="ir.ui.view">
+        <field name="name">reason.reason.wizard.form.inherit</field>
+        <field name="model">reason.reason</field>
+        <field name="inherit_id" ref="ppts_service_request.reason_reason_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='reason_type']" position="after">
+                <separator string="Manager Comments" attrs="{'invisible':[('reason_type','!=', 'sr_escalation')]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="ppts_custom_masters_inherit_service_request_sr_escalation_form_view" model="ir.ui.view">
+        <field name="name">service.request.form</field>
+        <field name="model">service.request</field>
+        <field name="inherit_id" ref="service_request_sr_survey_form_view"/>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='customer_selection']" position="after">
+                <page string="Asset Selection">
+                    <field name="user_team_ids" invisible="1"/>
+                    <field name="customer_asset_ids" attrs="{'readonly': [('state','not in',('new','in_review'))]}">
+                        <tree string="Asset Lines" name="asset_line" editable="bottom">
+                            <field name="serial_number_id" domain="[('customer_id','=', partner_id)]" invisible="1"/>
+                            <field name="stock_lot_id" domain="[('customer_id','=', partner_id)]"/>
+                            <field name="product_id" options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                            <field name="notes"/>
+                            <field name="is_available" readonly="1"/>
+                            <field name="partner_id" invisible="1"/>
+                        </tree>
+                        <form string="Asset Lines">
+                            <group>
+                                <group>
+                                    <field name="serial_number_id" domain="[('customer_id','=', partner_id)]"
+                                           invisible="1"/>
+                                    <field name="stock_lot_id" domain="[('customer_id','=', partner_id)]"/>
+                                    <label for="product_id" string="Product"/>
+                                    <div class="o_row">
+                                        <field name="product_id"
+                                               options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                                        <button type="object" title="Product" name="action_open_product_template"
+                                                icon="fa-arrow-right"
+                                                attrs="{'invisible': [('product_id', '=', False)]}"/>
+                                    </div>
+                                </group>
+                                <group>
+                                    <field name="notes"/>
+                                    <field name="is_available" readonly="1"/>
+                                    <field name="partner_id" invisible="1"/>
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+            <!--                <xpath expr="//form/sheet/group/group[@name='customer_information']/div/field[@name='customer_street2']" position="after">-->
+            <!--                	<field name="customer_city_id" class="o_address_city" placeholder="City" attrs="{'readonly': [('state','not in',('new'))]}"/>-->
+            <!--                </xpath>-->
+
+            <xpath expr="//form/sheet/notebook/page[@name='customer_selection']/group/group//div/field[@name='street2']"
+                   position="after">
+                <field name="city_id" class="o_address_city" placeholder="City"
+                       attrs="{'readonly': [('state','not in',('new'))]}"/>
+                <field name="user_team_ids" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//form/sheet/notebook/page[@name='customer_selection']/group/group" position="inside">
+                <field name="customer_account_id"
+                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                <field name="customer_type_id" options='{"no_open": True, "no_create": True}'
+                       attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                <field name="customer_region_id" options='{"no_open": True, "no_create": True}'
+                       attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                <field name="gst_no" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                <field name="tier_tier_id" options='{"no_open": True, "no_create": True}'
+                       attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                <field name="d_number" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+            </xpath>
+
+            <xpath expr="//form/sheet/notebook/page[@name='customer_selection']/group/group/field[@name='email']"
+                   position="after">
+                <field name="hospital_name" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                <field name="surgeon_name" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                <field name="customer_group_id" options='{"no_open": True, "no_create": True}'
+                       attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                <field name="customer_id_alias" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                <field name="customer_id" readonly="1"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

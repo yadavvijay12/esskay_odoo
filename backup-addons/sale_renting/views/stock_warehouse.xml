@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_warehouse_loaner" model="ir.ui.view">
+    <field name="name">loaner.stock.warehouse.form</field>
+    <field name="model">stock.warehouse</field>
+    <field name="inherit_id" ref="stock.view_warehouse" />
+    <field name="arch" type="xml">
+        <group name="group_resupply" position="after">
+            <group name="rental" string="Loaner">
+                <field name="rental_route_id"/>
+                <field name="rental_out_location_id"/>
+            </group>
+        </group>
+    </field>
+</record>
+    <record id="inherit_view_location_form" model="ir.ui.view">
+        <field name="name">stock.location.form</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='return_location']" position='after'>
+                <field name="wh_id"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

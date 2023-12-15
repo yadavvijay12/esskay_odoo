@@ -1,0 +1,48 @@
+<odoo>
+    <record id="view_spare_department_form" model="ir.ui.view">
+        <field name="name">spare.department.form</field>
+        <field name="model">spare.department</field>
+        <field name="arch" type="xml">
+            <form string="Department">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence_id"/>
+                        <field name="user_ids" widget="many2many_tags"
+                               options="{'no_create': True,'no_create_edit': True,'no_open': True}"/>
+
+                        <!-- <field name="categ_ids" widget="many2many_tags"/> -->
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_spare_department_tree" model="ir.ui.view">
+        <field name="name">spare.department.tree</field>
+        <field name="model">spare.department</field>
+        <field name="arch" type="xml">
+            <tree string="Department">
+                <field name="name"/>
+                <field name="sequence_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_spare_department_form"
+            model="ir.actions.act_window">
+        <field name="name">Department</field>
+        <field name="res_model">spare.department</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a Department
+            </p>
+        </field>
+    </record>
+
+    <menuitem action="action_spare_department_form"
+              id="menu_action_department_form"
+              parent="stock.menu_stock_config_settings"
+              sequence="1000" groups="stock.group_stock_manager"/>
+</odoo>

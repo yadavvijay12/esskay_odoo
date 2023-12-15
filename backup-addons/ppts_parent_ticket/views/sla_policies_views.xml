@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--  SLA Policies List -->
+    <record id="sla_policies_form_view" model="ir.ui.view">
+        <field name="name">sla.policies.form.view</field>
+        <field name="model">sla.policies</field>
+        <field name="arch" type="xml">
+            <form string="Call Source">
+                <sheet>
+                    <div class="oe_title mb24">
+                        <label for="name"/>
+                        <h1>
+                            <field class="text-break" name="name" default_focus="1" placeholder="Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="group_criteria" style="color:black" string="Criteria">
+                            <field name="team_id"/>
+                            <field name="priority"/>
+                            <field name="type"/>
+                            <field name="tags" widget="many2many_tags"/>
+                        </group>
+                        <group name="group_criteria" style="color:black" string="">
+                            <field name="customer_id"/>
+                            <field name="product_category_id"/>
+                            <field name="product_id"/>
+                            <field name="sale_order_id"/>
+                        </group>
+
+                        <group name="group_target" style="color:black" string="Target">
+                            <field name="start_stage_id"/>
+                            <field name="reach_stage_id"/>
+                        </group>
+                        <group name="group_target" style="color:black"  string="">
+                            <label for="duration" string="Duration" widget="float_time"/>
+                            <div class="o_row">
+                                <field name="duration" widget="timesheet_uom" nolabel="1" class="oe_inline"/>
+                                <field name="interval_unit" nolabel="1" class="oe_inline"/>
+                            </div>
+                            <field name="excluding_stages_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <separator string="Description"/>
+                    <field name="description" nolabel="1" placeholder="Description ..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="sla_policies_tree_view" model="ir.ui.view">
+        <field name="name">sla.policies.tree.view</field>
+        <field name="model">sla.policies</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="team_id"/>
+                <field name="customer_id" widget="res_partner_many2one"/>
+                <field name="duration" widget="timesheet_uom"/>
+                <field name="interval_unit"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_sla_policies" model="ir.actions.act_window">
+        <field name="name">SLA Policies</field>
+        <field name="res_model">sla.policies</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="sla_policies_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+    <!--  End -->
+    <menuitem id="sla_configuration" name="SLA Policies" sequence="20"
+              parent="ppts_service_request.service_request_configuration"/>
+    <menuitem action="action_sla_policies" id="menu_sla_policies" parent="sla_configuration" name="SLA Policies"
+              sequence="1"/>
+</odoo>

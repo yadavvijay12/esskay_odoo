@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="multi_approval_view_form_inherit_maintenance_id" model="ir.ui.view">
+            <field name="name">multi.approval.maintenance_id</field>
+            <field name="model">multi.approval</field>
+            <field name="inherit_id" ref="multi_level_approval.multi_approval_view_form"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='contact_id']" position="before">
+                    <label for="maintenance_id" attrs="{'invisible': [('maintenance_id','=', False)]}"/>
+                    <div class="o_row" attrs="{'invisible': [('maintenance_id','=', False)]}">
+                        <h4>
+                            <field class="text-break" name="maintenance_id" default_focus="1" readonly="1"/>
+                        </h4>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

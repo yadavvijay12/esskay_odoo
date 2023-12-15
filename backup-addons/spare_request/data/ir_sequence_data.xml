@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sequences for spare.request -->
+        <record id="seq_spare_request" model="ir.sequence">
+            <field name="name">Spare Request</field>
+            <field name="code">spare.request.seq</field>
+            <field name="prefix">SPARE/</field>
+            <field eval="1" name="number_next"/>
+            <field eval="1" name="number_increment"/>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

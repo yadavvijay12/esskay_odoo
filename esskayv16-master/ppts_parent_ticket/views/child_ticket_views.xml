@@ -1,0 +1,1423 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="child_ticket_sequence" model="ir.sequence">
+        <field name="name">Child Ticket Sequences</field>
+        <field name="code">child.ticket</field>
+        <field name="prefix">CT/</field>
+        <field eval="4" name="padding"/>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="child_ticket_search_view" model="ir.ui.view">
+        <field name="name">child.ticket.search.view</field>
+        <field name="model">child.ticket</field>
+        <field name="arch" type="xml">
+            <search string="Search in Child Ticket">
+                <field name="name"/>
+                <field name="child_ticket_id_alias"/>
+                <field name="partner_id"/>
+                <field name="company_id"/>
+                <filter string="My Tickets" name="my_child_tickets" domain="[('child_assign_engineer_ids', '=', uid)]"/>
+                <separator/>
+                <filter string="New" name="new" domain="[('state','=','new')]"/>
+                <filter string="Confirm" name="confirm" domain="[('state','=','confirm')]"/>
+                <filter string="Approved" name="approved" domain="[('state','=','approved')]"/>
+                <filter string="Closed" name="closed" domain="[('state','=','closed')]"/>
+                <separator/>
+                <filter string="Call Date" name="filter_call_date" date="call_date"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Call Source" name="call_source_id" domain="[]"
+                            context="{'group_by': 'call_source_id'}"/>
+                    <filter string="Configuration" name="child_configuration_id" domain="[]"
+                            context="{'group_by': 'child_configuration_id'}"/>
+                    <filter string="Service Type" name="service_type_id" domain="[]"
+                            context="{'group_by': 'service_type_id'}"/>
+                    <filter string="Service Category" name="service_category_id" domain="[]"
+                            context="{'group_by': 'service_category_id'}"/>
+                    <filter string="Approval Type" name="request_type_id" domain="[]"
+                            context="{'group_by': 'request_type_id'}"/>
+                    <filter string="Team" name="team_id" domain="[]"
+                            context="{'group_by': 'team_id'}"/>
+                    <filter string="Milestone" name="state" domain="[]"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Product" name="product_id" domain="[]"
+                            context="{'group_by': 'product_id'}"/>
+                    <filter string="Asset" name="stock_lot_id" domain="[]"
+                            context="{'group_by': 'stock_lot_id'}"/>
+                    <filter string="Customer" name="partner_id" domain="[]"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter string="Customer Account" name="customer_account_id" domain="[]"
+                            context="{'group_by': 'customer_account_id'}"/>
+                    <filter string="Company" name="company_id" domain="[]"
+                            context="{'group_by': 'company_id'}"/>
+                    <filter string="Region Wise Tickets" name="customer_region_id" domain="[]"
+                            context="{'group_by': 'customer_region_id'}"/>
+                    <filter string="Status" name="state" domain="[]"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Engineer" name="engineer" domain="[]"
+                            context="{'group_by': 'child_assign_engineer_ids'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="child_ticket_status_update_form_view" model="ir.ui.view">
+        <field name="name">child.ticket.request.form</field>
+        <field name="model">child.ticket</field>
+        <field name="arch" type="xml">
+            <form string="Child Ticket Form">
+                <field name="state" invisible="1"/>
+                <field name="next_task_ids" invisible="1"/>
+                <field name="is_ar_hold_tick" invisible="1"/>
+                <field name="is_send_for_approvals" invisible="1"/>
+                <div>
+                    <field name="is_disable_status_update" invisible="1"/>
+                    <button name="action_delete_status" string="Delete Last Line" class="btn btn-info"
+                            type="object"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
+                            attrs="{'invisible':[('is_send_for_approvals', '=',True), ('state', 'in', ('new', 'waiting_for_approval','closed'))]}"/>
+                    <field name="task_list_ids"
+                           attrs="{'readonly': ['|','|', ('is_ar_hold_tick','=', True), ('state', '=', 'closed'), ('is_disable_status_update', '=', True)]}"
+                           nolabel="1">
+                        <tree string="Task Lists" delete="0" decoration-success="is_file_attachment == True">
+                            <field name="is_work_end" invisible="1"/>
+                            <field name="is_create_service_request" invisible="1"/>
+                            <field name="is_enable_child_ticket" invisible="1"/>
+                            <field name="is_request_spares" invisible="1"/>
+                            <field name="is_request_raise_invoice" invisible="1"/>
+                            <field name="is_perform_diagnosis" invisible="1"/>
+                            <field name="is_perform_repair" invisible="1"/>
+                            <field name="is_perform_testing" invisible="1"/>
+                            <field name="is_perform_quality" invisible="1"/>
+                            <field name="is_send_email" invisible="1"/>
+                            <field name="is_maintenance_completed" invisible="1"/>
+                            <field name="is_allow_edit_after_submit" invisible="1"/>
+                            <field name="is_edit_after_submit" invisible="1"/>
+                            <field name="is_inventory" invisible="1"/>
+                            <field name="sequence" widget="handle"/>
+                            <field name="task_id" domain="[('id','in',parent.next_task_ids)]"/>
+                            <field name="description"/>
+                            <field name="category"/>
+                            <field name="worksheet_id" invisible="1"/>
+                            <field name="is_end_task" invisible="1"/>
+                            <field name="is_file_attachment" invisible="1"/>
+                            <field name="next_task_ids" widget="many2many_tags" readonly="1" force_save="1"/>
+                            <field name="status" invisible="1"/>
+
+                            <!--                            <button name="button_tasks_update" string="Update" type="object" class="btn-primary"-->
+                            <!--                                    icon="fa-cloud-upload"/>-->
+                            <button name="create_sr" type="object" string="Create SR" class="btn btn-link"
+                                    icon="fa-save"
+                                    invisible="1"/>
+                            <button name="create_inventory_ct" type="object" string="Inventory"
+                                    class="btn btn-link" icon="fa-truck"
+                                    attrs="{'invisible': [('is_inventory', '=', False)]}"/>
+                            <!--                                    <button name="create_child_ticket" type="object" string="Child Ticket"-->
+                            <!--                                            class="btn btn-link" icon="fa-save"-->
+                            <!--                                            attrs="{'invisible': [('is_enable_child_ticket', '=', False)]}"/>-->
+                            <button name="request_spares" type="object" string="Spares" class="btn btn-link"
+                                    icon="fa-wrench"
+                                    attrs="{'invisible': [('is_request_spares', '=', False)]}"/>
+                            <button name="request_raise_invoice" type="object" string="Raise Invoice"
+                                    class="btn btn-link" icon="fa-file-text-o"
+                                    attrs="{'invisible': [('is_request_raise_invoice', '=', False)]}"
+                                    groups="ppts_service_request.service_request_group_ct_user"/>
+                            <button name="perform_diagnosis" type="object" string="Diagnosis"
+                                    class="btn btn-link" icon="fa-sitemap"
+                                    attrs="{'invisible': [('is_perform_diagnosis', '=', False)]}"/>
+                            <button name="perform_repair" type="object" string="Repair" class="btn btn-link"
+                                    icon="fa-repeat"
+                                    attrs="{'invisible': [('is_perform_repair', '=', False)]}"/>
+                            <button name="perform_testing" type="object" string="Testing" class="btn btn-link"
+                                    icon="fa-check"
+                                    attrs="{'invisible': [('is_perform_testing', '=', False)]}"/>
+                            <button name="perform_quality" type="object" string="Quality" class="btn btn-link"
+                                    icon="fa-check-circle-o"
+                                    attrs="{'invisible': [('is_perform_quality', '=', False)]}"/>
+                            <button name="action_send_mail_ct" type="object" string="Send Mail" class="btn btn-link"
+                                    icon="fa-envelope" attrs="{'invisible': [('is_send_email', '=', False)]}"/>
+                        </tree>
+                        <form string="Task Lists">
+                            <header>
+                                <field name="is_work_end" invisible="1"/>
+                                <field name="is_create_service_request" invisible="1"/>
+                                <field name="is_file_attachment" invisible="1"/>
+                                <field name="is_sign_required" invisible="1"/>
+                                <field name="is_geo_location" invisible="1"/>
+                                <field name="is_schedule" invisible="1"/>
+                                <field name="is_check_oem_warranty" invisible="1"/>
+                                <field name="is_check_oem_repair_status" invisible="1"/>
+                                <field name="is_allow_edit_after_submit" invisible="1"/>
+                                <field name="is_edit_after_submit" invisible="1"/>
+                                <field name="is_pi_required" invisible="1"/>
+                                <field name="is_maintenance_completed" invisible="1"/>
+                                <field name="is_wk" invisible="1"/>
+                                <field name="is_request_approval" invisible="1"/>
+                            </header>
+                            <group>
+                                <group>
+                                    <field name="sequence" invisible="1"/>
+                                    <field name="task_id" domain="[('id','in',parent.next_task_ids)]"
+                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"
+                                           options='{"no_open": True, "no_create": True}'/>
+                                    <field name="description"
+                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}" invisible="1"/>
+                                    <field name="category"
+                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}" invisible="1"/>
+                                    <field name="worksheet_id"
+                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}" readonly="1"/>
+                                    <field name="is_end_task" invisible="1"/>
+                                    <!--                                    <field name="recommendation_customer"-->
+                                    <!--                                           attrs="{'required': [('is_end_task', '=', True)],'invisible': [('is_end_task', '=', False)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>-->
+                                    <field name="recommendation_customer"
+                                           attrs="{'required': [('is_end_task', '=', True),('is_open_feedback_sign', '=', True)],'invisible': ['|',('is_end_task', '=', False),('is_open_feedback_sign', '=', False)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>
+
+                                    <!--                                    <field name="customer_remarks"-->
+                                    <!--                                           attrs="{'invisible': [('is_end_task', '=', False)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>-->
+                                    <field name="customer_remarks"
+                                           attrs="{'invisible': ['|',('is_end_task', '=', False),('is_open_feedback_sign', '=', False)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>
+
+                                    <field name="descriptions"/>
+                                    <!--                                    <field name="approval_type_id"-->
+                                    <!--                                           attrs="{'invisible': [('is_request_approval', '=', False)], 'required': [('is_request_approval', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>-->
+                                </group>
+
+                                <group>
+                                    <field name="next_task_ids" widget="many2many_tags" invisible="1"
+                                           force_save="1"/>
+                                    <field name="status" string="Status Description"
+                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                    <field name="Commants" placeholder="Type for commants"/>
+                                    <field name="is_open_feedback_sign"
+                                           attrs="{'invisible': [('is_open_feedback_check', '!=', True)]}"/>
+                                    <field name="is_open_feedback_check" invisible="1"/>
+
+
+                                </group>
+                                <group name="feedback" string="Feedback"
+                                       attrs="{'invisible': [('is_open_feedback_sign', '=', False)]}">
+                                    <!--                                       attrs="{'invisible': [('is_end_task', '=', False)]}">-->
+                                    <field name="feed_back_end_task_1"
+                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                    <field name="feed_back_end_task_2"
+                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                    <field name="feed_back_end_task_3"
+                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                    <field name="feed_back_end_task_4"
+                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                    <field name="feed_back_end_task_5"
+                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                </group>
+
+
+                                <group name="works_end" string="Work End Details"
+                                       attrs="{'invisible': [('is_work_end', '=', False)], 'readonly': [('is_edit_after_submit', '=', True)]}">
+                                    <field name="maintenance_problem_description"
+                                           attrs="{'required': [('is_work_end', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                    <field name="action_taken"
+                                           attrs="{'required': [('is_work_end', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"
+                                           force_save="1"/>
+                                    <field name="final_report_comments"
+                                           attrs="{'required': [('is_work_end', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                </group>
+                                <group name="geo_location" string="Geo Location"
+                                       attrs="{'invisible': [('is_geo_location', '=', False)]}">
+                                    <group>
+                                        <span>Lat :
+                                            <field name="add_latitude" nolabel="1" class="oe_inline" readonly="1"
+                                                   attrs="{'required': [('is_geo_location', '=', True)]}"/>
+                                            <!--                                                   attrs="{'required': [('is_geo_location', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>-->
+                                        </span>
+                                    </group>
+                                    <group>
+                                        <span>Long :
+                                            <field name="add_longitude" nolabel="1" class="oe_inline" readonly="1"
+                                                   attrs="{'required': [('is_geo_location', '=', True)]}"/>
+                                            <!--                                                   attrs="{'required': [('is_geo_location', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>-->
+                                        </span>
+                                    </group>
+                                </group>
+                                <group name="signature" string="Signature"
+                                       attrs="{'invisible': [('is_open_feedback_sign', '=', False)],'required': [('is_open_feedback_sign', '=', True)]}">
+                                    <field name="signature" widget="signature"
+                                           options="{'style-inline': true, 'codeview': true}"
+
+                                           attrs="{'required': [('is_sign_required', '=', True),('is_open_feedback_sign', '=', True)],'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                </group>
+                                <group name="schedule" string="Schedule"
+                                       attrs="{'invisible': [('is_schedule', '=', False)]}">
+                                    <field name="meeting_subject"
+                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                    <label for="meeting_start_date" string="Meeting Date"/>
+                                    <div class="o_row">
+                                        <field name="meeting_start_date" widget="daterange" nolabel="1"
+                                               class="oe_inline"
+                                               options="{'related_end_date': 'meeting_end_date'}"
+                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                        <i class="fa fa-long-arrow-right mx-2" aria-label="Arrow icon"
+                                           title="Arrow"/>
+                                        <field name="meeting_end_date" widget="daterange" nolabel="1"
+                                               class="oe_inline"
+                                               options="{'related_start_date': 'meeting_start_date'}"
+                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                    </div>
+                                </group>
+                            </group>
+                            <notebook>
+                                <page name="attachment_page" string="Attachments"
+                                      attrs="{'invisible': [('is_file_attachment', '=', False)]}">
+                                    <field name="attachment_ids" widget="many2many_binary"
+                                           string="Attach a file"
+                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                </page>
+                                <page name="pi_required_page" string="PI Required Details"
+                                      attrs="{'invisible': [('is_pi_required', '=', False)]}">
+                                    <div style="background: rgb(245, 245, 245);margin: 0px !important;padding: 0px 10px;border: 1px solid rgb(207, 207, 207);">
+                                        <group>
+                                            <group>
+                                                <field name="complaint_type"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="phone"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="name_of_reporter"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="email"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="title"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="date_of_reporting"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="awareness_date"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"
+                                                       force_save="1"/>
+                                                <field name="reason_for_delay"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="date_of_event"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"
+                                                       force_save="1"/>
+                                                <field name="event_description"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"
+                                                       force_save="1"/>
+                                                <field name="issue_noticed_comment"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="case_completed_successfully_id"
+                                                       options='{"no_open": True, "no_create": True}'
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="medical_intervention_id"
+                                                       options='{"no_open": True, "no_create": True}'
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="patient_involved_id"
+                                                       options='{"no_open": True, "no_create": True}'
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="surgical_delay_id"
+                                                       options='{"no_open": True, "no_create": True}'
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="select_adverse_consequences"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="length_of_delay"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            </group>
+                                            <group>
+                                                <field name="initial_reporter_facility"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="ac_addr_number_street"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="ac_addr_city"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="contact_ac_marketing_name"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="contact_ac_marketing_title"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="contact_ac_marketing_phone"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="contact_ac_marketing_email"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="sales_service_rep_name"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="product_no"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="product_description"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="asset_serial_no"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="select_product_avail_stryker"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="no_avail_reason"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <field name="product_ref_no"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            </group>
+                                        </group>
+                                    </div>
+                                </page>
+                                <page name="work_order" string="Work Order Details"
+                                      attrs="{'invisible': [('is_wk', '=', False)]}">
+                                    <group>
+                                        <group>
+                                            <field name="wk_exp_pi_no"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <separator string="Equipment Details"
+                                                       style="line-height: 20px; background-color: #9681da8f"/>
+                                            <field name="wk_cat_no"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="wk_stock_lot_id"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="wk_quantity"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="wk_description"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="wk_repair_charge"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                        </group>
+                                        <group>
+                                            <field name="wk_exp_pi_description"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <separator string="Under Warranty /Contract"
+                                                       style="line-height: 20px; background-color: #9681da8f"/>
+                                            <field name="wk_inv_no"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="wk_date"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <!--                                            <field name="wk_period"/>-->
+                                            <field name="wk_install_date"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="wk_se_call_no"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <label for="start_from" string="Warranty/Contract Period"/>
+                                            <div>
+                                                <field name="start_from" class="oe_inline"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                -
+                                                <field name="end_to" class="oe_inline"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            </div>
+
+                                        </group>
+                                    </group>
+                                    <notebook>
+                                        <page string="Additional Accessories">
+                                            <field name="accessories_line_ids" widget="one2many">
+                                                <tree editable="bottom">
+                                                    <field name="name" invisible="1"/>
+                                                    <field name="aa_cat_no"/>
+                                                    <field name="aa_stock_lot"/>
+                                                    <field name="aa_quantity"/>
+                                                    <field name="aa_description"/>
+                                                </tree>
+                                            </field>
+                                        </page>
+                                    </notebook>
+                                </page>
+                            </notebook>
+                        </form>
+                    </field>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="child_ticket_form_view" model="ir.ui.view">
+        <field name="name">child.ticket.request.form</field>
+        <field name="model">child.ticket</field>
+        <field name="arch" type="xml">
+            <form string="Child Ticket Form" create="false" delete="false">
+                <header>
+                    <field name="task_value_notify" invisible="1"/>
+                    <field name="parent_child_ticket_id" invisible="1"/>
+                    <field name="is_pt_ticket" invisible="1"/>
+                    <field name="is_auto_approval" invisible="1"/>
+                    <field name="is_required_approval" invisible="1"/>
+                    <field name="approvals_count" invisible="1"/>
+                    <field name="is_create_loaner" invisible="1"/>
+                    <field name="is_pi_true" invisible="1"/>
+                    <field name="loaner_count" invisible="1"/>
+                    <field name="return_count" invisible="1"/>
+                    <field name="is_inventory_checks" invisible="1"/>
+                    <field name="is_spare_checks" invisible="1"/>
+                    <field name="is_loaners_checks" invisible="1"/>
+                    <field name="is_send_for_approvals" invisible="1" help="Send for Approval button hide"/>
+                    <field name="is_ar_hold_tick" invisible="1" help="One2many Line Readonly"/>
+                    <field name="is_ar_hold" invisible="1" help="AR Hold Button"/>
+                    <button name="action_send_mail" string="SEND BY EMAIL" type="object" class="btn btn-info"
+                            groups="ppts_service_request.service_request_group_ct_user"
+                            attrs="{'invisible': [('state','in',('closed', 'cancel'))]}"/>
+                    <button name="action_send_acknowledgment" string="Send Acknowledgement" type="object"
+                            groups="ppts_service_request.service_request_group_ct_user"
+                            class="btn btn-info" attrs="{'invisible': [('state','in',('closed', 'cancel'))]}"/>
+                    <button name="action_generate_report_installation_child_ticket" type="object"
+                            string="Generate Report" class="btn btn-outline-primary"
+                            groups="ppts_service_request.service_request_group_ct_user"
+                            attrs="{'invisible': [('state', 'not in', 'closed')]}"/>
+                    <button name="ar_hold" string="AR Hold" type="object" class="btn btn-info"
+                            attrs="{'invisible': ['|',('is_ar_hold','=', False), ('is_ar_hold_tick','=', True)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="ar_release" string="AR Release" type="object" class="btn btn-info"
+                            attrs="{'invisible': [('is_ar_hold_tick','=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- Status Update-->
+                    <button name="reset_to_new" string="Reset" type="object" class="btn btn-outline-primary"
+                            groups="ppts_service_request.service_request_group_ct_user"
+                            attrs="{'invisible':[('state', 'not in', ('closed', 'cancel'))]}"/>
+                    <button name="action_status_update" string="Status Update" type="object" class="btn btn-info"
+                            groups="ppts_service_request.service_request_group_ct_user"
+                            attrs="{'invisible':[('state', 'in',('new', 'waiting_for_approval', 'closed', 'cancel'))]}"/>
+                    <!--                    <button name="action_child_assign_engineer_wizard" string="Assign Engineer" type="object"-->
+                    <!--                            class="btn btn-warning"-->
+                    <!--                            attrs="{'invisible': ['|','|',('is_send_for_approvals', '=',False),('state', 'in',('new', 'waiting_for_approval', 'closed')),('is_assign_to_user','=', True)]}"-->
+                    <!--                            groups="ppts_service_request.service_request_group_ct_user"/>-->
+                    <!--                    <button name="action_child_reassign_engineer_wizard" string="Re-assign Engineer" type="object"-->
+                    <!--                            class="btn btn-info"-->
+                    <!--                            attrs="{'invisible': ['|',('state', 'in',('new','closed', 'cancel')),('is_request_reassign','=', False)]}"-->
+                    <!--                            groups="ppts_service_request.service_request_group_ct_user"/>-->
+
+                    <button name="action_child_assign_engineer_wizard" string="Assign Engineer" type="object"
+                            class="btn btn-warning"
+                            attrs="{'invisible': ['|',('state', 'in',('new', 'waiting_for_approval', 'closed','cancel')),('is_assign_to_user','=', True)]}"
+                            groups="ppts_service_request.service_request_group_ct_user"/>
+
+                    <button name="action_child_reassign_engineer_wizard" string="Re-assign Engineer" type="object"
+                            class="btn btn-info"
+                            attrs="{'invisible': ['|',('state', 'in',('new','closed', 'cancel')),('is_status_reassign','=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user"/>
+                    <field name="is_status_reassign" invisible="1"/>
+
+                    <field name="is_request_reassign" invisible="1"/>
+                    <button name="action_service_request" string="Create Service Request" type="object"
+                            class="btn btn-info"
+                            attrs="{'invisible': ['|',('state', 'in',('new', 'in_review', 'waiting_for_approval', 'closed','cancel')),('is_request_reassign','=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user"/>
+                    <field name="is_create_installation" invisible="1"/>
+                    <field name="is_installation_created" invisible="1"/>
+                    <button name="action_create_installation" string="Start Installation" type="object"
+                            class="btn btn-info"
+                            attrs="{'invisible': ['|', ('is_create_installation','=', False), ('is_installation_created','=', True)]}"/>
+                    <!-- End Status Update -->
+
+                    <button string="Send for Review" name="action_for_review" type="object"
+                            groups="ppts_service_request.service_request_group_ct_user"
+                            attrs="{'invisible': [('state','!=','new')]}" class="btn btn-info"/>
+
+                    <!--                    New Button-->
+                    <!--                    <button name="send_for_approval" string="Send for Approval" type="object"-->
+                    <!--                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_send_for_approvals', '=',True)]}"-->
+                    <!--                            class="btn btn-warning"-->
+                    <!--                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>-->
+
+                    <button name="send_for_approval" string="Send for Approval" type="object"
+                            attrs="{'invisible': ['|','|',('is_request_reassign','=', True),('state','!=','in_review'),('is_send_for_approvals','=', True)]}"
+                            class="btn btn-warning"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_process_loaner" string="Process Loaner" type="object"
+                            class="btn btn-info"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
+                            attrs="{'invisible': ['|', ('is_create_loaner','=', False), ('loaner_count', '!=', 0)]}"/>
+                    <!--                    New Button-->
+
+                    <button string="Close" name="action_ticket_close" type="object"
+                            groups="ppts_service_request.service_request_group_ct_user"
+                            attrs="{'invisible': [('state', 'in',('new', 'in_review', 'waiting_for_approval', 'closed'))]}"
+                            class="btn btn-danger"/>
+
+                    <button name="cancel" string="Cancel" type="object" class="btn btn-danger"
+                            confirm="Are you sure you want to Cancel this ticket"
+                            attrs="{'invisible':[('state', '!=', 'in_review'),('state', '!=', 'waiting_for_approval'),('state', '!=', 'approved')]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+
+
+
+                    <button name="action_check_availability_engineer" string="Check Engineer Availability" type="object"
+                            class="btn btn-info"
+                            attrs="{'invisible': [('state', 'in',('warranty_check','repair_warranty_check','paid_repair_approval','confirm',  'closed','new','cancel'))]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                </header>
+                <header>
+                    <!--                    <button name="create_parent_ticket" type="object" string="Create Ticket"-->
+                    <!--                            class="btn btn-primary"-->
+                    <!--                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user"-->
+                    <!--                            attrs="{'invisible': ['|',('is_pt_ticket', '=', False),('state','=','closed')]}"/>-->
+
+                    <button name="request_raise_invoice" type="object" string="Invoice Request"
+                            class="btn btn-info"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user"
+                            attrs="{'invisible': ['|',('id', '=', False),('state', 'in', ('cancel','closed'))]}"/>
+                    <button name="request_quotation" type="object" string="Quote Request"
+                            class="btn btn-info"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user"
+                            attrs="{'invisible': ['|',('id', '=', False),('state', 'in', ('cancel','closed'))]}"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="new,in_review,waiting_for_approval,approved,closed"/>
+                </header>
+                <div class="alert alert-success text-center o_form_header alert-dismissible" role="status"
+                     attrs="{'invisible': [('task_value_notify', '=', False)]}">
+                    <button class="btn-close" data-bs-dismiss="alert" aria-label="Close"/>
+                    <div>
+                        <strong>A new child ticket is created to proceed further. To access new child ticket open the
+                            parent ticket
+                            <field name="parent_ticket_id" readonly="1"
+                                   options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                        </strong>
+                    </div>
+                </div>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_parent_ticket_ct" type="object" class="oe_stat_button"
+                                string="Parent Ticket" icon="fa-list" attrs="{'invisible': [('parent_count', '=', 0)]}">
+                            <field name="parent_count" widget="statinfo" string="Parent Ticket"/>
+                        </button>
+                        <button name="action_view_send_for_approvals" type="object" class="oe_stat_button"
+                                icon="fa-list" attrs="{'invisible': [('approvals_count', '=', 0)]}">
+                            <field name="approvals_count" widget="statinfo" string="Approvals"/>
+                        </button>
+
+
+                        <button name="action_view_returns" type="object" class="oe_stat_button" string="Returns"
+                                icon="fa-list">
+                            <field name="return_count" widget="statinfo" string="Returns"/>
+                        </button>
+                        <button name="action_view_requests" type="object" class="oe_stat_button" icon="fa-list"
+                                attrs="{'invisible': [('request_count', '=', 0)]}">
+                            <field name="request_count" widget="statinfo" string="Requests"/>
+                        </button>
+
+                        <button name="action_view_service_request" type="object" class="oe_stat_button"
+                                icon="fa-list" attrs="{'invisible': [('service_request_count', '=', 0)]}">
+                            <field name="service_request_count" widget="statinfo" string="Service Request"/>
+                        </button>
+                        <button name="action_view_inward_transfer" type="object" class="oe_stat_button"
+                                string="Receipts &amp; Delivery"
+                                icon="fa-list" placeholder="Receipts and Delivery Order">
+                            <field name="inward_order_count" widget="statinfo" string="Receipts &amp; Delivery"/>
+                        </button>
+                        <button name="action_view_installation" type="object" class="oe_stat_button"
+                                icon="fa-list" attrs="{'invisible': [('installation_count', '=', 0)]}">
+                            <field name="installation_count" widget="statinfo" string="Installation"/>
+                        </button>
+                        <button name="action_view_engineer" type="object" class="oe_stat_button" string="Engineer"
+                                icon="fa-list"/>
+                        <button name="action_view_schedule" type="object" class="oe_stat_button" string="Schedule"
+                                icon="fa-list"/>
+
+                        <button name="action_view_reports" type="object" class="oe_stat_button" string="Reports"
+                                icon="fa-list"/>
+                        <button name="action_view_expenses" type="object" class="oe_stat_button" string="Expenses"
+                                icon="fa-list"/>
+                        <button name="action_view_timesheet" type="object" class="oe_stat_button" string="Timesheet"
+                                icon="fa-list"/>
+                        <button name="action_view_purchase_request" type="object" class="oe_stat_button"
+                                string="Purchase Request" icon="fa-list"/>
+                        <button name="action_view_transfers" type="object" class="oe_stat_button" icon="fa-truck"
+                                attrs="{'invisible': ['|',('transfer_count', '=', 0),('is_inventory_checks', '=', False)]}">
+                            <field name="transfer_count" widget="statinfo" string="Transfers"/>
+                        </button>
+                        <button name="action_view_loaner_order" type="object" class="oe_stat_button"
+                                icon="fa-pencil-square-o"
+                                attrs="{'invisible': ['|',('loaner_count', '=', 0),('is_loaners_checks', '=', False)]}">
+                            <field name="loaner_count" widget="statinfo" string="Loaner"/>
+                        </button>
+                        <button name="action_view_contract" type="object" class="oe_stat_button" string="Contract"
+                                icon="fa-list"/>
+                        <button name="action_view_invoice" type="object" class="oe_stat_button" string="Invoice"
+                                icon="fa-list"/>
+                    </div>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert"
+                         attrs="{'invisible': ['|',('state','!=','approved'),('is_auto_approval','=',False)]}">
+                        Automatic Approval has enabled to this Child Ticket
+                        <button data-bs-dismiss="alert" aria-label="Close" class="btn-close" special="cancel"/>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <div class="col-6">
+                            <p style="color:orange;font-weight:bold">
+                                Orange
+                                color button indicates the next process.If no orange color button move on with status
+                                update.
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <div class="oe_title">
+                        <!--                        <h1>-->
+                        <!--                            <field name="name" readonly="1"/>-->
+                        <!--                        </h1>-->
+
+                        <!--                        <span style="float:right;margin: -47px -251px 0px 0;color: orange;font-weight: bold;font-size: x-small;">-->
+                        <!--                            Orange-->
+                        <!--                            color button indicates the next process.If no orange color button move on with status-->
+                        <!--                            update.-->
+                        <!--                        </span>-->
+
+                        <b>
+                            <label for="sla_polices_ids" string="SLA Deadline"
+                                   attrs="{'invisible': [('sla_deadline_date', '=', False)]}"/>
+                        </b>
+                        <field name="sla_polices_ids" widget="many2many_tags" readonly="1"/>
+                        <span attrs="{'invisible': [('sla_deadline_date', '=', False)]}" class="mx-2 text-muted">
+                            <i attrs="{'invisible': [('sla_deadline_date', '=', False)]}"
+                               class="fa fa-lg fa-clock-o me-2" aria-label="Sla Deadline" title="Sla Deadline"/>
+                            <field name="sla_deadline" widget="remaining_days" readonly="1"/>
+                        </span>
+                        <span attrs="{'invisible': [('sla_polices_ids', '=', False)]}" class="mx-2 text-muted">
+                            <field name="sla_deadline_date" readonly="1"/>
+                        </span>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="child_ticket_id_alias" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                            <field name="child_configuration_id" readonly="1"/>
+                            <field name="child_ticket_type_id" readonly="1"
+                                   options='{"no_open": True, "no_create": True}' invisible="0"/>
+                            <!--                            <field name="approver_id"-->
+                            <!--                                   attrs="{'readonly': [('state','not in',('new', 'in_review'))], 'invisible': [('state','!=','in_review')], 'required': [('state','=','in_review'),('is_required_approval', '=',True)]}"/>-->
+                            <field name="partner_id"
+                                   context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}"
+                                   options="{&quot;always_reload&quot;: True}" force_save="1"
+                                   widget="res_partner_many2one"
+                                   attrs="{'readonly': ['|', ('service_request_id', '!=', False), ('parent_ticket_id', '!=', False)]}"
+                                   invisible="1"/>
+
+
+                            <field name="call_source_id" readonly="1"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="call_date" readonly="1"/>
+                            <field name="request_type_id" readonly="1"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="service_type_id" readonly="1"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="service_category_id" readonly="1"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <!--                           		<field name="product_id" attrs="{'readonly': [('state','not in',('new'))]}"/>-->
+                            <field name="stock_lot_id" readonly="1"/>
+                            <label for="product_id" string="Product"/>
+                            <div class="o_row">
+                                <field name="product_id" readonly="1"
+                                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                                <button type="object" name="action_open_product_template" icon="fa-arrow-right"
+                                        attrs="{'invisible': [('product_id', '=', False)]}" title="Product"
+                                        groups="ppts_service_request.service_request_group_ct_user"/>
+                            </div>
+                            <field name="product_part_number" readonly="1"/>
+                            <field name="product_code_no" readonly="1"/>
+                            <!--                            <field name="asset_serial_number"/>-->
+
+                            <field name="repair_center_location_id" invisible="1"/>
+                            <field name="repair_location_id" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                            <field name="oem_warranty_status" readonly="1" force_save="1"/>
+                            <field name="oem_repair_status" readonly="1" force_save="1"/>
+                            <field name="extended_warranty_status" readonly="1" force_save="1"/>
+                            <field name="categ_id" readonly="1"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="product_category_id_alias" attrs="{'readonly': [('state','not in',('new'))]}"
+                                   invisible="1"/>
+                            <field name="problem_description" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                            <field name="requested_by_name_child" readonly="1"/>
+                            <field name="requested_by_contact_number"
+                                   readonly="1"/>
+                            <field name="requested_by_email_ct" readonly="1"/>
+                            <field name="requested_by_title_ct" readonly="1"/>
+                            <field name="remarks" readonly="1"/>
+                            <field name="installation_date" attrs="{'readonly': [('state','not in',('new'))]}"
+                                   invisible="1"/>
+                            <field name="installation_end_date" attrs="{'readonly': [('state','not in',('new'))]}"
+                                   invisible="1"/>
+                            <field name="dealer_distributor_id" readonly="1"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="call_received_id" readonly="1"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="present_engineer_id" readonly="1"/>
+                        </group>
+                        <group>
+
+                            <field name="partner_id"
+                                   context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}"
+                                   options="{&quot;always_reload&quot;: True}" force_save="1"
+                                   widget="res_partner_many2one"
+                                   readonly="1"/>
+                            <!--                                   attrs="{'readonly': [('service_request_id', '!=', False)]}"/>-->
+
+                            <!--                            <field name="alternate_contact_name" attrs="{'readonly': [('state','not in',('new'))]}"/>-->
+                            <field name="customer_region_id" readonly="1"/>
+                            <label for="alternate_contact_name" string="Alternate Contact name"/>
+                            <div class="o_row">
+                                <field name="alternate_contact_name"
+                                       readonly="1"/>
+                                <button type="object" name="action_open_customer_contacts_ct" icon="fa-arrow-right"
+                                        attrs="{'invisible': [('alternate_contact_name', '=', False)]}"
+                                        title="Convert to contact"
+                                        groups="ppts_service_request.service_request_group_ct_user"/>
+                            </div>
+                            <field name="alternate_contact_email"
+                                   readonly="1"/>
+                            <field name="alternate_contact_id"
+                                   readonly="1"/>
+                            <field name="alternate_contact_number"
+                                   readonly="1"/>
+                            <field name="oem_warranty_status_id"
+                                   readonly="1"
+                                   options='{"no_open": True, "no_create": True}'
+                                   attrs="{'invisible':[('is_oem_warranty','=',False)] }"/>
+                            <label for="warranty_start_dates" string="Warranty Start &amp; End Date"
+                                   attrs="{'invisible':[('is_oem_warranty','=',False)] }" readonly="1"/>
+                            <div class="o_row"
+                                 attrs="{'readonly': [('state','not in',('new'))],'invisible':[('is_oem_warranty','=',False)] }">
+                                <field name="warranty_start_dates" widget="daterange" nolabel="1"
+                                       class="oe_inline"
+                                       options="{'related_end_date': 'warranty_end_dates'}"
+                                       attrs="{'invisible':[('is_oem_warranty','=',False)] }" readonly="1"
+                                />
+                                <i class="fa fa-long-arrow-right mx-2" aria-label="Arrow icon"
+                                   title="Arrow"/>
+                                <field name="warranty_end_dates" widget="daterange" nolabel="1"
+                                       class="oe_inline"
+                                       options="{'related_start_date': 'warranty_start_dates'}"
+                                       attrs="{'invisible':[('is_oem_warranty','=',False)] }" readonly="1"
+                                />
+                            </div>
+
+
+                            <field name="repair_warranty_status_id"
+                                   attrs="{'invisible':[('is_repair_warranty','=',False)] }" readonly="1"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <label for="repair_warranty_start_date" string="Repair Warranty Start &amp; End Date"
+                                   attrs="{'invisible':[('is_repair_warranty','=',False)] }" readonly="1"/>
+                            <div class="o_row"
+                                 attrs="{'invisible':[('is_repair_warranty','=',False)] }" readonly="1">
+                                <field name="repair_warranty_start_date" widget="daterange" nolabel="1"
+                                       class="oe_inline"
+                                       options="{'related_end_date': 'repair_warranty_end_date'}"
+                                />
+                                <i class="fa fa-long-arrow-right mx-2" aria-label="Arrow icon"
+                                   title="Arrow"/>
+                                <field name="repair_warranty_end_date" widget="daterange" nolabel="1"
+                                       class="oe_inline"
+                                       options="{'related_start_date': 'repair_warranty_start_date'}"
+                                />
+                            </div>
+
+                            <label for="extended_warranty_start_date" string="Extended Warranty Start &amp; End Date"
+                                   attrs="{'invisible':[('is_extend_warranty','=',False)] }" readonly="1"/>
+                            <div class="o_row"
+                                 attrs="{'readonly': [('state','not in',('new'))],'invisible':[('is_extend_warranty','=',False)] }">
+                                <field name="extended_warranty_start_date" widget="daterange" nolabel="1"
+                                       class="oe_inline"
+                                       options="{'related_end_date': 'extended_warranty_end_date'}"
+                                />
+                                <i class="fa fa-long-arrow-right mx-2" aria-label="Arrow icon"
+                                   title="Arrow"/>
+                                <field name="extended_warranty_end_date" widget="daterange" nolabel="1"
+                                       class="oe_inline"
+                                       options="{'related_start_date': 'extended_warranty_start_date'}"
+                                />
+                            </div>
+
+
+                            <field name="cmc_status" readonly="1" attrs="{'invisible':[('is_cmc','=',False)]}"/>
+                            <field name="amc_status" readonly="1" attrs="{'invisible':[('is_amc','=',False)]}"/>
+                            <field name="is_amc" invisible="1"/>
+                            <field name="is_cmc" invisible="1"/>
+                            <field name="is_oem_warranty" invisible="1"/>
+                            <field name="is_repair_warranty" invisible="1"/>
+                            <field name="is_extend_warranty" invisible="1"/>
+                            <field name="current_asset_location" readonly="1"/>
+                            <field name="team_id" readonly="1"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="customer_account_id" domain="[('customer_rank','&gt;',0)]"
+                                   attrs="{'readonly': ['|', ('service_request_id', '!=', False), ('parent_ticket_id', '!=', False)]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="parent_ticket_id" readonly="1"/>
+                            <field name="service_request_id" readonly="1"/>
+                            <field name="faulty_section" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                            <field name="sow" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                            <field name="webdelata_id" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                            <field name="webdelata" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                            <field name="mc_stk" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                            <field name="company_id" readonly="1"/>
+                            <field name="is_assign_to_user" invisible="1"/>
+                            <field name="is_request_reassign" invisible="1"/>
+                            <field name="next_task_ids" widget="many2many_tags" invisible="1"/>
+                            <field name="request_type" invisible="1"/>
+                            <field name="is_pi_true" invisible="1"/>
+                            <field name="price_available_in_contract"
+                                   readonly="1"/>
+                            <field name="re_repair" readonly="1"/>
+                            <field name="parent_ticket_id_alias" readonly="1"/>
+                            <field name="parent_ticket_id_alias_date"
+                                   readonly="1"/>
+                            <field name="action_taken_at_site" attrs="{'readonly': [('state','not in',('new'))]}"/>
+                            <field name="version" groups="ppts_service_request.service_request_group_ct_user"
+                                   readonly="1"/>
+                            <field name="job_closed_date" readonly="1"/>
+                            <field name="approved_date" invisible="1"/>
+                            <field name="engineer_reason" invisible="1"/>
+                            <!--                            <field name="new_create_child_ticket"/>-->
+                        </group>
+                        <group name="warranty" string="Warranty Information"
+                               attrs="{'invisible': ['|',('request_type','!=', 'sr_installation'), ('state','!=', 'approved')]}">
+                            <field name="warranty_start_date"
+                                   attrs="{'invisible': [('request_type','!=', 'sr_installation')]}"/>
+                            <field name="warranty_end_date"
+                                   attrs="{'invisible': [('request_type','!=', 'sr_installation')]}"/>
+                        </group>
+                        <group attrs="{'invisible': [('request_type','!=', 'sr_installation')]}"></group>
+                        <group name="properties_group" style="color:black" string="Properties">
+                        </group>
+                    </group>
+                    <field name="child_ticket_properties" nolabel="1" columns="2" hideKanbanOption="1"/>
+                    <notebook>
+                        <page string="Assigned Engineer" name="child_assign_engineers">
+                            <field name="child_assign_engineer_ids" widget="many2many_kanban"
+                                   domain="[('state','=','active')]" readonly="1">
+                                <tree string="Assign Users">
+                                    <field name="name" string="Engineer Name"/>
+                                    <field name="email"/>
+                                    <button name="action_delete_engineer" type="object" string="Remove Engineer"
+                                            class="btn btn-info"
+                                            help="While click on this button this engineer will not have an access to this ticket"
+                                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Inventory" name="inventory"
+                              attrs="{'invisible': [('is_inventory_checks', '=', False)]}">
+                        </page>
+                        <page string="Status" name="status" autofocus="autofocus">
+                            <field name="is_disable_status_update" invisible="1"/>
+                            <div class="row">
+                                <div class="col-8">
+                                    <button name="action_delete_status" string="Delete Last Line" class="btn btn-info"
+                                            type="object"
+                                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
+                                            attrs="{'invisible':[('is_send_for_approvals', '=',True), ('state', 'in', ('new', 'waiting_for_approval','closed'))]}"/>
+                                </div>
+                                <div class="col-4">
+                                    <p style="color:green;font-weight:bold">Green color line has an attachment</p>
+                                </div>
+                            </div>
+                            <field name="task_list_ids"
+                                   attrs="{'readonly': ['|','|', ('is_ar_hold_tick','=', True), ('state', '=', 'closed'), ('is_disable_status_update', '=', True)]}"
+                                   nolabel="1">
+                                <tree string="Task Lists" delete="0" decoration-success="is_check_attachment == True">
+                                    <field name="is_work_end" invisible="1"/>
+                                    <field name="is_create_service_request" invisible="1"/>
+                                    <field name="is_enable_child_ticket" invisible="1"/>
+                                    <field name="is_request_spares" invisible="1"/>
+                                    <field name="is_request_raise_invoice" invisible="1"/>
+                                    <field name="is_perform_diagnosis" invisible="1"/>
+                                    <field name="is_perform_repair" invisible="1"/>
+                                    <field name="is_perform_testing" invisible="1"/>
+                                    <field name="is_perform_quality" invisible="1"/>
+                                    <field name="is_send_email" invisible="1"/>
+                                    <field name="is_maintenance_completed" invisible="1"/>
+                                    <field name="is_allow_edit_after_submit" invisible="1"/>
+                                    <field name="is_edit_after_submit" invisible="1"/>
+                                    <field name="is_inventory" invisible="1"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="task_id" domain="[('id','in',parent.next_task_ids)]"/>
+                                    <field name="description"/>
+                                    <field name="category"/>
+                                    <field name="worksheet_id" invisible="1"/>
+                                    <field name="is_end_task" invisible="1"/>
+                                    <field name="is_file_attachment" invisible="1"/>
+                                    <field name="is_check_attachment" invisible="1"/>
+                                    <field name="next_task_ids" widget="many2many_tags" readonly="1" force_save="1"/>
+                                    <field name="status" invisible="1"/>
+                                    <field name="Commants"/>
+
+                                    <!--                            <button name="button_tasks_update" string="Update" type="object" class="btn-primary"-->
+                                    <!--                                    icon="fa-cloud-upload"/>-->
+                                    <button name="create_sr" type="object" string="Create SR" class="btn btn-link"
+                                            icon="fa-save"
+                                            invisible="1"/>
+                                    <button name="create_inventory_ct" type="object" string="Inventory"
+                                            class="btn btn-link" icon="fa-truck"
+                                            attrs="{'invisible': [('is_inventory', '=', False)]}"/>
+                                    <!--                                    <button name="create_child_ticket" type="object" string="Child Ticket"-->
+                                    <!--                                            class="btn btn-link" icon="fa-save"-->
+                                    <!--                                            attrs="{'invisible': [('is_enable_child_ticket', '=', False)]}"/>-->
+                                    <button name="request_spares" type="object" string="Spares" class="btn btn-link"
+                                            icon="fa-wrench"
+                                            attrs="{'invisible': [('is_request_spares', '=', False)]}"/>
+                                    <button name="request_raise_invoice" type="object" string="Raise Invoice"
+                                            class="btn btn-link" icon="fa-file-text-o"
+                                            attrs="{'invisible': [('is_request_raise_invoice', '=', False)]}"
+                                            groups="ppts_service_request.service_request_group_ct_user"/>
+                                    <button name="perform_diagnosis" type="object" string="Diagnosis"
+                                            class="btn btn-link" icon="fa-sitemap"
+                                            attrs="{'invisible': [('is_perform_diagnosis', '=', False)]}"/>
+                                    <button name="perform_repair" type="object" string="Repair" class="btn btn-link"
+                                            icon="fa-repeat"
+                                            attrs="{'invisible': [('is_perform_repair', '=', False)]}"/>
+                                    <button name="perform_testing" type="object" string="Testing" class="btn btn-link"
+                                            icon="fa-check"
+                                            attrs="{'invisible': [('is_perform_testing', '=', False)]}"/>
+                                    <button name="perform_quality" type="object" string="Quality" class="btn btn-link"
+                                            icon="fa-check-circle-o"
+                                            attrs="{'invisible': [('is_perform_quality', '=', False)]}"/>
+                                    <button name="action_send_mail_ct" type="object" string="Send Mail"
+                                            class="btn btn-link"
+                                            icon="fa-envelope" attrs="{'invisible': [('is_send_email', '=', False)]}"/>
+                                </tree>
+                                <form string="Task Lists">
+                                    <header>
+                                        <field name="is_work_end" invisible="1"/>
+                                        <field name="is_create_service_request" invisible="1"/>
+                                        <field name="is_file_attachment" invisible="1"/>
+                                        <field name="is_sign_required" invisible="1"/>
+                                        <field name="is_geo_location" invisible="1"/>
+                                        <field name="is_schedule" invisible="1"/>
+                                        <field name="is_check_oem_warranty" invisible="1"/>
+                                        <field name="is_check_oem_repair_status" invisible="1"/>
+                                        <field name="is_allow_edit_after_submit" invisible="1"/>
+                                        <field name="is_edit_after_submit" invisible="1"/>
+                                        <field name="is_pi_required" invisible="1"/>
+                                        <field name="is_maintenance_completed" invisible="1"/>
+                                        <field name="is_wk" invisible="1"/>
+                                        <field name="is_request_approval" invisible="1"/>
+                                    </header>
+                                    <group>
+                                        <group>
+                                            <field name="sequence" invisible="1"/>
+                                            <field name="task_id" domain="[('id','in',parent.next_task_ids)]"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"
+                                                   options='{"no_open": True, "no_create": True}'/>
+                                            <field name="description"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"
+                                                   invisible="1"/>
+                                            <field name="category"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"
+                                                   invisible="1"/>
+                                            <field name="worksheet_id"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"
+                                                   readonly="1"/>
+                                            <field name="is_end_task" invisible="1"/>
+                                            <field name="recommendation_customer"
+                                                   attrs="{'required': [('is_end_task', '=', True),('is_open_feedback_sign', '=', True)],'invisible': ['|',('is_end_task', '=', False),('is_open_feedback_sign', '=', False)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="customer_remarks"
+                                                   attrs="{'invisible': ['|',('is_end_task', '=', False),('is_open_feedback_sign', '=', False)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="approval_type_id"
+                                                   attrs="{'invisible': [('is_request_approval', '=', False)], 'required': [('is_request_approval', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="repair_location_id"
+                                                   attrs="{'invisible': [('is_request_approval', '=', False)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>
+
+                                        </group>
+                                        <group>
+                                            <field name="next_task_ids" widget="many2many_tags" invisible="1"
+                                                   force_save="1"/>
+                                            <field name="descriptions"/>
+                                            <field name="status" string="Status Description"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"
+                                                   invisible="1"/>
+                                            <field name="Commants" placeholder="Type for comments"
+                                                   attrs="{'required': [('approval_type_id', '=', True)]}"/>
+                                            <field name="is_open_feedback_sign"
+                                                   attrs="{'invisible': [('is_open_feedback_check', '!=', True)]}"/>
+                                            <field name="is_open_feedback_check" invisible="1"/>
+                                            <field name="is_check_attachment" invisible="1"/>
+                                        </group>
+                                        <group name="feedback" string="Feedback"
+                                               attrs="{'invisible': [('is_open_feedback_sign', '=', False)]}">
+                                            <!--                                       attrs="{'invisible': [('is_end_task', '=', False)]}">-->
+                                            <field name="feed_back_end_task_1"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="feed_back_end_task_2"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="feed_back_end_task_3"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="feed_back_end_task_4"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="feed_back_end_task_5"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                        </group>
+
+
+                                        <group name="works_end" string="Work End Details"
+                                               attrs="{'invisible': [('is_work_end', '=', False)], 'readonly': [('is_edit_after_submit', '=', True)]}">
+                                            <field name="maintenance_problem_description"
+                                                   attrs="{'required': [('is_work_end', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="action_taken"
+                                                   attrs="{'required': [('is_work_end', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"
+                                                   force_save="1"/>
+                                            <field name="final_report_comments"
+                                                   attrs="{'required': [('is_work_end', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                        </group>
+                                        <group name="geo_location" string="Geo Location"
+                                               attrs="{'invisible': [('is_geo_location', '=', False)]}">
+                                            <group>
+                                                <span>Lat :
+                                                    <field name="add_latitude" nolabel="1" class="oe_inline"
+                                                           readonly="1"
+                                                           attrs="{'required': [('is_geo_location', '=', True)]}"/>
+                                                    <!--                                                           attrs="{'required': [('is_geo_location', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>-->
+                                                </span>
+                                            </group>
+                                            <group>
+                                                <span>Long :
+                                                    <field name="add_longitude" nolabel="1" class="oe_inline"
+                                                           readonly="1"
+                                                           attrs="{'required': [('is_geo_location', '=', True)]}"/>
+                                                    <!--                                                           attrs="{'required': [('is_geo_location', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>-->
+                                                </span>
+                                            </group>
+                                        </group>
+                                        <group name="signature" string="Signature"
+                                               attrs="{'invisible': [('is_open_feedback_sign', '=', False)],'required': [('is_open_feedback_sign', '=', True)]}">
+                                            <field name="signature" widget="signature"
+                                                   options="{'style-inline': true, 'codeview': true}"
+                                                   attrs="{'required': [('is_sign_required', '=', True),('is_open_feedback_sign', '=', True)],'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                        </group>
+                                        <group name="schedule" string="Schedule"
+                                               attrs="{'invisible': [('is_schedule', '=', False)]}">
+                                            <field name="meeting_subject"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <label for="meeting_start_date" string="Meeting Date"/>
+                                            <div class="o_row">
+                                                <field name="meeting_start_date" widget="daterange" nolabel="1"
+                                                       class="oe_inline"
+                                                       options="{'related_end_date': 'meeting_end_date'}"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                <i class="fa fa-long-arrow-right mx-2" aria-label="Arrow icon"
+                                                   title="Arrow"/>
+                                                <field name="meeting_end_date" widget="daterange" nolabel="1"
+                                                       class="oe_inline"
+                                                       options="{'related_start_date': 'meeting_start_date'}"
+                                                       attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            </div>
+                                        </group>
+                                    </group>
+                                    <notebook>
+                                        <page name="attachment_page" string="Attachments"
+                                              attrs="{'invisible': [('is_file_attachment', '=', False)]}">
+                                            <field name="attachment_ids" widget="many2many_binary"
+                                                   string="Attach a file"
+                                                   attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                        </page>
+                                        <page name="pi_required_page" string="PI Required Details"
+                                              attrs="{'invisible': [('is_pi_required', '=', False)]}">
+                                            <div style="background: rgb(245, 245, 245);margin: 0px !important;padding: 0px 10px;border: 1px solid rgb(207, 207, 207);">
+                                                <group>
+                                                    <group>
+                                                        <field name="complaint_type"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="phone"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="name_of_reporter"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="email"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="title"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="date_of_reporting"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="awareness_date"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="reason_for_delay"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="date_of_event"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="event_description"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="issue_noticed_comment"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="case_completed_successfully_id"
+                                                               options='{"no_open": True, "no_create": True}'
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="medical_intervention_id"
+                                                               options='{"no_open": True, "no_create": True}'
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="patient_involved_id"
+                                                               options='{"no_open": True, "no_create": True}'
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="surgical_delay_id"
+                                                               options='{"no_open": True, "no_create": True}'
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="select_adverse_consequences"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="length_of_delay"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                    </group>
+                                                    <group>
+                                                        <field name="initial_reporter_facility"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="ac_addr_number_street"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="ac_addr_city"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="contact_ac_marketing_name"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="contact_ac_marketing_title"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="contact_ac_marketing_phone"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="contact_ac_marketing_email"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="sales_service_rep_name"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="product_no"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="product_description"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="asset_serial_no"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="select_product_avail_stryker"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="no_avail_reason"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        <field name="product_ref_no"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                    </group>
+                                                </group>
+                                            </div>
+                                        </page>
+                                        <page name="work_order" string="Work Order Details"
+                                              attrs="{'invisible': [('is_wk', '=', False)]}">
+                                            <group>
+                                                <group>
+                                                    <field name="wk_exp_pi_no"
+                                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                    <separator string="Equipment Details"
+                                                               style="line-height: 20px; background-color: #9681da8f"/>
+                                                    <field name="wk_cat_no"
+                                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                    <field name="wk_stock_lot_id"
+                                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                    <field name="wk_quantity"
+                                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                    <field name="wk_description"
+                                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                    <field name="wk_repair_charge"
+                                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                </group>
+                                                <group>
+                                                    <field name="wk_exp_pi_description"
+                                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                    <separator string="Under Warranty /Contract"
+                                                               style="line-height: 20px; background-color: #9681da8f"/>
+                                                    <field name="wk_inv_no"
+                                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                    <field name="wk_date"
+                                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                    <!--                                            <field name="wk_period"/>-->
+                                                    <field name="wk_install_date"
+                                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                    <field name="wk_se_call_no"
+                                                           attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                    <label for="start_from" string="Warranty/Contract Period"/>
+                                                    <div>
+                                                        <field name="start_from" class="oe_inline"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                        -
+                                                        <field name="end_to" class="oe_inline"
+                                                               attrs="{'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                                    </div>
+
+                                                </group>
+                                            </group>
+                                            <notebook>
+                                                <page string="Additional Accessories">
+                                                    <field name="accessories_line_ids" widget="one2many">
+                                                        <tree editable="bottom">
+                                                            <field name="name" invisible="1"/>
+                                                            <field name="aa_cat_no"/>
+                                                            <field name="aa_stock_lot"/>
+                                                            <field name="aa_quantity"/>
+                                                            <field name="aa_description"/>
+                                                        </tree>
+                                                    </field>
+                                                </page>
+                                            </notebook>
+                                        </page>
+                                    </notebook>
+                                </form>
+                            </field>
+                        </page>
+                        <!--                            <page string="Properties" name="properties">-->
+                        <!--                            	<field name="child_ticket_properties" nolabel="1" columns="2" hideKanbanOption="1"/>-->
+                        <!--                        	</page>-->
+                        <page string="Warranty Replacement" name="warranty_replacement">
+                        </page>
+                        <page string="Diagnosis" name="diagnosis">
+                        </page>
+                        <page string="Repair" name="repair">
+                        </page>
+                        <page string="Testing" name="testing">
+                        </page>
+                        <page string="Quality" name="quality">
+                        </page>
+                        <page string="Installation" name="installation">
+                        </page>
+                        <page string="Maintenance" name="maintenance">
+                        </page>
+                        <page string="Returns" name="returns">
+                            <field name="return_order_ids" readonly="1"/>
+                        </page>
+                        <page string="Loaner" name="loaner" attrs="{'invisible': [('is_loaners_checks', '=', False)]}">
+                        </page>
+                        <page string="Spares" name="spares" attrs="{'invisible': [('is_spare_checks', '=', False)]}">
+                        </page>
+                        <page name="attachment_page" string="Attachments">
+                            <field name="child_ticket_attachments" widget="many2many_binary"
+                                   string="Attach a file"/>
+                        </page>
+                        <page string="Asset Historical Data" name="historical_data_page">
+                            <field name="historical_data_line" widget="section_and_note_one2many" mode="tree"
+                                   readonly="1">
+                                <tree string="Asset Historical Data" editable="bottom">
+                                    <field name="service_request_id"/>
+                                    <field name="parent_ticket_id"/>
+                                    <field name="child_ticket_id"/>
+                                    <field name="problem_description"/>
+                                    <field name="recommendation_customer"/>
+                                    <field name="customer_remarks"/>
+                                    <field name="action_taken"/>
+                                    <field name="final_report_comments"/>
+                                    <field name="company_id" invisible="1"/>
+                                </tree>
+                            </field>
+
+                        </page>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Description" nolabel="1"></field>
+                        </page>
+                        <page name="close_reason" string="Close Reason"
+                              attrs="{'invisible':[('state', 'not in', ('closed','cancel'))]}">
+                            <group>
+                                <group>
+                                    <field name="cancel_reason" readonly="1"
+                                           attrs="{'invisible':[('state', '!=', 'cancel')]}"/>
+                                    <field name="close_reason" readonly="1"
+                                           attrs="{'invisible':[('state', '!=', 'closed')]}"/>
+                                    <field name="close_date" readonly="1"
+                                           attrs="{'invisible':[('state', '!=', 'closed')]}"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="child_ticket_view_kanban" model="ir.ui.view">
+        <field name="name">child.ticket.kanban</field>
+        <field name="model">child.ticket</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column" create="false" delete="false">
+                <field name="id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div>
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div class="text-muted o_kanban_record_subtitle">
+                                    <field name="partner_id"/>
+                                    <br/>
+                                    <field name="state"/>
+                                </div>
+                            </div>
+                            <div class="oe_clear"></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="child_ticket_graph" model="ir.ui.view">
+        <field name="name">child.ticket.graph</field>
+        <field name="model">child.ticket</field>
+        <field name="arch" type="xml">
+            <graph string="Child Ticket Graph">
+                <field name="partner_id" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="child_ticket_tree_view" model="ir.ui.view">
+        <field name="name">child.ticket.tree</field>
+        <field name="model">child.ticket</field>
+        <field name="arch" type="xml">
+            <tree default_order="name desc" create="false" delete="false" edit="false"
+                  decoration-success="state == 'closed'" decoration-warning="state == 'waiting_for_approval'"
+                  decoration-info="state == 'in_review'" decoration-danger="state == 'approved'"
+                  decoration-muted="state == 'new'">
+                <field name="name" decoration-bf="1"/>
+                <field name="create_date" optional="hidden"/>
+                <field name="child_ticket_id_alias" optional="hidden"/>
+                <field name="partner_id" decoration-bf="1"/>
+                <field name="request_type_id" decoration-bf="1"/>
+                <field name="service_type_id" decoration-bf="1"/>
+                <field name="service_category_id" decoration-bf="1"/>
+                <field name="stock_lot_id" decoration-bf="1"/>
+                <field name="state" decoration-bf="1"/>
+                <field name="approved_date" decoration-bf="1"/>
+                <field name="origin" optional="hidden"/>
+                <field name="company_id" decoration-bf="1"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_child_ticket" model="ir.actions.act_window">
+        <field name="name">Child Ticket</field>
+        <field name="res_model">child.ticket</field>
+        <field name="view_mode">tree,form,kanban,pivot,graph</field>
+        <field name="search_view_id" ref="child_ticket_search_view"/>
+        <field name="view_id" ref="child_ticket_tree_view"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('child_ticket_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('child_ticket_form_view')})]"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_child_ticket_my_tickets" model="ir.actions.act_window">
+        <field name="name">My Child Ticket</field>
+        <field name="res_model">child.ticket</field>
+        <field name="view_mode">tree,form,kanban,pivot,graph</field>
+        <field name="context">{'search_default_my_child_tickets': 1}</field>
+        <field name="search_view_id" ref="child_ticket_search_view"/>
+        <field name="view_id" ref="child_ticket_tree_view"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('child_ticket_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('child_ticket_form_view')})]"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_child_ticket_all_tickets" model="ir.actions.act_window">
+        <field name="name">All Ticket</field>
+        <field name="res_model">child.ticket</field>
+        <field name="view_mode">tree,form,kanban,pivot,graph</field>
+        <field name="search_view_id" ref="child_ticket_search_view"/>
+        <field name="view_id" ref="child_ticket_tree_view"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('child_ticket_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('child_ticket_form_view')})]"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+</odoo>

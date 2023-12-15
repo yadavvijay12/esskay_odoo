@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="reopen_ticket_view_form" model="ir.ui.view">
+        <field name="name">reopen_ticket.view.form</field>
+        <field name="model">reopen.ticket</field>
+        <field name="arch" type="xml">
+            <form string="Fill Survey for Tickets">
+                <group>
+                    <field name="name" invisible="1"/>
+                    <field name="ticket_type" />
+                    <field name="parent_ticket_id" attrs="{'invisible':[('ticket_type', '=', 'child')]}"/>
+                    <field name="child_ticket_id" attrs="{'invisible':[('ticket_type', '=', 'parent')]}"/>
+                </group>
+                <footer>
+                    <button name="reopen_ticket" string="Re-open Ticket" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

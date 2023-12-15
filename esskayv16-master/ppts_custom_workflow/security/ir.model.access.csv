@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_custom_workflow,custom.workflow,model_custom_workflow,,1,1,1,1
+access_tasks_master,tasks.master,model_tasks_master,,1,1,1,1
+access_tasks_master_line,tasks.master.line,model_tasks_master_line,,1,1,1,1

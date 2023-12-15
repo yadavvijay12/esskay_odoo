@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fill_survey_ticket,fill.survey.ticket,model_fill_survey_ticket,base.group_user,1,1,1,1
+access_reopen_ticket,reopen.ticket,model_reopen_ticket,base.group_user,1,1,1,1
+access_followup_history,followup.history,model_followup_history,base.group_user,1,1,1,1
+access_blast_survey,blast.survey,model_blast_survey,base.group_user,1,1,1,1
+access_blast_survey_popup,blast.survey.popup,model_blast_survey_popup,base.group_user,1,1,1,1
+access_survey_blast_history,survey.blast.history,model_survey_blast_history,base.group_user,1,1,1,1
+access_questionwise_report_filter,questionwise.report.filter,model_questionwise_report_filter,base.group_user,1,1,1,1
+access_questionwise_report,questionwise.report,model_questionwise_report,base.group_user,1,1,1,1

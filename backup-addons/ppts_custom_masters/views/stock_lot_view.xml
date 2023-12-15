@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--Asset Model Form and Action-->
+    <record model="ir.ui.view" id="assets_model_form_view">
+        <field name="name">assets.model.fields.form</field>
+        <field name="model">asset.model</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="create_sr_ticket" string="Create SR" type="object" class="oe_highlight"/>
+                    <button name="create_ticket" string="Create Ticket" type="object" class="oe_highlight"/>
+                    <button name="state_active_button" string="Active" type="object" class="oe_highlight"
+                            attrs="{'invisible': [('state', '=', 'state_active')]}"/>
+                    <button name="state_inactive_button" string="Inactive"
+                            attrs="{'invisible': [('state', '=', 'state_inactive')]}" type="object"
+                            class="oe_highlight"/>
+                    <button name="state_not_traceable_button"
+                            attrs="{'invisible': [('state', '=', 'state_not_traceable')]}" string="Not traceable"
+                            type="object" class="oe_highlight"/>
+                    <button name="state_not_repairable_button"
+                            attrs="{'invisible': [('state', '=', 'state_not_repairable')]}" string="Not Repairable"
+                            type="object" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="state_active,state_inactive,state_not_traceable,state_not_repairable"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" modifiers="{&quot;invisible&quot;: [[&quot;active&quot;, &quot;=&quot;, true]]}"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" string="Service Requests" type="object"
+                                name="action_view_service_requests"
+                                icon="fa-ticket">
+                            <field name="service_request_count" widget="statinfo" string="Service Requests"/>
+                        </button>
+                        <button class="oe_stat_button" string="Products" type="object"
+                                name="action_view_product_template"
+                                icon="fa-ticket">
+                            <field name="product_count" widget="statinfo" string="Products"/>
+                        </button>
+                        <button class="oe_stat_button" string="Service Tickets" type="object"
+                                name="action_view_service_tickets"
+                                icon="fa-ticket">
+                            <field name="service_ticket_count" widget="statinfo" string="Service Tickets"/>
+                        </button>
+                        <button class="oe_stat_button" string="Sale Quotations" type="object"
+                                name="action_view_sale_quotations"
+                                icon="fa-usd">
+                            <field name="sale_quotation_count" widget="statinfo" string="Sale Quotations"/>
+                        </button>
+                        <button class="oe_stat_button" string="Sale Orders" type="object" name="action_view_sale_orders"
+                                icon="fa-usd">
+                            <field name="sale_count" widget="statinfo" string="Sale Orders"/>
+                        </button>
+                        <button class="oe_stat_button" string="Purchase Quotations" type="object"
+                                name="action_view_purchase_quotations"
+                                icon="fa-shopping-cart">
+                            <field name="purchase_quotation_count" widget="statinfo" string="Purchase Quotations"/>
+                        </button>
+                        <button class="oe_stat_button" string="Purchase Orders" type="object"
+                                name="action_view_purchase_orders"
+                                icon="fa-shopping-cart">
+                            <field name="purchase_count" widget="statinfo" string="Purchase Orders"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="action_view_invoices"
+                                icon="fa-credit-card">
+                            <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                    </div>
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="customer_id" string="Customer"/>
+                            <field name="customer_account" string="Customer Account" readonly="1"/>
+                            <field name="product_id" string="Product"/>
+                            <field name="product_serial_number" string="Asset Serial No"/>
+                            <field name="company_id" string="Company" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="product_price" string="Product Price"
+                                   options="{'currency_field': 'currency_id', 'field_digits': True}" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="product_eol"/>
+                            <field name="product_eosl"/>
+                            <field name="asset_eol"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="General Information" name="general_information_assets">
+                            <group string="Sale Information" name="group_general">
+                                <group>
+                                    <field name="custom_sale_order" string="Sale Order" options="{'no_create': True}"/>
+                                    <field name="custom_sale_order_date" string="SaleOrder Date"/>
+                                    <field name="contract_flow_id" string="Contract Flow"/>
+                                    <field name="asset_tag_ids" widget="many2many_tags" string="Asset Tag"/>
+                                    <field name="asset_id_label" string="Asset ID Label" readonly="1"/>
+                                    <field name="service_support_commitment" string="Service Support Commitment"/>
+                                </group>
+                                <group>
+                                    <field name="replacement_for"/>
+                                    <field name="asset_category_id"/>
+                                    <field name="asset_type_id"/>
+                                    <field name="product_types_id"/>
+                                    <field name="asset_id_allias" string="Asset ID Allias"/>
+                                    <field name="invoice_number" string="Invoice Number"/>
+                                </group>
+                            </group>
+                            <group string="Warranty Information" name="warranty_information">
+                                <group>
+                                    <field name="warranty_start_date"/>
+                                    <field name="extended_warranty_start_date"/>
+                                    <field name="repair_warranty_start_date"/>
+                                    <field name="oem_warranty_check" invisible="1"/>
+                                </group>
+                                <group>
+                                    <field name="warranty_end_date"/>
+                                    <field name="extended_warranty_end_date"/>
+                                    <field name="repair_warranty_end_date"/>
+                                    <field name="oem_repair_warranty_check" invisible="1"/>
+                                </group>
+                            </group>
+
+
+                            <group string="General Information" name="general_information_group">
+                                <group>
+                                    <field name="asset_arrival_date"/>
+                                    <field name="installation_date"/>
+                                    <field name="asset_location_id"/>
+                                    <field name="lattitude"/>
+                                    <field name="longitutde"/>
+                                    <field name="faulty_sticker"/>
+                                    <field name="rsp_name"/>
+                                </group>
+                                <group>
+                                    <field name="region_customer" readonly="1"/>
+                                    <field name="unit_type_id"/>
+                                    <field name="industry_id"/>
+                                    <field name="hardware_version"/>
+                                    <field name="software_version"/>
+                                    <field name="mc_skt"/>
+                                    <field name="product_code_no"/>
+                                    <field name="product_part_no"/>
+                                </group>
+                            </group>
+
+                        </page>
+                        <page name="Loaner" string="Loaner">
+                            <field name="asset_loaner_ids" nolabel="1" readonly="1">
+                                <tree string="Loaner Product">
+                                    <field name="name"/>
+                                    <field name="company_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="date_order"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="name"/>
+                                            <field name="company_id"/>
+                                            <field name="partner_id"/>
+                                            <field name="date_order"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page name="customer" string="Customer">
+
+                        </page>
+                        <page name="ticket" string="Ticket">
+                            <field name="ticket_ids" nolabel="1" readonly="1">
+                                <tree string="Service Tickets" editable="bottom" create="0" edit="0" delete="0">
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="product_name"/>
+                                    <field name="custom_product_serial"/>
+
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="contract" string="Contract">
+
+                        </page>
+                        <page name="calibration" string="Calibration">
+
+                        </page>
+
+                        <page name="description" string="Description">
+                            <field placeholder="Description" name="note" nolabel="1" hideKanbanOption="1"/>
+                        </page>
+                        <page name="asset attachment" string="Attachment">
+                            <field name="asset_attachment_ids" widget="many2many_binary" string="Attach a file"/>
+                        </page>
+                        <page name="warranty_replacement" string="Warranty Replacement">
+                        </page>
+                        <page name="Properties" string="Properties">
+                            <field name="asset_properties" nolabel="1" columns="2" hideKanbanOption="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"
+                           options="{'post_refresh': 'recipients'}"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+
+        </field>
+    </record>
+    <record id="view_asset_model_tree_view" model="ir.ui.view">
+        <field name="name">asset.model.tree.view</field>
+        <field name="model">asset.model</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="asset_category_id"/>
+                <field name="asset_type_id"/>
+                <field name="product_serial_number" string="Asset Serial No" optional="show"/>
+                <field name="company_id" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="asset_model_pivot_view" model="ir.ui.view">
+        <field name="name">asset.model.pivot.view</field>
+        <field name="model">asset.model</field>
+        <field name="arch" type="xml">
+            <pivot string="Assets Model" sample="1">
+                <field name="create_date" type="row" interval="day"/>
+<!--                <field name="quantity" type="measure"/>-->
+<!--                <field name="qty_delivered" type="measure"/>-->
+<!--                <field name="price" type="measure"/>-->
+            </pivot>
+        </field>
+    </record>
+
+
+    <record id="asset_model_action" model="ir.actions.act_window">
+        <field name="name">Asset</field>
+        <field name="res_model">asset.model</field>
+        <field name="view_mode">tree,form,pivot</field>
+<!--        <field name="view_ids"-->
+<!--               eval="[(5, 0, 0),-->
+<!--                          (0, 0, {'view_mode': 'tree', 'view_id': ref('view_asset_model_tree_view')}),-->
+<!--                          (0, 0, {'view_mode': 'form', 'view_id': ref('assets_model_form_view')})]"/>-->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No data found!
+            </p>
+            <p>
+                Use this menu to have an overview of your Assets.
+            </p>
+        </field>
+    </record>
+
+
+    <!--  Contract FLow Master List -->
+    <record id="view_contract_flow" model="ir.ui.view">
+        <field name="name">contract.flow.form.view</field>
+        <field name="model">contract.flow</field>
+        <field name="arch" type="xml">
+            <form string="Contract Flow">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="contract_flow" required="1"/>
+                            <field name="name" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_contract_flow_tree_view" model="ir.ui.view">
+        <field name="name">contract.flow.tree.view</field>
+        <field name="model">contract.flow</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="contract_flow"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_service_request_contract_flow" model="ir.actions.act_window">
+        <field name="name">Contract Flow</field>
+        <field name="res_model">contract.flow</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_contract_flow_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+
+    </record>
+    <!--  End Contract Flow Master List -->
+
+
+    <!--  Asset type Master List -->
+    <record id="view_asset_type" model="ir.ui.view">
+        <field name="name">asset_type.form.view</field>
+        <field name="model">asset.type</field>
+        <field name="arch" type="xml">
+            <form string="Asset Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="asset_type" required="1"/>
+                            <field name="name" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_asset_type_tree_view" model="ir.ui.view">
+        <field name="name">asset.type.tree.view</field>
+        <field name="model">asset.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="asset_type"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_service_request_asset_type" model="ir.actions.act_window">
+        <field name="name">Asset Type</field>
+        <field name="res_model">asset.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_asset_type_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+
+    </record>
+    <!--  End Asset Type Master List -->
+
+
+    <!--  Asset Category Master List -->
+    <record id="view_asset_category" model="ir.ui.view">
+        <field name="name">asset_category.form.view</field>
+        <field name="model">asset.category</field>
+        <field name="arch" type="xml">
+            <form string="Asset Category">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="asset_category" required="1"/>
+                            <field name="name" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_asset_category_tree_view" model="ir.ui.view">
+        <field name="name">asset.type.tree.view</field>
+        <field name="model">asset.category</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="asset_category"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_service_request_asset_category" model="ir.actions.act_window">
+        <field name="name">Asset Category</field>
+        <field name="res_model">asset.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_asset_category_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+
+    </record>
+    <!--  End Asset Type Master List -->
+
+
+    <!--    &lt;!&ndash;  Region Master List &ndash;&gt;-->
+    <!--    <record id="view_region_stock" model="ir.ui.view">-->
+    <!--        <field name="name">region_stock.form.view</field>-->
+    <!--        <field name="model">region.stock</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <form string="Region Stock">-->
+    <!--                <sheet>-->
+    <!--                    <group>-->
+    <!--                        <group>-->
+    <!--                            <field name="region_stock" required="1"/>-->
+    <!--                            <field name="name" invisible="1"/>-->
+    <!--                            <field name="company_id" invisible="1"/>-->
+    <!--                        </group>-->
+    <!--                    </group>-->
+    <!--                </sheet>-->
+    <!--            </form>-->
+    <!--        </field>-->
+    <!--    </record>-->
+    <!--    <record id="view_region_stock_tree_view" model="ir.ui.view">-->
+    <!--        <field name="name">region.stock.tree.view</field>-->
+    <!--        <field name="model">region.stock</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <tree>-->
+    <!--                <field name="name"/>-->
+    <!--                <field name="region_stock"/>-->
+    <!--                <field name="company_id" optional="hide"/>-->
+    <!--            </tree>-->
+    <!--        </field>-->
+    <!--    </record>-->
+    <!--    <record id="action_service_request_region_stock" model="ir.actions.act_window">-->
+    <!--        <field name="name">Region Stock</field>-->
+    <!--        <field name="res_model">region.stock</field>-->
+    <!--        <field name="view_mode">tree,form</field>-->
+    <!--        <field name="view_id" ref="view_region_stock_tree_view"/>-->
+    <!--        <field name="help" type="html">-->
+    <!--            <p class="oe_view_nocontent_create">-->
+    <!--                Click to Create a New Record.-->
+    <!--            </p>-->
+    <!--        </field>-->
+
+    <!--    </record>-->
+    <!--    &lt;!&ndash;  End Region Master List &ndash;&gt;-->
+
+
+    <!--  Industry Master List -->
+    <record id="view_industry_stock" model="ir.ui.view">
+        <field name="name">industry_stock.form.view</field>
+        <field name="model">industry.stock</field>
+        <field name="arch" type="xml">
+            <form string="Industry Stock">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="industry_stock" required="1"/>
+                            <field name="name" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_industry_stock_tree_view" model="ir.ui.view">
+        <field name="name">industry.stock.tree.view</field>
+        <field name="model">industry.stock</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="industry_stock"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_service_request_industry_stock" model="ir.actions.act_window">
+        <field name="name">Industry Stock</field>
+        <field name="res_model">industry.stock</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_industry_stock_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+
+    </record>
+    <!--  End Industry Master List -->
+
+
+    <!--  Unit type Master List -->
+    <record id="view_unit_type" model="ir.ui.view">
+        <field name="name">unit_type.form.view</field>
+        <field name="model">unit.type</field>
+        <field name="arch" type="xml">
+            <form string="Unit Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="unit_type" required="1"/>
+                            <field name="name" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_unit_type_tree_view" model="ir.ui.view">
+        <field name="name">unit.type.tree.view</field>
+        <field name="model">unit.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="unit_type"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_service_request_unit_type" model="ir.actions.act_window">
+        <field name="name">Unit Type</field>
+        <field name="res_model">unit.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_unit_type_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+
+    </record>
+    <!--  End Unit Type Master List -->
+
+
+    <!--  Asset Tags Master List -->
+    <record id="view_asset_tag_form" model="ir.ui.view">
+        <field name="name">asset.tag.form.view</field>
+        <field name="model">asset.tag</field>
+        <field name="arch" type="xml">
+            <form string="Asset Tags">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="color"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_asset_tag_tree_view" model="ir.ui.view">
+        <field name="name">asset.tag.tree.view</field>
+        <field name="model">asset.tag</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="color"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_asset_tag" model="ir.actions.act_window">
+        <field name="name">Asset Tags</field>
+        <field name="res_model">asset.tag</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_asset_tag_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+
+    </record>
+    <!--  End Asset tags Master List -->
+
+    <!--    MenuItems-->
+
+    <menuitem name="Contract Flow" id="control_flow_menu" parent="stock.menu_product_in_config_stock"
+              action="action_service_request_contract_flow" sequence="1"/>
+    <menuitem name="Asset Type" id="asset_type_menu" parent="stock.menu_product_in_config_stock"
+              action="action_service_request_asset_type" sequence="2"/>
+    <!--    <menuitem name="Region" id="region_stock_menu" parent="stock.menu_product_in_config_stock"-->
+    <!--              action="action_service_request_region_stock" sequence="3"/>-->
+    <menuitem name="Industry" id="industry_stock_menu" parent="stock.menu_product_in_config_stock"
+              action="action_service_request_industry_stock" sequence="4"/>
+    <menuitem name="Unit Type" id="unit_type_menu" parent="stock.menu_product_in_config_stock"
+              action="action_service_request_unit_type" sequence="5"/>
+    <!--  <menuitem name="Assets" id="asset_model_menu" parent="stock.menu_stock_inventory_control"
+             action="asset_model_action" sequence="6"/> -->
+    <menuitem name="Assets Category" id="asset_category_menu" parent="stock.menu_product_in_config_stock"
+              action="action_service_request_asset_category" sequence="7"/>
+    <menuitem name="Asset Tags" id="action_menu_asset_tag" parent="stock.menu_product_in_config_stock"
+              action="action_asset_tag" sequence="8"/>
+
+</odoo>

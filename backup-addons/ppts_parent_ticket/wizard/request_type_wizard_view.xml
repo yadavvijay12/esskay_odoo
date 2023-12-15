@@ -1,0 +1,29 @@
+<odoo>
+       <record id="view_request_type_wizard" model="ir.ui.view">
+            <field name="name">Select Request Type</field>
+            <field name="model">request.type.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Select Request Type">
+                    <group>
+                    	<group>
+	                        <field name="request_type_id" options='{"no_open": True, "no_create": True}'/>
+                    	</group>
+                    </group>
+                    <footer>
+                    	<button name="action_sr_create" string="Create Service Request" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+      <record id="action_request_type_wizard" model="ir.actions.act_window">
+            <field name="name">Select Request Type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">request.type.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_request_type_wizard"/>
+      </record>
+</odoo>

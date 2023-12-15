@@ -1,0 +1,7 @@
+<odoo>
+    <data >
+        <record id="group_show_res_user_show_master_menu" model="res.groups">
+            <field name="name">Show Master Menu</field>
+        </record>
+    </data>
+</odoo>

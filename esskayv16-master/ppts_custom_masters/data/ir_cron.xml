@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.cron" id="end_date">
+        <field name="name">Update Date</field>
+        <field name="model_id" ref="model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">model.update_product_eol()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+    </record>
+
+    <record model="ir.cron" id="warranty_date_end">
+        <field name="name">Warranty End</field>
+        <field name="model_id" ref="model_asset_warranty"/>
+        <field name="state">code</field>
+        <field name="code">model.extended_warranty()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+    </record>
+
+    <record model="ir.cron" id="warranty_remainder">
+        <field name="name">Warranty Remainder</field>
+        <field name="model_id" ref="model_asset_warranty"/>
+        <field name="state">code</field>
+        <field name="code">model.warranty_remainder()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field eval="False" name="doall"/>
+    </record>
+
+    <record id="email_template_warranty_date" model="mail.template">
+        <field name="name">Warranty Notification</field>
+        <field name="model_id" ref="ppts_custom_masters.model_asset_warranty"/>
+        <field name="email_from">{{ object.company_id.email }}</field>
+        <field name="email_to">{{object.partner_id.email }}</field>
+        <field name="subject">Notification</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Your product has been warranty expired with in few days</p>
+                <p>Thank You...!</p>
+            </div>
+        </field>
+    </record>
+
+</odoo>

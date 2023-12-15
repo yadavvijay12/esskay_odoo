@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_complete_installation_feedback" model="ir.ui.view">
+        <field name="name">project.task.form.feedback</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group class="col-lg-8">
+                        <field name="feed_back_end_task_1" required="1"/>
+                        <field name="feed_back_end_task_2" required="1"/>
+                        <field name="feed_back_end_task_3" required="1"/>
+                        <field name="feed_back_end_task_4" required="1"/>
+                        <field name="feed_back_end_task_5" required="1"/>
+                    </group>
+                    <group class="col-lg-4"></group>
+                </group>
+                <footer>
+                    <button name="action_complete_installation_wiz" type="object" string="Done"
+                            class="btn btn-success"/>
+                    <button string="Cancel" class="btn btn-danger" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="view_task_form2_sr_installation" model="ir.ui.view">
+        <field name="name">project.task.form</field>
+        <field name="model">project.task</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <form string="Task" class="o_form_project_tasks" js_class="project_task_form">
+                <field name="allow_subtasks" invisible="1"/>
+                <field name="is_closed" invisible="1"/>
+                <field name="is_project_installation" invisible="1"/>
+                <field name="allow_recurring_tasks" invisible="1"/>
+                <field name="repeat_show_dow" invisible="1"/>
+                <field name="repeat_show_day" invisible="1"/>
+                <field name="repeat_show_week" invisible="1"/>
+                <field name="repeat_show_month" invisible="1"/>
+                <field name="recurrence_id" invisible="1"/>
+                <field name="allow_task_dependencies" invisible="1"/>
+                <field name="rating_last_value" invisible="1"/>
+                <field name="rating_count" invisible="1"/>
+                <field name="allow_milestones" invisible="1"/>
+                <field name="parent_id" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+                <field name="is_send_for_approvals" invisible="1"/>
+                <header>
+                    <button name="action_assign_to_me" string="Assign to Me" type="object"
+                            invisible="1"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
+                            data-hotkey="q"/>
+                    <button name="action_assign_to_me" string="Assign to Me" type="object" class="oe_highlight"
+                            invisible="1"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
+                            data-hotkey="q"/>
+                    <!--                    <field name="stage_id" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"-->
+                    <!--                           attrs="{'invisible': [('project_id', '=', False), ('stage_id', '=', False)]}"/>-->
+                    <!--                    <field name="installation_state" widget="statusbar"-->
+                    <!--                           statusbar_visible="installation_started,installation_completed,waiting_for_approval,waiting_approval"/>-->
+                    <!--                    <field name="personal_stage_type_id" widget="statusbar"-->
+                    <!--                           options="{'clickable': '1', 'fold_field': 'fold'}"-->
+                    <!--                           attrs="{'invisible': [('project_id', '!=', False)]}" domain="[('user_id', '=', uid)]"/>-->
+                    <!--                    Installation Buttons-->
+                    <button name="action_start_installation" type="object" string="Start" class="btn btn-success"
+                            attrs="{'invisible': [('installation_state', 'not in', ['new'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_in_progress_installation" type="object" string="In Progress"
+                            class="btn btn-info" attrs="{'invisible': [('installation_state', 'not in', ['started'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!--                    PHASE 2-->
+                    <!--                    <button name="action_ready_for_testing_installation" type="object" string="Ready for Testing" class="btn btn-info" attrs="{'invisible': [('installation_state', 'not in', ['in_progress'])]}"/>-->
+                    <!--                    <button name="action_ready_for_qc_installation" type="object" string="Ready for Quality Check" class="btn btn-info" attrs="{'invisible': [('installation_state', 'not in', ['in_progress'])]}"/>-->
+                    <!--                    <button name="action_return_installation" type="object" string="Returns" class="btn btn-warning" attrs="{'invisible': [('installation_state', 'not in', ['in_progress'])]}"/>-->
+                    <!--                    <button name="action_request_approval_installation" type="object" string="Request for Approval" class="btn-primary" attrs="{'invisible': ['|',('installation_state','!=','completed'),('is_send_for_approvals', '=',True)]}"/>-->
+
+                    <button name="action_create_expense" type="object" string="Submit Expense" class="oe_highlight"
+                            attrs="{'invisible': ['|',('installation_state','!=','completed'),('is_state_close','=',True)]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!--                                                attrs="{'invisible': ['|',('expense_count', '!=', 0),('installation_state','!=','completed'),('is_state_close','=',True)]}"-->
+
+                    <button string="Send Mail" name="action_send_mail" type="object"
+                            attrs="{'invisible': [('installation_state', 'not in', ['started','in_progress'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!--                    <button name="action_return_spares_installation" type="object" string="Return Spares" class="btn btn-outline-primary" attrs="{'invisible': [('installation_state', '=', 'new')]}"/>-->
+                    <!--                    <button name="action_update_asset_installation" type="object" string="Request To Update Asset details" class="btn btn-outline-primary" attrs="{'invisible': [('installation_state', '=', 'new')]}"/>-->
+                    <!--                    PHASE 2-->
+
+
+                    <button name="action_generate_report_installation" type="object" string="Generate Report"
+                            class="btn btn-outline-primary"
+                            attrs="{'invisible': [('installation_state', '!=', 'completed'),('is_state_close','=',False)]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!--  attrs="{'invisible': ['&amp;',('installation_state', '!=', 'completed'),('is_state_close','=',True)]}"-->
+                    <button name="action_cancel_installation" type="object" string="Cancel" class="btn btn-danger"
+                            attrs="{'invisible': [('installation_state', 'not in', ['started','in_progress'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_complete_installation_wiz" type="object" string="Complete"
+                            class="btn btn-success" attrs="{'invisible': [('installation_state', '!=', 'in_progress')]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="%(installation_reason_action)d" type="action" string="On Hold" class="btn btn-warning"
+                            attrs="{'invisible': [('installation_state', '!=', 'in_progress')]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_resume" type="object" string="Resume" class="btn btn-warning"
+                            attrs="{'invisible': [('installation_state', '!=', 'on_hold')]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                </header>
+                <header>
+                    <field name="installation_state" widget="statusbar"
+                           statusbar_visible="new,started,in_progress,completed"/>
+                </header>
+                <div class="alert alert-info oe_edit_only mb-0" role="status"
+                     attrs="{'invisible': ['|', ('recurring_task', '=', False), ('recurrence_id', '=', False)]}"
+                     groups="project.group_project_recurring_tasks">
+                    <p>Edit recurring task</p>
+                    <field name="recurrence_update" widget="radio"/>
+                </div>
+                <sheet string="Task">
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Dummy tag for organizing buttons, using position='replace' when inheriting -->
+                        <span id="button_products" invisible="1"/>
+                        <span id="button_worksheet" invisible="1"/>
+                        <!-- Dummy tag used to organize buttons, englobing the 3 buttons modifies the width of the button -->
+                        <span id="start_rating_buttons" invisible="1"/>
+                        <field name="rating_avg" invisible="1"/>
+                        <field name="rating_active" invisible="1"/>
+                        <field name="is_required_approval" invisible="1"/>
+                        <button name="action_open_ratings" type="object"
+                                attrs="{'invisible': ['|', ('rating_count', '=', 0), ('rating_active', '=', False)]}"
+                                class="oe_stat_button" groups="project.group_project_rating">
+                            <i class="fa fa-fw o_button_icon fa-smile-o text-success"
+                               attrs="{'invisible': [('rating_avg', '&lt;', 3.66)]}" title="Satisfied"/>
+                            <i class="fa fa-fw o_button_icon fa-meh-o text-warning"
+                               attrs="{'invisible': ['|', ('rating_avg', '&lt;', 2.33), ('rating_avg', '&gt;=', 3.66)]}"
+                               title="Okay"/>
+                            <i class="fa fa-fw o_button_icon fa-frown-o text-danger"
+                               attrs="{'invisible': [('rating_avg', '&gt;=', 2.33)]}" title="Dissatisfied"/>
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="rating_avg_text" nolabel="1"/>
+                                </span>
+                                <span class="o_stat_text">Last Rating</span>
+                            </div>
+                        </button>
+                        <!-- Dummy tag used to organize buttons -->
+                        <span id="end_rating_buttons" invisible="1"/>
+                        <button name="action_open_parent_task" type="object" class="oe_stat_button" icon="fa-tasks"
+                                string="Parent Task"
+                                attrs="{'invisible': ['|', ('allow_subtasks', '=', False), ('parent_id', '=', False)]}"
+                                groups="project.group_subtask_project"/>
+                        <button name="action_recurring_tasks" type="object"
+                                attrs="{'invisible': [('recurrence_id', '=', False)]}" class="oe_stat_button"
+                                icon="fa-repeat" groups="project.group_project_recurring_tasks">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="recurring_count" widget="statinfo" nolabel="1"/>
+                                    Tasks
+                                </span>
+                                <span class="o_stat_text">in Recurrence</span>
+                            </div>
+                        </button>
+                        <button name="%(project.project_task_action_sub_task)d" type="action" class="oe_stat_button"
+                                icon="fa-tasks"
+                                attrs="{'invisible' : ['|', '|', ('allow_subtasks', '=', False), ('id', '=', False), ('subtask_count', '=', 0)]}"
+                                context="{'default_user_ids': user_ids}">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="subtask_count" widget="statinfo" nolabel="1"/>
+                                </span>
+                                <span class="o_stat_text">Sub-tasks</span>
+                            </div>
+                        </button>
+                        <button name="action_dependent_tasks" type="object"
+                                attrs="{'invisible': [('dependent_tasks_count', '=', 0)]}" class="oe_stat_button"
+                                icon="fa-tasks" groups="project.group_project_task_dependencies">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Blocking</span>
+                                <span class="o_stat_value ">
+                                    <field name="dependent_tasks_count" widget="statinfo" nolabel="1"/>
+                                    Tasks
+                                </span>
+                            </div>
+                        </button>
+                        <button name="action_view_approvals" type="object" class="oe_stat_button" string="Approvals"
+                                icon="fa-users">
+                            <field name="approvals_count" widget="statinfo" string="Approvals"/>
+                        </button>
+                        <button name="action_view_expense" type="object" class="oe_stat_button" string="Expenses"
+                                icon="fa-users">
+                            <field name="expense_count" widget="statinfo" string="Expenses"/>
+                        </button>
+                        <button name="action_view_reports" type="object" class="oe_stat_button" string="Reports"
+                                icon="fa-list"/>
+                        <button name="action_view_survey" type="object" class="oe_stat_button" string="Survey"
+                                icon="fa-list"/>
+                        <!-- Dummy tag used to organize buttons -->
+                        <span id="end_button_box" invisible="1"/>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+                    <field name="image_1920" widget="image" class="oe_avatar"/>
+                    <div class="oe_title pe-0">
+                        <h1 class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex">
+                                <field name="priority" widget="priority" class="me-3"/>
+                                <field name="name" class="o_task_name text-truncate" readonly="1"/>
+                            </div>
+                            <field name="kanban_state" widget="state_selection" class="" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group invisible="1">
+                        <group>
+                            <field name="project_id"
+                                   placeholder="Private"
+                                   domain="[('active', '=', True), ('company_id', '=', company_id)]"
+                                   attrs="{'invisible': [('parent_id', '!=', False)]}"
+                                   widget="project_private_task"
+                            />
+                            <field name="display_project_id" string="Project"
+                                   attrs="{'invisible': [('parent_id', '=', False)]}"
+                                   domain="[('active', '=', True), ('company_id', '=', company_id)]"/>
+                            <field name="milestone_id"
+                                   placeholder="e.g. Product Launch"
+                                   context="{'default_project_id': project_id if not parent_id or not display_project_id else display_project_id}"
+                                   attrs="{'invisible': ['|', ('project_id', '=', False), ('allow_milestones', '=', False)]}"
+                            />
+                            <field name="user_ids"
+                                   class="o_task_user_field"
+                                   options="{'no_open': True, 'no_quick_create': True}"
+                                   widget="many2many_avatar_user"
+                                   domain="[('share', '=', False), ('active', '=', True)]"/>
+                        </group>
+                        <group>
+                            <field name="active" invisible="1"/>
+                            <field name="partner_id" widget="res_partner_many2one" class="o_task_customer_field"/>
+                            <field name="partner_phone" widget="phone" attrs="{'invisible': True}"/>
+                            <field name="date_deadline" attrs="{'invisible': [('is_closed', '=', True)]}"/>
+                            <field name="tag_ids" widget="many2many_tags"
+                                   options="{'color_field': 'color', 'no_create_edit': True}"
+                                   context="{'project_id': project_id}"/>
+                            <field name="legend_blocked" invisible="1"/>
+                            <field name="legend_normal" invisible="1"/>
+                            <field name="legend_done" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Installation Details" style="color:black">
+                        <group>
+                            <field name="installation_process_alias"/>
+                            <field name="installation_start_date"/>
+                            <field name="installation_end_date"/>
+                            <field name="installation_title"/>
+                            <field name="installation_service_category_id"/>
+                            <field name="installation_service_type_id"/>
+                            <field name="installation_parent_ticket_id"/>
+                            <field name="installation_child_ticket_id"/>
+                            <field name="installation_child_ticket_type" invisible="1"/>
+                            <!--                            <field name="request_type_id" attrs="{'readonly': [('installation_state','not in',('new'))]}" options='{"no_open": True, "no_create": True}'/>-->
+                            <!--                            <field name="approver_id" attrs="{'readonly': [('installation_state','not in',('new', 'started','in_progress'))], 'invisible': [('installation_state','not in',('new', 'started','in_progress'))], 'required': [('installation_state', '=','in_progress'),('is_required_approval', '=', True)]}"/>-->
+
+                        </group>
+                        <group string="Customer Details" style="color:black">
+                            <field name="installation_customer_id"/>
+                            <field name="installation_customer_account_id"/>
+                            <field name="company_id"/>
+                            <field name="user_id"/>
+                            <field name="team_id"/>
+                            <field name="installation_customer_po_number"/>
+                            <field name="installation_customer_po_date"/>
+                        </group>
+                        <group string="Product Details" style="color:black">
+                            <field name="installation_stock_lot_id" readonly="1"/>
+                            <field name="installation_categ_id"/>
+                            <label for="installation_product_serial" string="Serial Number"/>
+                            <div class="o_row">
+                                <field name="installation_product_serial"
+                                       attrs="{'required':[('installation_state', '=', 'in_progress')]}"/>
+                                <button name="update_serial_number" string="Update" type="object" class="btn btn-link"
+                                        icon="fa-cloud-upload"
+                                        attrs="{'invisible':[('installation_state', '!=', 'completed')]}"
+                                        groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                            </div>
+                            <field name="installation_product_code_no"/>
+                            <field name="installation_product_part"
+                                   attrs="{'required':[('installation_state', '=', 'in_progress')]}"/>
+                            <field name="installation_tags" widget="many2many_tags"/>
+                            <field name="department" attrs="{'required':[('installation_state', '=', 'in_progress')]}"/>
+                            <field name="warranty_start_date"/>
+                            <field name="warranty_end_date"/>
+                        </group>
+                        <group string="Other Information" style="color:black">
+                            <field name="installation_external_reference"/>
+                            <field name="installation_reported_fault"/>
+                            <field name="installation_origin"/>
+                            <field name="install_status" widget="radio" options="{'horizontal': True}"/>
+                            <field name="worksheet_id"/>
+                            <field name="installation_invoice_number"
+                                   attrs="{'required':[('installation_state', '=', 'in_progress')]}"/>
+                            <field name="installation_invoice_date"
+                                   attrs="{'required':[('installation_state', '=', 'in_progress')]}"/>
+                            <field name="stock_picking_ids" widget="many2many_tags" invisible="1"/>
+                            <field name="installation_delivery_number" domain="[('id', 'in', stock_picking_ids)]"/>
+                            <field name="installation_order_date"/>
+                            <field name="tender_ref_number"/>
+                            <field name="warranty_invoice_number"/>
+                            <field name="warranty_invoice_date"/>
+                            <field name="is_state_close" invisible="1"/>
+
+                        </group>
+                    </group>
+                    <group name="properties_grp" string="Properties"/>
+                    <field name="task_properties" nolabel="1" columns="2"/>
+                    <notebook>
+                        <page name="description_page" string="Description">
+                            <field name="description" type="html" options="{'collaborative': true, 'resizable': false}"
+                                   placeholder="Task description..."/>
+                        </page>
+                        <page name="sub_tasks_page" string="Sub-tasks"
+                              attrs="{'invisible': [('allow_subtasks', '=', False)]}">
+                            <field name="child_ids"
+                                   context="{'default_project_id': project_id if not parent_id or not display_project_id else display_project_id, 'default_user_ids': user_ids, 'default_parent_id': id,
+                                    'default_partner_id': partner_id, 'default_milestone_id': allow_milestones and milestone_id, 'search_default_display_project_id': project_id }"
+                                   widget="many2many"
+                                   domain="['!', ('id', 'parent_of', id)]">
+                                <tree editable="bottom" decoration-muted="is_closed == True">
+                                    <field name="legend_normal" invisible="1"/>
+                                    <field name="legend_done" invisible="1"/>
+                                    <field name="legend_blocked" invisible="1"/>
+                                    <field name="project_id" invisible="1"/>
+                                    <field name="is_closed" invisible="1"/>
+                                    <field name="allow_milestones" invisible="1"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="priority" widget="priority" optional="show" nolabel="1"/>
+                                    <field name="id" optional="hide"/>
+                                    <field name="child_text" invisible="1"/>
+                                    <field name="allow_subtasks" invisible="1"/>
+                                    <field name="name" widget="name_with_subtask_count"/>
+                                    <field name="display_project_id" string="Project" optional="hide"
+                                           options="{'no_open': 1}"/>
+                                    <field name="milestone_id"
+                                           optional="hide"
+                                           context="{'default_project_id': display_project_id or project_id}"
+                                           attrs="{'invisible': [('allow_milestones', '=', False)], 'column_invisible': [('parent.allow_milestones', '=', False)]}"
+                                    />
+                                    <field name="partner_id" optional="hide"/>
+                                    <field name="user_ids" widget="many2many_avatar_user" optional="show"
+                                           domain="[('share', '=', False), ('active', '=', True)]"/>
+                                    <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="activity_ids" string="Next Activity" widget="list_activity"
+                                           optional="hide"/>
+                                    <field name="date_deadline" attrs="{'invisible': [('is_closed', '=', True)]}"
+                                           optional="show"/>
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"
+                                           optional="hide"/>
+                                    <field name="rating_last_text" string="Rating"
+                                           decoration-danger="rating_last_text == 'ko'"
+                                           decoration-warning="rating_last_text == 'ok'"
+                                           decoration-success="rating_last_text == 'top'"
+                                           attrs="{'invisible': [('rating_last_text', '=', 'none')]}"
+                                           class="fw-bold" widget="badge" optional="hide"/>
+                                    <field name="kanban_state" widget="state_selection" optional="show"
+                                           options="{'hide_label': True}" nolabel="1"/>
+                                    <field name="stage_id" optional="show"
+                                           context="{'default_project_id': project_id}"/>
+                                    <button name="action_open_task" type="object" title="View Task" string="View Task"
+                                            class="btn btn-link float-end"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="task_dependencies" string="Blocked By"
+                              attrs="{'invisible': [('allow_task_dependencies', '=', False)]}"
+                              groups="project.group_project_task_dependencies">
+                            <field name="depend_on_ids" nolabel="1" context="{'default_project_id' : project_id}">
+                                <tree editable="bottom" decoration-muted="is_closed == True">
+                                    <field name="allow_milestones" invisible="1"/>
+                                    <field name="parent_id" invisible="1"/>
+                                    <field name="display_project_id" invisible="1"/>
+                                    <field name="is_closed" invisible="1"/>
+                                    <field name="priority" widget="priority" optional="show" nolabel="1"/>
+                                    <field name="child_text" invisible="1"/>
+                                    <field name="allow_subtasks" invisible="1"/>
+                                    <field name="name" widget="name_with_subtask_count"/>
+                                    <field name="id" optional="hide"/>
+                                    <field name="project_id" optional="hide" options="{'no_open': 1}"/>
+                                    <field name="milestone_id"
+                                           optional="hide"
+                                           context="{'default_project_id': project_id if not parent_id or not display_project_id else display_project_id}"
+                                           attrs="{'invisible': [('allow_milestones', '=', False)], 'column_invisible': [('parent.allow_milestones', '=', False)]}"
+                                    />
+                                    <field name="partner_id" optional="hide"/>
+                                    <field name="parent_id" optional="hide"
+                                           attrs="{'invisible': [('allow_subtasks', '=', False)]}"
+                                           groups="base.group_no_one"/>
+                                    <field name="user_ids" widget="many2many_avatar_user" optional="show"
+                                           domain="[('share', '=', False), ('active', '=', True)]"/>
+                                    <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="activity_ids" string="Next Activity" widget="list_activity"
+                                           optional="hide"/>
+                                    <field name="date_deadline" attrs="{'invisible': [('is_closed', '=', True)]}"
+                                           optional="show"/>
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"
+                                           optional="hide"/>
+                                    <field name="rating_last_text" string="Rating"
+                                           decoration-danger="rating_last_text == 'ko'"
+                                           decoration-warning="rating_last_text == 'ok'"
+                                           decoration-success="rating_last_text == 'top'"
+                                           attrs="{'invisible': [('rating_last_text', '=', 'none')]}"
+                                           class="fw-bold" widget="badge" optional="hide"/>
+                                    <field name="legend_normal" invisible="1"/>
+                                    <field name="legend_done" invisible="1"/>
+                                    <field name="legend_blocked" invisible="1"/>
+                                    <field name="kanban_state" widget="state_selection" optional="show"
+                                           options="{'hide_label': True}" nolabel="1"/>
+                                    <field name="stage_id" optional="show"/>
+                                    <button class="oe_link float-end" string="View Task" name="action_open_task"
+                                            type="object"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="recurrence" string="Recurrent" groups="project.group_project_recurring_tasks">
+                            <label for="recurring_task"/>
+                            <field name="recurring_task"
+                                   attrs="{'invisible': ['|', ('allow_recurring_tasks', '=', False), ('active', '=', False)]}"/>
+                            <group attrs="{'invisible': [('recurring_task', '=', False)]}">
+                                <group>
+                                    <label for="repeat_interval"/>
+                                    <div class="o_col">
+                                        <div class="o_row">
+                                            <field name="repeat_interval"
+                                                   attrs="{'required': [('recurring_task', '=', True)]}"/>
+                                            <field name="repeat_unit"
+                                                   attrs="{'required': [('recurring_task', '=', True)]}"/>
+                                        </div>
+                                        <widget name="week_days"
+                                                attrs="{'invisible': [('repeat_show_dow', '=', False)]}"/>
+                                    </div>
+
+                                    <label for="repeat_on_month" string="Repeat On"
+                                           attrs="{'invisible': [('repeat_unit', 'not in', ('month', 'year'))]}"/>
+                                    <div class="o_row"
+                                         attrs="{'invisible': [('repeat_unit', 'not in', ('month', 'year'))]}">
+                                        <field name="repeat_on_month"
+                                               attrs="{'invisible': [('repeat_unit', '!=', 'month')], 'required': [('repeat_unit', '=', 'month')]}"/>
+                                        <field name="repeat_on_year"
+                                               attrs="{'invisible': [('repeat_unit', '!=', 'year')], 'required': [('repeat_unit', '=', 'year')]}"/>
+
+                                        <field name="repeat_day"
+                                               attrs="{'invisible': [('repeat_show_day', '=', False)], 'required': [('repeat_show_day', '=', True)]}"/>
+                                        <field name="repeat_week"
+                                               attrs="{'invisible': [('repeat_show_week', '=', False)], 'required': [('repeat_show_week', '=', True)]}"/>
+                                        <field name="repeat_weekday"
+                                               attrs="{'invisible': [('repeat_show_week', '=', False)], 'required': [('repeat_show_week', '=', True)]}"/>
+                                        <span attrs="{'invisible': ['|', ('repeat_show_week', '=', False), ('repeat_show_month', '=', False)]}">
+                                            of
+                                        </span>
+                                        <field name="repeat_month"
+                                               attrs="{'invisible': [('repeat_show_month', '=', False)], 'required': [('repeat_show_month', '=', True)]}"/>
+                                    </div>
+                                    <!-- Those fields are added to trigger the compute method for the recurrence feature. -->
+                                    <field name="mon" invisible="1"/>
+                                    <field name="tue" invisible="1"/>
+                                    <field name="wed" invisible="1"/>
+                                    <field name="thu" invisible="1"/>
+                                    <field name="fri" invisible="1"/>
+                                    <field name="sat" invisible="1"/>
+                                    <field name="sun" invisible="1"/>
+
+                                    <label for="repeat_type"/>
+                                    <div class="o_row">
+                                        <field name="repeat_type"
+                                               attrs="{'required': [('recurring_task', '=', True)]}"/>
+                                        <field name="repeat_until"
+                                               attrs="{'invisible': [('repeat_type', '!=', 'until')], 'required': [('repeat_type', '=', 'until')]}"/>
+                                        <field name="repeat_number"
+                                               attrs="{'invisible': [('repeat_type', '!=', 'after')], 'required': [('repeat_type', '=', 'after')]}"/>
+                                    </div>
+                                </group>
+                            </group>
+                            <group attrs="{'invisible': ['|', ('recurring_task', '=', False), ('recurrence_message', '=', False)]}">
+                                <div class="alert alert-success o_form_project_recurrence_message" role="status"
+                                     colspan="2">
+                                    <field name="recurrence_message" widget="html" class="mb-0"/>
+                                </div>
+                            </group>
+                        </page>
+                        <page name="extra_info" string="Extra Info" groups="base.group_no_one">
+                            <group>
+                                <group>
+                                    <field name="is_analytic_account_id_changed" invisible="1"/>
+                                    <field name="parent_id" attrs="{'invisible': [('allow_subtasks', '=', False)]}"
+                                           groups="base.group_no_one"/>
+                                    <field name="analytic_account_id" groups="analytic.group_analytic_accounting"
+                                           context="{'default_partner_id': partner_id}"/>
+                                    <field name="company_id" groups="base.group_multi_company"
+                                           options="{'no_create': True}"/>
+                                    <field name="sequence" groups="base.group_no_one"/>
+                                    <field name="email_from" invisible="1"/>
+                                    <field name="email_cc" groups="base.group_no_one"/>
+                                    <field name="displayed_image_id" groups="base.group_no_one"
+                                           options="{'no_create': True}"/>
+                                </group>
+                                <group>
+                                    <field name="date_assign" groups="base.group_no_one"/>
+                                    <field name="date_last_stage_update" groups="base.group_no_one"/>
+                                </group>
+                                <group string="Working Time to Assign"
+                                       attrs="{'invisible': [('working_hours_open', '=', 0.0)]}">
+                                    <field name="working_hours_open" widget="float_time" string="Hours"/>
+                                    <field name="working_days_open" string="Days"/>
+                                </group>
+                                <group string="Working Time to Close"
+                                       attrs="{'invisible': [('working_hours_close', '=', 0.0)]}">
+                                    <field name="working_hours_close" widget="float_time" string="Hours"/>
+                                    <field name="working_days_close" string="Days"/>
+                                </group>
+                            </group>
+                        </page>
+                        <!--                         <page string="Approvals" name="approvals_page">-->
+                        <!--                            <field name="approver_ids" readonly="1">-->
+                        <!--                                <tree string="Approvals" create="false" delete="false" edit="false">-->
+                        <!--                                    <field name="sequence" invisible="1"/>-->
+                        <!--                                    <field name="user_id"/>-->
+                        <!--                                    <field name="require_opt"/>-->
+                        <!--                                    <field name="state"/>-->
+                        <!--                                    <field name="approved_on"/>-->
+                        <!--                                    <field name="reject_reason"/>-->
+                        <!--                                    <field name="rejected_on"/>-->
+                        <!--                                    <field name="hold_reason"/>-->
+                        <!--                                    <field name="hold_on"/>-->
+                        <!--                                </tree>-->
+                        <!--                                <form string="Approvals" name="approvals">-->
+                        <!--                                    <group>-->
+                        <!--                                        <group>-->
+                        <!--                                            <field name="user_id"/>-->
+                        <!--                                            <field name="require_opt"/>-->
+                        <!--                                            <field name="state"/>-->
+                        <!--                                        </group>-->
+                        <!--                                        <group>-->
+                        <!--                                            <field name="approved_on"/>-->
+                        <!--                                            <field name="reject_reason"/>-->
+                        <!--                                            <field name="rejected_on"/>-->
+                        <!--                                            <field name="hold_reason"/>-->
+                        <!--                                            <field name="hold_on"/>-->
+                        <!--                                        </group>-->
+                        <!--                                    </group>-->
+                        <!--                                </form>-->
+                        <!--                            </field>-->
+                        <!--                        </page>-->
+                        <page name="asset_page" string="Asset">
+
+                        </page>
+                        <page name="product_page" string="Product">
+
+                        </page>
+                        <page name="customer_page" string="Customer">
+
+                        </page>
+                        <page name="returns_page" string="Returns">
+
+                        </page>
+                        <page name="parts_page" string="Parts">
+                            <field name="spare_request_ids" mode="kanban" readonly="1">
+                                <kanban class="o_kanban_mobile">
+                                    <field name="id"/>
+                                    <field name="name"/>
+                                    <field name="location_id"/>
+                                    <field name="required_date"/>
+                                    <field name="state"/>
+                                    <progressbar field="state"
+                                                 colors="{&quot;issued&quot;: &quot;success&quot;, &quot;inprogress&quot;: &quot;warning&quot;, &quot;reject&quot;: &quot;danger&quot;}"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                                <div class="o_kanban_record_top mb16">
+                                                    <div class="o_kanban_record_headings mt4">
+                                                        <strong class="o_kanban_record_title">
+                                                            <span t-out="record.name.value"/>
+                                                        </strong>
+                                                    </div>
+                                                    <strong>
+                                                        <field name="requirement"/>
+                                                    </strong>
+                                                </div>
+                                                <div class="o_kanban_record_bottom">
+                                                    <div class="oe_kanban_bottom_left text-muted">
+                                                        <span>
+                                                            <t t-out="record.location_id.value"/>
+                                                        </span>
+                                                        Required Date :
+                                                        <field name="required_date" widget="date"/>
+                                                    </div>
+                                                    <div class="oe_kanban_bottom_right">
+                                                        <field name="state" widget="label_selection"
+                                                               options="{'classes': {'draft': 'default', 'cancel': 'danger', 'issued': 'success', 'inprogress': 'warning'}}"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page name="status_page" string="Update Status">
+
+                        </page>
+                        <page name="attachment_page" string="Attachment">
+                            <field name="install_attachment_ids" widget="many2many_binary" string="Attach a file"/>
+                        </page>
+                        <page name="notes_page" string="Notes">
+
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" options="{'post_refresh':True}" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_task_tree2_sr_installation" model="ir.ui.view">
+        <field name="name">project.task.tree</field>
+        <field name="model">project.task</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <tree string="Tasks" multi_edit="1" sample="1" js_class="project_task_list">
+                <field name="message_needaction" invisible="1" readonly="1"/>
+                <field name="is_project_installation" invisible="1"/>
+                <field name="is_closed" invisible="1"/>
+                <field name="sequence" invisible="1" readonly="1"/>
+                <field name="allow_milestones" invisible="1"/>
+                <field name="priority" widget="priority" optional="show" nolabel="1"/>
+                <field name="id" optional="hide"/>
+                <field name="child_text" invisible="1"/>
+                <field name="allow_subtasks" invisible="1"/>
+                <field name="name" widget="name_with_subtask_count"/>
+                <field name="create_date"/>
+                <field name="project_id" widget="project_private_task" optional="show" readonly="1"
+                       options="{'no_open': 1}"/>
+                <field name="milestone_id" attrs="{'invisible': [('allow_milestones', '=', False)]}"
+                       context="{'default_project_id': project_id}" groups="project.group_project_milestone"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="parent_id" optional="hide" attrs="{'invisible': [('allow_subtasks', '=', False)]}"
+                       groups="base.group_no_one"/>
+                <field name="user_ids" optional="show" widget="many2many_avatar_user"
+                       domain="[('share', '=', False), ('active', '=', True)]" options='{"no_quick_create": True}'/>
+                <field name="company_id" groups="base.group_multi_company" optional="show" readonly="True"/>
+                <field name="company_id" invisible="1"/>
+                <field name="activity_ids" string="Next Activity" widget="list_activity" optional="show"/>
+                <field name="date_deadline" optional="hide" widget="remaining_days"
+                       attrs="{'invisible': [('is_closed', '=', True)]}"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show"
+                       context="{'project_id': project_id}"/>
+                <field name="rating_active" invisible="1"/>
+                <field name="rating_last_text" string="Rating" decoration-danger="rating_last_text == 'ko'"
+                       decoration-warning="rating_last_text == 'ok'" decoration-success="rating_last_text == 'top'"
+                       attrs="{'invisible': ['|', ('rating_active', '=', False), ('rating_last_text', '=', 'none')]}"
+                       class="fw-bold" widget="badge" optional="hide" groups="project.group_project_rating"/>
+                <field name="legend_normal" invisible="1"/>
+                <field name="legend_done" invisible="1"/>
+                <field name="legend_blocked" invisible="1"/>
+                <field name="kanban_state" widget="state_selection" optional="show" options="{'hide_label': True}"
+                       nolabel="1" required="0"/>
+                <field name="stage_id" invisible="1"/>
+                <field name="installation_state"/>
+                <field name="recurrence_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="service_request_sr_fsm_search_view" model="ir.ui.view">
+        <field name="name">project.task.project.installation</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+            <search string="Sr Installation">
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_service_request_sr_project_installation" model="ir.actions.act_window">
+        <field name="name">Installation</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">tree,form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_ids"
+               eval="[(5, 0, 0),
+                          (0, 0, {'view_mode': 'tree', 'view_id': ref('view_task_tree2_sr_installation')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('view_task_form2_sr_installation')})]"/>
+        <field name="search_view_id" ref="service_request_sr_fsm_search_view"/>
+        <field name="domain">[('is_project_installation', '=', True)]</field>
+        <field name="context">{'default_is_project_installation': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+    <record id="project.action_view_all_task" model="ir.actions.act_window">
+        <field name="name">My Tasks</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">kanban,tree,form,calendar,pivot,graph,activity</field>
+        <field name="context">{'search_default_my_tasks': 1, 'search_default_open_tasks': 1, 'all_task': 0,
+            'default_user_ids': [(4, uid)]}
+        </field>
+        <field name="search_view_id" ref="project.view_task_search_form_extended"/>
+        <field name="domain">[('is_project_installation', '=', False)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No tasks found. Let's create one!
+            </p>
+            <p>
+                Organize your tasks by dispatching them across the pipeline.
+                <br/>
+                Collaborate efficiently by chatting in real-time or via email.
+            </p>
+        </field>
+    </record>
+
+    <menuitem name="Installation" id="menu_project_sr_installation_project_new"
+              action="action_service_request_sr_project_installation"
+              parent="ppts_service_request.service_request_main_menu" sequence="7"
+              groups="-ppts_service_request.service_request_group_ct_user,-ppts_service_request.service_request_group_manager,-ppts_service_request.service_request_national_head"/>
+</odoo>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+
+    <record id="seq_customer_type" model="ir.sequence">
+        <field name="name">Customer Type</field>
+        <field name="code">customer.type</field>
+        <field name="prefix">CT</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+    <record id="seq_customer_city" model="ir.sequence">
+        <field name="name">Customer City</field>
+        <field name="code">customer.city</field>
+        <field name="prefix">CC</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+    <record id="seq_branch_branch" model="ir.sequence">
+        <field name="name">Branches</field>
+        <field name="code">branch.branch</field>
+        <field name="prefix">BN</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+    <record id="seq_customer_region" model="ir.sequence">
+        <field name="name">Customer Region</field>
+        <field name="code">customer.region</field>
+        <field name="prefix">CR</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="seq_generate_code_target_group" model="ir.sequence">
+        <field name="name">Target Group</field>
+        <field name="code">target.group</field>
+        <field name="prefix">TG</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="seq_tier_tier" model="ir.sequence">
+        <field name="name">Tier</field>
+        <field name="code">tier.tier</field>
+        <field name="prefix">TT</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="seq_customer_group" model="ir.sequence">
+        <field name="name">Customer Group</field>
+        <field name="code">customer.group</field>
+        <field name="prefix">CG</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="generate_code_process" model="ir.sequence">
+        <field name="name">Process</field>
+        <field name="code">process.process</field>
+        <field name="prefix">PS</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="generate_code_work_location" model="ir.sequence">
+        <field name="name">Work Location</field>
+        <field name="code">work.location</field>
+        <field name="prefix">WL</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="generate_code_spare_category" model="ir.sequence">
+            <field name="name">Spare Category</field>
+            <field name="code">spare.category</field>
+            <field name="prefix">SC</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+            <field name="number_increment">1</field>
+       </record>
+
+    <record id="generate_code_role" model="ir.sequence">
+        <field name="name">Role Channel</field>
+        <field name="code">role.role</field>
+        <field name="prefix">RL</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="product_types_sequence" model="ir.sequence">
+        <field name="name">Product Type Sequence</field>
+        <field name="code">product_types.sequence</field>
+        <field name="prefix">PT/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="modality_sequence" model="ir.sequence">
+        <field name="name">Modality Sequence</field>
+        <field name="code">modality.sequence</field>
+        <field name="prefix">MOD/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="manufacturer_sequence" model="ir.sequence">
+        <field name="name">Product Manufacturer</field>
+        <field name="code">product.manufacturer</field>
+        <field name="prefix">MRD/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="contract_sequence" model="ir.sequence">
+        <field name="name">Contract Sequence</field>
+        <field name="code">contract.sequence</field>
+        <field name="prefix">CON/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="asset_sequence_type" model="ir.sequence">
+        <field name="name">Asset Type</field>
+        <field name="code">asset.sequence.type</field>
+        <field name="prefix">ASP/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="region_sequence" model="ir.sequence">
+        <field name="name">Region Sequence</field>
+        <field name="code">region.sequence</field>
+        <field name="prefix">REG/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="industry_sequence" model="ir.sequence">
+        <field name="name">Industry Sequence</field>
+        <field name="code">industry.industry</field>
+        <field name="prefix">IND/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="generate_code_base" model="ir.sequence">
+        <field name="name">Base Type</field>
+        <field name="code">base.base</field>
+        <field name="prefix">BS</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="asset_sequence_location" model="ir.sequence">
+        <field name="name">Asset location</field>
+        <field name="code">asset.location</field>
+        <field name="prefix">AST/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+
+    <record id="unit_type_sequence" model="ir.sequence">
+        <field name="name">Unit Type Sequence</field>
+        <field name="code">unit_type.sequence</field>
+        <field name="prefix">UT/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+    <record id="asset_model_sequence" model="ir.sequence">
+        <field name="name">Asset Model Sequence</field>
+        <field name="code">asset_model_seq.sequence</field>
+        <field name="prefix">AST/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <record id="asset_category_sequence" model="ir.sequence">
+        <field name="name">Asset Category Sequence</field>
+        <field name="code">asset_category.sequence</field>
+        <field name="prefix">AC/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+
+</odoo>

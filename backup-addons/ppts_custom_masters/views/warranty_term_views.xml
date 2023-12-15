@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--  To create Warranty Term tree View -->
+    <record model="ir.ui.view" id="warranty_term_tree_views">
+        <field name="name">warranty_term.tree.view</field>
+        <field name="model">warranty.term</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="number_days"/>
+                <field name="warranty_date_based"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="warranty_term_form_views">
+        <field name="name">warranty_term.form.view</field>
+        <field name="model">warranty.term</field>
+        <field name="arch" type="xml">
+            <form string="Warranty">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <label for="number_days"/>
+                            <div class="o_row">
+                                <field name="number_days" class="oe_inline" nolabel="1"/>
+                                <field name="interval_type" nolabel="1"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="warranty_date_based"/>
+                            <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.rule" id="cust_warranty_comp_rule">
+        <field name="name">Warranty Term multi-company</field>
+        <field name="model_id" ref="model_warranty_term"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--  To create region Search View -->
+    <record id="warranty_term_filter_view" model="ir.ui.view">
+        <field name="name">warranty_term.filter.view</field>
+        <field name="model">warranty.term</field>
+        <field name="arch" type="xml">
+            <search string="Name">
+                <field name="name" filter_domain="['|',('name', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="name" context="{'group_by':'name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--  To create action for region-->
+    <record id="custom_warranty_term_action" model="ir.actions.act_window">
+        <field name="name">Warranty Term</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">warranty.term</field>
+        <field name="view_mode">tree,form</field>
+<!--        <field name="view_id" ref="warranty_term_tree_views"/>-->
+        <field name="search_view_id" ref="warranty_term_filter_view"/>
+    </record>
+
+
+    <menuitem id="warranty_term_sub_menu" name="Warranty Term" parent="sale.menu_sale_config"
+              action="custom_warranty_term_action" sequence="12"/>
+
+
+</odoo>

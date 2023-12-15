@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--Asset Model Form and Action-->
+
+
+
+
+
+    <!--  Contract FLow Master List -->
+    <record id="view_contract_flow" model="ir.ui.view">
+        <field name="name">contract.flow.form.view</field>
+        <field name="model">contract.flow</field>
+        <field name="arch" type="xml">
+            <form string="Contract Flow">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="contract_flow" required="1"/>
+                            <field name="name" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_contract_flow_tree_view" model="ir.ui.view">
+        <field name="name">contract.flow.tree.view</field>
+        <field name="model">contract.flow</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="contract_flow"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_service_request_contract_flow" model="ir.actions.act_window">
+        <field name="name">Contract Flow</field>
+        <field name="res_model">contract.flow</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_contract_flow_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+
+    </record>
+    <!--  End Contract Flow Master List -->
+
+
+    <!--  Asset type Master List -->
+    <record id="view_asset_type" model="ir.ui.view">
+        <field name="name">asset_type.form.view</field>
+        <field name="model">asset.type</field>
+        <field name="arch" type="xml">
+            <form string="Asset Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="asset_type" required="1"/>
+                            <field name="name" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_asset_type_tree_view" model="ir.ui.view">
+        <field name="name">asset.type.tree.view</field>
+        <field name="model">asset.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="asset_type"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_service_request_asset_type" model="ir.actions.act_window">
+        <field name="name">Asset Type</field>
+        <field name="res_model">asset.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_asset_type_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+
+    </record>
+    <!--  End Asset Type Master List -->
+
+
+    <!--  Asset Category Master List -->
+    <record id="view_asset_category" model="ir.ui.view">
+        <field name="name">asset_category.form.view</field>
+        <field name="model">asset.category</field>
+        <field name="arch" type="xml">
+            <form string="Asset Category">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="asset_category" required="1"/>
+                            <field name="name" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_asset_category_tree_view" model="ir.ui.view">
+        <field name="name">asset.type.tree.view</field>
+        <field name="model">asset.category</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="asset_category"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_service_request_asset_category" model="ir.actions.act_window">
+        <field name="name">Asset Category</field>
+        <field name="res_model">asset.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_asset_category_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+
+    </record>
+    <!--  End Asset Type Master List -->
+
+
+    <!--    &lt;!&ndash;  Region Master List &ndash;&gt;-->
+    <!--    <record id="view_region_stock" model="ir.ui.view">-->
+    <!--        <field name="name">region_stock.form.view</field>-->
+    <!--        <field name="model">region.stock</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <form string="Region Stock">-->
+    <!--                <sheet>-->
+    <!--                    <group>-->
+    <!--                        <group>-->
+    <!--                            <field name="region_stock" required="1"/>-->
+    <!--                            <field name="name" invisible="1"/>-->
+    <!--                            <field name="company_id" invisible="1"/>-->
+    <!--                        </group>-->
+    <!--                    </group>-->
+    <!--                </sheet>-->
+    <!--            </form>-->
+    <!--        </field>-->
+    <!--    </record>-->
+    <!--    <record id="view_region_stock_tree_view" model="ir.ui.view">-->
+    <!--        <field name="name">region.stock.tree.view</field>-->
+    <!--        <field name="model">region.stock</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <tree>-->
+    <!--                <field name="name"/>-->
+    <!--                <field name="region_stock"/>-->
+    <!--                <field name="company_id" optional="hide"/>-->
+    <!--            </tree>-->
+    <!--        </field>-->
+    <!--    </record>-->
+    <!--    <record id="action_service_request_region_stock" model="ir.actions.act_window">-->
+    <!--        <field name="name">Region Stock</field>-->
+    <!--        <field name="res_model">region.stock</field>-->
+    <!--        <field name="view_mode">tree,form</field>-->
+    <!--        <field name="view_id" ref="view_region_stock_tree_view"/>-->
+    <!--        <field name="help" type="html">-->
+    <!--            <p class="oe_view_nocontent_create">-->
+    <!--                Click to Create a New Record.-->
+    <!--            </p>-->
+    <!--        </field>-->
+
+    <!--    </record>-->
+    <!--    &lt;!&ndash;  End Region Master List &ndash;&gt;-->
+
+
+    <!--  Industry Master List -->
+    <record id="view_industry_stock" model="ir.ui.view">
+        <field name="name">industry_stock.form.view</field>
+        <field name="model">industry.stock</field>
+        <field name="arch" type="xml">
+            <form string="Industry Stock">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="industry_stock" required="1"/>
+                            <field name="name" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_industry_stock_tree_view" model="ir.ui.view">
+        <field name="name">industry.stock.tree.view</field>
+        <field name="model">industry.stock</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="industry_stock"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_service_request_industry_stock" model="ir.actions.act_window">
+        <field name="name">Industry Stock</field>
+        <field name="res_model">industry.stock</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_industry_stock_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+
+    </record>
+    <!--  End Industry Master List -->
+
+
+    <!--  Unit type Master List -->
+    <record id="view_unit_type" model="ir.ui.view">
+        <field name="name">unit_type.form.view</field>
+        <field name="model">unit.type</field>
+        <field name="arch" type="xml">
+            <form string="Unit Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="unit_type" required="1"/>
+                            <field name="name" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_unit_type_tree_view" model="ir.ui.view">
+        <field name="name">unit.type.tree.view</field>
+        <field name="model">unit.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="unit_type"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_service_request_unit_type" model="ir.actions.act_window">
+        <field name="name">Unit Type</field>
+        <field name="res_model">unit.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_unit_type_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+
+    </record>
+    <!--  End Unit Type Master List -->
+
+
+    <!--  Asset Tags Master List -->
+    <record id="view_asset_tag_form" model="ir.ui.view">
+        <field name="name">asset.tag.form.view</field>
+        <field name="model">asset.tag</field>
+        <field name="arch" type="xml">
+            <form string="Asset Tags">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="color"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_asset_tag_tree_view" model="ir.ui.view">
+        <field name="name">asset.tag.tree.view</field>
+        <field name="model">asset.tag</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="color"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_asset_tag" model="ir.actions.act_window">
+        <field name="name">Asset Tags</field>
+        <field name="res_model">asset.tag</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_asset_tag_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+
+    </record>
+    <!--  End Asset tags Master List -->
+
+    <!--    MenuItems-->
+
+    <menuitem name="Contract Flow" id="control_flow_menu" parent="stock.menu_product_in_config_stock"
+              action="action_service_request_contract_flow" sequence="1"/>
+    <menuitem name="Asset Type" id="asset_type_menu" parent="stock.menu_product_in_config_stock"
+              action="action_service_request_asset_type" sequence="2"/>
+    <!--    <menuitem name="Region" id="region_stock_menu" parent="stock.menu_product_in_config_stock"-->
+    <!--              action="action_service_request_region_stock" sequence="3"/>-->
+    <menuitem name="Industry" id="industry_stock_menu" parent="stock.menu_product_in_config_stock"
+              action="action_service_request_industry_stock" sequence="4"/>
+    <menuitem name="Unit Type" id="unit_type_menu" parent="stock.menu_product_in_config_stock"
+              action="action_service_request_unit_type" sequence="5"/>
+    <menuitem name="Assets Category" id="asset_category_menu" parent="stock.menu_product_in_config_stock"
+              action="action_service_request_asset_category" sequence="7"/>
+    <menuitem name="Asset Tags" id="action_menu_asset_tag" parent="stock.menu_product_in_config_stock"
+              action="action_asset_tag" sequence="8"/>
+
+</odoo>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Workflow Form View -->
+    <record id="custom_workflow_form_view" model="ir.ui.view">
+        <field name="name">custom.workflow.form.view</field>
+        <field name="model">custom.workflow</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title mb24">
+                        <h1>
+                            <field class="text-break" name="name" default_focus="1" placeholder="e.g. Create Workflow"/>
+                        </h1>
+                    </div>
+                    <notebook>
+                        <page string="Task Lists">
+                            <field name="task_list_ids">
+                                <tree string="Task Lists" create="true">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="task_id" domain="[('category', '!=', 'system')]"/>
+                                    <field name="description"/>
+                                    <field name="category"/>
+                                    <field name="worksheet_id" invisible="1"/>
+                                    <field name="is_end_task" invisible="1"/>
+                                    <field name="is_file_attachment" invisible="1"/>
+                                    <field name="next_task_ids" widget="many2many_tags"
+                                           domain="[('category', '!=', 'system')]"/>
+                                    <field name="status" invisible="1"/>
+                                </tree>
+                                <form string="Task Lists">
+                                    <group>
+                                        <group>
+                                            <field name="task_id" domain="[('category', '!=', 'system')]"/>
+                                            <field name="sequence"/>
+                                            <field name="description"/>
+                                            <field name="category"/>
+                                        </group>
+                                        <group>
+                                            <field name="next_task_ids" widget="many2many_tags"/>
+                                            <field name="worksheet_id" invisible="1"/>
+                                            <field name="is_end_task" invisible="1"/>
+                                            <field name="is_file_attachment" invisible="1"/>
+                                            <field name="status" invisible="1"/>
+                                        </group>
+                                    </group>
+
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Description">
+                            <field name="description" placeholder="Please enter your description..!"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Workflow Tree View -->
+    <record id="custom_workflow_tree_view" model="ir.ui.view">
+        <field name="name">custom.workflow.tree.view</field>
+        <field name="model">custom.workflow</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="description"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_custom_workflow_filter" model="ir.ui.view">
+        <field name="name">custom.workflow.list.select</field>
+        <field name="model">custom.workflow</field>
+        <field name="priority" eval="15"/>
+        <field name="arch" type="xml">
+            <search string="Search Workflow">
+                <field name="name"/>
+                <separator/>
+                <filter string="Date" name="create_date" date="create_date"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Workflow's Action Window -->
+    <record id="action_custom_workflow" model="ir.actions.act_window">
+        <field name="name">Workflow</field>
+        <field name="res_model">custom.workflow</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="custom_workflow_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+</odoo>

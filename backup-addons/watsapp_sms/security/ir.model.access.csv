@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sms_gateway_watsapp,watsapp.sms.gateway,model_watsapp_sms_gateway,base.group_user,1,1,1,1
+access_sms_template_watsapp,watsapp.sms.template,model_watsapp_sms_template,base.group_user,1,1,1,1
+access_watsapp_dynamic_value,watsapp.dynamic.value,model_watsapp_dynamic_value,base.group_user,1,1,1,1
+whatsapp_history_user_access,whatsapp_history,model_whatsapp_history,base.group_user,1,1,1,1

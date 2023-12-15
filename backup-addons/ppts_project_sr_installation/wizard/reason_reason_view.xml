@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="wr_reason_view_form" model="ir.ui.view">
+        <field name="name">installation.reason.wizard.form</field>
+        <field name="model">installation.reason</field>
+        <field name="arch" type="xml">
+            <form string="Reason">
+                <field name="reason_type" invisible="1"/>
+                <separator string="Reject Reason" attrs="{'invisible':[('reason_type','!=', 'reject')]}"/>
+                <separator string="Hold Reason" attrs="{'invisible':[('reason_type','!=', 'hold')]}"/>
+                <separator string="Close Reason" attrs="{'invisible':[('reason_type','!=', 'close')]}"/>
+                <field name="name" required="1" placeholder="Enter the reason..."/>
+                <footer>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn btn-sm btn-primary"/>
+                    <button string="Cancel" class="btn btn-sm btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

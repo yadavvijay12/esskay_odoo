@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="ppts_view_partners_form_inherited" model="ir.ui.view">
+        <field name="name">view.res.partner.form.crm.inherited1</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='phone']" position="replace">
+                <field name="phone"/>
+                <button name="call_phone" type="object"  icon="fa-phone"/>
+            </xpath>
+            <xpath expr="//field[@name='mobile']" position="replace">
+                <field name="mobile"/>
+                <button name="call_mobile" type="object" icon="fa-phone"/>
+                <button name="call_mobile_whatsapp" type="object" icon="fa-whatsapp "/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

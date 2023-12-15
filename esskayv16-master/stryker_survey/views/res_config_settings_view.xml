@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">Add partner_names_order config parameter</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='companies']" position='before'>
+                <h2>Stryker Configurations</h2>
+                <div class="row mt16 o_settings_container" id="survey_notification_config">
+
+                    <div class="col-12 col-lg-6 o_setting_box" title="Enable this to send Survey link to the customer in parent and child tickets via Email and Whatsapp">
+                        <div class="o_setting_left_pane">
+                            <field name="survey_notification"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="survey_notification"/>
+                            <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." role="img" aria-label="Values set here are company-specific."/>
+                        </div>
+                    </div>
+
+                </div>
+<!-- 
+                <h2>Working Days</h2>
+                <div class="row mt16 o_settings_container" id="working_days_config">
+
+                    <div class="col-12 col-lg-12 o_setting_box">
+                      
+                        <div class="">
+                            <field name="Sunday"/>
+                                <label for="Sunday"/>
+                                <field name="Monday" style="margin-left:15px;"/>
+                                <label for="Monday"/>
+                                <field name="Tuesday" style="margin-left:15px;"/>
+                                <label for="Tuesday"/>
+                                <field name="Wednesday" style="margin-left:15px;"/>
+                                <label for="Wednesday"/>
+                                <field name="Thursday" style="margin-left:15px;"/>
+                                <label for="Thursday"/>
+                                <field name="Friday" style="margin-left:15px;"/>
+                                <label for="Friday"/>
+                                <field name="Saturday" style="margin-left:15px;"/>
+                                <label for="Saturday"/>
+                            </div>
+                    </div>
+
+                </div> -->
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

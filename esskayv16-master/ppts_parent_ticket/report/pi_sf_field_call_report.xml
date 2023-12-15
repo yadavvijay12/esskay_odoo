@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="pi_sf_field_report_paper_format" model="report.paperformat">
+            <field name="name">PI-SF-Field Call Reports Paper Format</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">29.75</field>
+            <field name="margin_bottom">28.75</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">90</field>
+        </record>
+        <report
+                id="pi_sf_field_report"
+                string="PI-SF-Field Call - PI Required"
+                model="child.ticket"
+                report_type="qweb-pdf"
+                paperformat="ppts_parent_ticket.pi_sf_field_report_paper_format"
+                file="ppts_parent_ticket.pi_sf_field_call_report"
+                name="ppts_parent_ticket.pi_sf_field_call_report"
+                print_report_name="'PI-SF-Field Call'"/>
+
+        <template id="pi_sf_field_call_report_document">
+            <t t-call="web.html_container">
+                <t t-call="web.basic_layout">
+                    <div class="header">
+                        <div class="row" style="report_header_style">
+                            <style>table{ border:1px solid #dcdcdc; font-size:15px; width:100%; } th,tr,td{ padding:5px;
+                                font-size:15px; } strong{ padding-top:30px; }
+                            </style>
+                            <table>
+                                <t t-set="task_list_id"
+                                   t-value="request.env['tasks.master.line'].search([('child_ticket_id', '=', d.id),('is_pi_required', '=', True)], limit=1)"/>
+                                <tr>
+                                    <td>
+                                        <h3 style="text-align:center;">Stryker</h3>
+                                        <h6 style="color:darkorange;text-align:center;">SIPL FORM</h6>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <strong>PRODUCT ENQUIRY INTAKE FORM</strong>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        DOCUMENT NUMBER:IQF-CPMS-001-09
+                                        <p>REVISION LEVEL:02</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <style>table{ border:1px solid #dcdcdc; font-size:15px; width:100%; } th,tr,td{ padding:5px;
+                            font-size:15px; }
+                        </style>
+                        <hr/>
+                        <table>
+                            <tr>
+                                <td colspan="4">
+                                    <center>
+                                        <span>
+                                            <b>NOTE:</b>
+                                            Please Complete and send this form to CIC RAQA within 24 hours (1
+                                            business day) from date of event awareness
+                                        </span>
+                                    </center>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <center>
+                                        <strong style="font-size:17px">Intake</strong>
+                                    </center>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:25%">
+                                    <strong>Compliant Type</strong>
+                                </td>
+                                <td style="width:25%">
+                                    <t t-set="complaint_type"
+                                       t-value="dict(task_list_id._fields['complaint_type'].selection).get(task_list_id.complaint_type)"/>
+                                    <t t-if="complaint_type">
+                                        <t t-esc="complaint_type"/>
+                                    </t>
+                                </td>
+                                <td style="width:25%">
+                                    <strong>Phone</strong>
+                                </td>
+                                <td style="width:25%">
+                                    <span t-field="task_list_id.phone"/>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Name of reporter</strong>
+                                </td>
+                                <td>
+                                    <span t-field="task_list_id.name_of_reporter"/>
+                                </td>
+                                <td>
+                                    <strong>Email</strong>
+                                </td>
+                                <td>
+                                    <span t-field="task_list_id.email"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Title</strong>
+                                </td>
+                                <td>
+                                    <span t-esc="task_list_id.title"/>
+                                </td>
+                                <td>
+                                    <strong>Date of reporting</strong>
+                                </td>
+                                <td>
+                                    <t t-if="task_list_id.date_of_reporting">
+                                        <span t-esc="task_list_id.date_of_reporting.strftime('%d-%m-%Y')"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Awareness Date</strong>
+                                </td>
+                                <td>
+                                    <t t-if="task_list_id.awareness_date">
+                                        <span t-esc="task_list_id.awareness_date.strftime('%d-%m-%Y')"/>
+                                        <!--                                          t-field-options='{"format": "dd-MM-yyyy"}'/>-->
+                                    </t>
+                                </td>
+                                <td>
+                                    <strong>Reason for delay</strong>
+                                </td>
+                                <td>
+                                    <span t-esc="task_list_id.reason_for_delay"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <hr/>
+                        <div class="row">
+                            <table>
+                                <tr>
+                                    <td colspan="2">
+                                        <center>
+                                            <strong style="font-size:17px">Event Details</strong>
+                                        </center>
+                                    </td>
+                                </tr>
+                                <tbody>
+                                    <tr>
+                                        <td style="width:25%">
+                                            <strong>Date Of Event</strong>
+                                        </td>
+                                        <td style="width:75%">
+                                            <t t-if="task_list_id.date_of_event">
+                                                <span t-esc="task_list_id.date_of_event.strftime('%d-%m-%Y')"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Event Description (be specific)</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="task_list_id.event_description"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>How was the issue noticed</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="task_list_id.issue_noticed_comment"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Was the case completed successfully</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="task_list_id.case_completed_successfully_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Was medical intervention needed</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="task_list_id.medical_intervention_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Was a patient involved</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="task_list_id.patient_involved_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Was there a surgical delay</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="task_list_id.surgical_delay_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Was ther adverse consequence</strong>
+                                        </td>
+                                        <td>
+                                            <t t-set="select_adverse_consequences"
+                                               t-value="dict(task_list_id._fields['select_adverse_consequences'].selection).get(task_list_id.select_adverse_consequences)"/>
+                                            <t t-if="select_adverse_consequences">
+                                                <t t-esc="select_adverse_consequences"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <table>
+                                <tr>
+                                    <td colspan="2">
+                                        <center>
+                                            <strong style="font-size:17px">Account Contact Information</strong>
+                                        </center>
+                                    </td>
+                                </tr>
+                                <tbody>
+                                    <tr>
+                                        <td style="width:25%">
+                                            <strong>Intitial Reporter Facility</strong>
+                                        </td>
+                                        <td style="width:75%">
+                                            <span t-esc="task_list_id.initial_reporter_facility"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong style="font-size:17px">Account Address</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Number and Street</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="task_list_id.ac_addr_number_street"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>City</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="task_list_id.ac_addr_city"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong style="font-size:17px">Contact at account making the complaint
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:25%">
+                                            <strong>Name</strong>
+                                        </td>
+                                        <td style="width:75%">
+                                            <span t-field="task_list_id.contact_ac_marketing_name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Title</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="task_list_id.contact_ac_marketing_title"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Phone</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="task_list_id.contact_ac_marketing_phone"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Email</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="task_list_id.contact_ac_marketing_email"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Sales/Service Rep Name</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="task_list_id.sales_service_rep_name"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr/>
+                        <strong>Product Information (List all products associated with the event)</strong>
+                        <table>
+                            <thead>
+                                <tr style="background-color:lightGrey">
+                                    <th style="width:25%">
+                                        <strong>Product No</strong>
+                                    </th>
+                                    <th>
+                                        <strong>Product Description</strong>
+                                    </th>
+                                    <th>
+                                        <strong>Serial/Lot Number</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center">
+                                        <span t-field="d.product_id.product_part"/>
+                                    </td>
+                                    <td style="text-align:center">
+                                        <span t-field="d.product_id.name"/>
+                                    </td>
+                                    <td style="text-align:center">
+                                        <span t-field="d.stock_lot_id.name"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <div class="row">
+                            <table>
+                                <tr>
+                                    <td style="width:25%">
+                                        <strong>Is the product available to stryker</strong>
+                                    </td>
+                                    <td style="width:75%">
+                                        <t t-set="select_product_avail_stryker"
+                                           t-value="dict(task_list_id._fields['select_product_avail_stryker'].selection).get(task_list_id.select_product_avail_stryker)"/>
+                                        <t t-if="select_product_avail_stryker">
+                                            <t t-esc="select_product_avail_stryker"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>If no available why</strong>
+                                    </td>
+                                    <td>
+                                        <span t-esc="task_list_id.no_avail_reason"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Product Enquiry Refernce Number</strong>
+                                    </td>
+                                    <td>
+                                        <span t-esc="task_list_id.product_ref_no"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="footer o_standard_footer">
+                        <center>
+                            <strong>
+                                IQF_C SUP_001_03,
+                                <span class="list-inline-item">
+                                    <span class="page"/>
+                                </span>
+                                of
+                                <span class="list-inline-item">
+                                    <span class="topage"/>
+                                </span>
+                            </strong>
+                        </center>
+                    </div>
+                </t>
+            </t>
+        </template>
+        <template id="pi_sf_field_call_report">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="d">
+                    <t t-call="ppts_parent_ticket.pi_sf_field_call_report_document"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

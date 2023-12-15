@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_production_lot_form_inherit_assets_historical_data">
+        <field name="name">stock.production.lot.form.inherit.assets_historical_data</field>
+        <field name="model">stock.lot</field>
+        <field name="priority" eval="16"/>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page[@name='description']" position="before">
+                <page string="Asset Historical Data" name="historical_data_page">
+                    <field name="historical_data_line" widget="section_and_note_one2many" mode="tree" readonly="1">
+                        <tree string="Asset Historical Data" editable="bottom">
+                            <field name="ref_id" invisible="1"/>
+                            <field name="service_request_id"/>
+                            <field name="parent_ticket_id"/>
+                            <field name="child_ticket_id"/>
+                            <field name="problem_description"/>
+                            <field name="recommendation_customer"/>
+                            <field name="customer_remarks"/>
+                            <field name="action_taken"/>
+                            <field name="final_report_comments"/>
+                            <field name="company_id" invisible="1"/>
+                        </tree>
+                    </field>
+
+                </page>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page[@name='general_information_stock_lot']//group[@name='warranty_information']//group//field[@name='warranty_end_date']"
+                   position="after">
+                <button type="object" name="view_warranty_tickets" class="btn btn-info"
+                        title="View Tickets" string="View Tickets" context="{'is_warranty_tickets': True}"/>
+
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page[@name='general_information_stock_lot']//group[@name='warranty_information']//group//field[@name='extended_warranty_end_date']"
+                   position="after">
+                <button type="object" name="view_extend_warranty_tickets" class="btn btn-info"
+                        title="View Tickets" string="View Tickets" context="{'is_extend_warranty_tickets': True}"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page[@name='general_information_stock_lot']//group[@name='warranty_information']//group//field[@name='repair_warranty_end_date']"
+                   position="after">
+                <button type="object" name="view_repair_warranty_tickets" class="btn btn-info"
+                        title="View Tickets" string="View Tickets" context="{'is_repair_warranty_tickets': True}"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page[@name='general_information_stock_lot']//group[@name='general_information_group']//field[@name='custom_asset_warranty_line']//tree"
+                   position="after">
+                <form>
+                    <field name="child_tickets_ids">
+                    </field>
+                </form>
+            </xpath>
+
+
+        </field>
+    </record>
+</odoo>

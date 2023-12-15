@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="ppts_parent_ticket_inherit_service_request_form_view" model="ir.ui.view">
+            <field name="name">service.request.form</field>
+            <field name="model">service.request</field>
+            <field name="inherit_id" ref="ppts_service_request.service_request_form_view"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//form/header/button[@name='action_send_mail']" position="after">
+                    <field name="is_from_ct" invisible="1"/>
+                    <!-- With Approval -->
+                    <button name="action_convert_parent_ticket_wizard" string="Parent Ticket" type="object"
+                            class="btn btn-warning"
+                            attrs="{'invisible': [('state','!=','approved')]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_child_ticket_wizard" string="Convert to Child Ticket" type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','not in',['approved','resumed']), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END With Approval -->
+
+                    <!-- Without Approval -->
+                    <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END Without Approval -->
+
+                </xpath>
+                <xpath expr="//group[@name='service_request_information']" position="inside">
+                    <field name="parent_ticket_id" string="Parent Ticket ID" readonly="1"
+                           attrs="{'invisible': [('parent_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_id" string="Child Ticket ID" readonly="1"
+                           attrs="{'invisible': [('child_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_type_id" readonly="1"
+                           attrs="{'invisible': [('is_from_ct','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                </xpath>
+
+            </field>
+        </record>
+        <record id="ppts_parent_ticket_inherit_so_call_form_view" model="ir.ui.view">
+            <field name="name">service.request.so_call_form_view</field>
+            <field name="model">service.request</field>
+            <field name="inherit_id" ref="ppts_service_request.so_call_form_view"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <field name="is_from_ct" invisible="1"/>
+                    <!-- With Approval -->
+                    <button name="action_convert_parent_ticket_wizard" string="Convert to Parent Ticket" type="object"
+                            class="btn btn-warning"
+                            attrs="{'invisible': [('state','not in',['approved','resumed'])]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_child_ticket_wizard" string="Convert to Child Ticket" type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','not in',['approved','resumed']), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END With Approval -->
+
+                    <!-- Without Approval -->
+                    <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END Without Approval -->
+                </xpath>
+                <xpath expr="//group[@name='service_request_information']" position="inside">
+                    <field name="parent_ticket_id" string="Parent Ticket ID" readonly="1"
+                           attrs="{'invisible': [('parent_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_id" string="Child Ticket ID" readonly="1"
+                           attrs="{'invisible': [('child_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_type_id" readonly="1"
+                           attrs="{'invisible': [('is_from_ct','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                </xpath>
+            </field>
+        </record>
+        <!--        sr-loaner form view-->
+        <record id="ppts_parent_ticket_inherit_service_request_sr_loaner_form_view" model="ir.ui.view">
+            <field name="name">service.request.form</field>
+            <field name="model">service.request</field>
+            <field name="inherit_id" ref="ppts_service_request.service_request_sr_loaner_form_view"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <field name="is_from_ct" invisible="1"/>
+                    <!-- With Approval -->
+                    <button name="action_convert_parent_ticket_wizard" string="Convert to Parent Ticket" type="object"
+                            class="btn btn-warning"
+                            attrs="{'invisible': [('state','not in',['approved','resumed'])]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_child_ticket_wizard" string="Convert to Child Ticket" type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','not in',['approved','resumed']), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END With Approval -->
+
+                    <!-- Without Approval -->
+                    <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END Without Approval -->
+                </xpath>
+                <xpath expr="//group[@name='service_request_information']" position="inside">
+                    <field name="parent_ticket_id" string="Parent Ticket ID" readonly="1"
+                           attrs="{'invisible': [('parent_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_id" string="Child Ticket ID" readonly="1"
+                           attrs="{'invisible': [('child_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_type_id" readonly="1"
+                           attrs="{'invisible': [('is_from_ct','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="ppts_parent_ticket_inherit_service_request_sr_wr_form_view" model="ir.ui.view">
+            <field name="name">service.request.form</field>
+            <field name="model">service.request</field>
+            <field name="inherit_id" ref="ppts_service_request.service_request_sr_wr_form_view"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <field name="is_from_ct" invisible="1"/>
+                    <!-- With Approval -->
+                    <button name="action_convert_parent_ticket_wizard" string="Convert to Parent Ticket" type="object"
+                            class="btn btn-warning"
+                            attrs="{'invisible': [('state','not in',['approved','resumed'])]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_child_ticket_wizard" string="Convert to Child Ticket" type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','not in',['approved','resumed']), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END With Approval -->
+
+                    <!-- Without Approval -->
+                    <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
+                            type="object" class="btn btn-warning"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END Without Approval -->
+                </xpath>
+                <xpath expr="//group[@name='service_request_information']" position="inside">
+                    <field name="parent_ticket_id" string="Parent Ticket ID" readonly="1"
+                           attrs="{'invisible': [('parent_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_id" string="Child Ticket ID" readonly="1"
+                           attrs="{'invisible': [('child_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_type_id" readonly="1"
+                           attrs="{'invisible': [('is_from_ct','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="ppts_parent_ticket_inherit_service_request_sr_factory_form_view" model="ir.ui.view">
+            <field name="name">service.request.form</field>
+            <field name="model">service.request</field>
+            <field name="inherit_id" ref="ppts_service_request.service_request_sr_factory_form_view"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <field name="is_from_ct" invisible="1"/>
+                    <!-- With Approval -->
+                    <button name="action_convert_parent_ticket_wizard" string="Convert to Parent Ticket" type="object"
+                            class="btn btn-warning"
+                            attrs="{'invisible': [('state','not in',['approved','resumed'])]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_child_ticket_wizard" string="Convert to Child Ticket" type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','not in',['approved','resumed']), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END With Approval -->
+
+                    <!-- Without Approval -->
+                    <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END Without Approval -->
+                </xpath>
+                <xpath expr="//group[@name='service_request_information']" position="inside">
+                    <field name="parent_ticket_id" string="Parent Ticket ID" readonly="1"
+                           attrs="{'invisible': [('parent_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_id" string="Child Ticket ID" readonly="1"
+                           attrs="{'invisible': [('child_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_type_id" readonly="1"
+                           attrs="{'invisible': [('is_from_ct','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="ppts_parent_ticket_inherit_service_request_sr_fsm_form_view" model="ir.ui.view">
+            <field name="name">service.request.form</field>
+            <field name="model">service.request</field>
+            <field name="inherit_id" ref="ppts_service_request.service_request_sr_fsm_form_view"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <field name="is_from_ct" invisible="1"/>
+                    <!-- With Approval -->
+                    <button name="action_convert_parent_ticket_wizard" string="Convert to Parent Ticket" type="object"
+                            class="btn btn-warning"
+                            attrs="{'invisible': [('state','not in',['approved','resumed'])]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_child_ticket_wizard" string="Convert to Child Ticket" type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','not in',['approved','resumed']), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END With Approval -->
+
+                    <!-- Without Approval -->
+                    <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+
+                    <!-- END Without Approval -->
+                </xpath>
+                <xpath expr="//group[@name='service_request_information']" position="inside">
+                    <field name="parent_ticket_id" string="Parent Ticket ID" readonly="1"
+                           attrs="{'invisible': [('parent_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_id" string="Child Ticket ID" readonly="1"
+                           attrs="{'invisible': [('child_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_type_id" readonly="1"
+                           attrs="{'invisible': [('is_from_ct','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="ppts_parent_ticket_inherit_service_request_sr_installation_form_view" model="ir.ui.view">
+            <field name="name">service.request.form</field>
+            <field name="model">service.request</field>
+            <field name="inherit_id" ref="ppts_service_request.service_request_sr_installation_form_view"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <field name="is_from_ct" invisible="1"/>
+                    <!-- With Approval -->
+                    <button name="action_convert_parent_ticket_wizard" string="Convert to Parent Ticket" type="object"
+                            class="btn btn-warning"
+                            attrs="{'invisible': [('state','not in',['approved','resumed'])]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_child_ticket_wizard" string="Convert to Child Ticket" type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','not in',['approved','resumed']), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END With Approval -->
+
+                    <!-- Without Approval -->
+                    <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END Without Approval -->
+                </xpath>
+                <xpath expr="//group[@name='service_request_information']" position="inside">
+                    <field name="parent_ticket_id" string="Parent Ticket ID" readonly="1"
+                           attrs="{'invisible': [('parent_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_id" string="Child Ticket ID" readonly="1"
+                           attrs="{'invisible': [('child_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_type_id" readonly="1"
+                           attrs="{'invisible': [('is_from_ct','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="ppts_parent_ticket_inherit_service_request_sr_remote_support_form_view" model="ir.ui.view">
+            <field name="name">service.request.form</field>
+            <field name="model">service.request</field>
+            <field name="inherit_id" ref="ppts_service_request.service_request_sr_remote_support_form_view"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <field name="is_from_ct" invisible="1"/>
+                    <!-- With Approval -->
+                    <button name="action_convert_parent_ticket_wizard" string="Convert to Parent Ticket" type="object"
+                            class="btn btn-warning"
+                            attrs="{'invisible': [('state','not in',['approved','resumed'])]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_child_ticket_wizard" string="Convert to Child Ticket" type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','not in',['approved','resumed']), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END With Approval -->
+
+                    <!-- Without Approval -->
+                    <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END Without Approval -->
+                </xpath>
+                <xpath expr="//group[@name='service_request_information']" position="inside">
+                    <field name="parent_ticket_id" string="Parent Ticket ID" readonly="1"
+                           attrs="{'invisible': [('parent_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_id" string="Child Ticket ID" readonly="1"
+                           attrs="{'invisible': [('child_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_type_id" readonly="1"
+                           attrs="{'invisible': [('is_from_ct','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="ppts_parent_ticket_inherit_service_request_maintenance_form_view" model="ir.ui.view">
+            <field name="name">service.request.form</field>
+            <field name="model">service.request</field>
+            <field name="inherit_id" ref="ppts_service_request.service_request_maintenance_form_view"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <field name="is_from_ct" invisible="1"/>
+                    <!-- With Approval -->
+                    <button name="action_convert_parent_ticket_wizard" string="Convert to Parent Ticket" type="object"
+                            class="btn btn-warning"
+                            attrs="{'invisible': [('state','not in',['approved','resumed'])]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_child_ticket_wizard" string="Convert to Child Ticket" type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','not in',['approved','resumed']), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!-- END With Approval -->
+
+                    <!-- Without Approval -->
+                    <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
+                            type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+
+                    <!-- END Without Approval -->
+                </xpath>
+                <xpath expr="//group[@name='service_request_information']" position="inside">
+                    <field name="parent_ticket_id" string="Parent Ticket ID" readonly="1"
+                           attrs="{'invisible': [('parent_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_id" string="Child Ticket ID" readonly="1"
+                           attrs="{'invisible': [('child_ticket_id','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <field name="child_ticket_type_id" readonly="1"
+                           attrs="{'invisible': [('is_from_ct','=',False)]}"
+                           groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="task_master_form_view_inherit_pt" model="ir.ui.view">
+            <field name="name">task_master_form.view</field>
+            <field name="model">tasks.master</field>
+            <field name="inherit_id" ref="ppts_custom_workflow.task_master_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='notification_config']" position="before">
+                    <group name="pt_config">
+                        <separator string="Ticket Configuration"
+                                   style="line-height: 20px; background-color: #9681da8f"/>
+                        <group style=" width: 33.33% !important;">
+                            <field name="is_create_ticket"/>
+                        </group>
+                        <group style=" width: 33.33% !important;">
+                            <field name="is_enable_child_ticket"/>
+                        </group>
+                        <group style=" width: 33.33% !important;">
+                            <field name="is_create_service_request"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group>
+                            <field name="service_type_id"
+                                   attrs="{'required': ['|', '|', ('is_create_ticket', '=', True), ('is_enable_child_ticket', '=', True), ('is_create_service_request', '=', True)]}"/>
+                            <field name="service_category_id"
+                                   attrs="{'required': ['|', '|', ('is_create_ticket', '=', True), ('is_enable_child_ticket', '=', True), ('is_create_service_request', '=', True)]}"/>
+                            <field name="request_type_id"
+                                   attrs="{'required': ['|', '|', ('is_create_ticket', '=', True), ('is_enable_child_ticket', '=', True), ('is_create_service_request', '=', True)]}"/>
+                        </group>
+                        <group>
+                            <field name="parent_configuration_id"
+                                   attrs="{'required': [('is_create_ticket', '=', True)],'invisible': ['|',('is_enable_child_ticket', '=', True),('is_create_service_request', '=', True)]}"/>
+                            <field name="child_configuration_id"
+                                   attrs="{'required': [('is_enable_child_ticket', '=', True)],'invisible': ['|',('is_create_ticket', '=', True),('is_create_service_request', '=', True)]}"/>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

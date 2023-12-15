@@ -1,0 +1,177 @@
+<odoo>
+    <data>
+        <record id="loaner_report_paper_format" model="report.paperformat">
+            <field name="name">Loaner Reports Paper Format</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">29.75</field>
+            <field name="margin_bottom">28.75</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="loaner_report_config" model="ir.actions.report">
+            <field name="name">Loaner Report</field>
+            <field name="model">child.ticket</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">ppts_parent_ticket.loaner_order_report_document</field>
+            <field name="report_file">ppts_parent_ticket.loaner_order_report_document</field>
+            <field name="print_report_name">'Loaner Report'</field>
+            <field name="binding_model_id" ref="model_child_ticket"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="loaner_report_paper_format"/>
+        </record>
+
+        <template id="loaner_order_report">
+            <t t-call="web.basic_layout">
+                <t t-set="parent_ticket_date"
+                   t-value="request.env['sale.order'].search([('parent_ticket_id', '=', doc.parent_ticket_id.id)], limit=1)"/>
+
+                <div class="header">
+                    <style>table{ border-collapse:collapse; width:100%; border:1px; border:1px solid #dcdcdc; }
+                        tr,th,td{ border:1px solid #dcdcdc; padding:2px; } h5{ font-size:18px; }
+                    </style>
+                    <table>
+                        <tr>
+                            <th>
+                                <center>
+                                    <span style="font-size:40px">Stryker</span>
+                                    <br/>
+                                    <span>
+                                        <b style="color:#ff8c00;font-size:17px;">SIPL FORM</b>
+                                    </span>
+                                </center>
+                            </th>
+                            <th>
+                                <center>
+                                    <h5>
+                                        <b>Loaner Approval Form</b>
+                                    </h5>
+                                </center>
+                            </th>
+                            <th style="text-align:left;font-size:16px">
+                                <span>Document No: IQF_CPMS_006_01</span>
+                                <br/>
+                                <br/>
+                                <span>Rev No:01</span>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+                <br/>
+                <div class="page">
+                    <style>table{ border-collapse:collapse; width:100%; border:1px; border:1px solid #dcdcdc; }
+                        tr,th,td{ border:1px solid #dcdcdc; padding:2px; }
+                    </style>
+                    <table style="height:70px" border="1">
+                        <center>
+                            <th style="font-size:20px">
+                                <br/>
+                                <strong>TECHNICAL SERVICES - PRODUCT LOANER FORM</strong>
+                            </th>
+                        </center>
+                    </table>
+                    <br/>
+                    <table style="height:70px" border="1">
+                        <tbody>
+                            <tr>
+                                <td style="width:16%">
+                                    <strong>Date</strong>
+                                </td>
+                                <td style="width:16%">
+<!--                                    <span t-esc="parent_ticket_date.date_order"/>-->
+                                    <span t-esc="parent_ticket_date.date_order.strftime('%d-%b-%Y %H:%M %p')"/>
+                                </td>
+
+                                <td style="width:16%">
+                                    <strong>Customer Name</strong>
+                                </td>
+                                <td style="width:16%">
+                                    <span t-field="doc.partner_id.name"/>
+                                </td>
+                                <td style="width:16%"/>
+                                <td style="width:16%"/>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Region</strong>
+                                </td>
+                                <td>
+                                    <span t-field="doc.partner_id.customer_region"/>
+
+                                </td>
+                                <td>
+                                    <strong>City</strong>
+                                </td>
+                                <td>
+                                    <span t-field="doc.partner_id.city"/>
+                                </td>
+                                <td>
+                                    <strong>Ph.No</strong>
+                                </td>
+                                <td>
+                                    <span t-field="doc.partner_id.phone"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <hr/>
+                    <table style="height:80px" border="1">
+                        <tr style="background-color:lightGrey;">
+                            <center>
+                                <th>SN.</th>
+                                <th>Item Code</th>
+                                <th>Serial No</th>
+                                <th>Product Description</th>
+                                <th>Qty</th>
+                                <th>Warranty/Contact(Y/N)</th>
+                            </center>
+                        </tr>
+                        <t t-set="serial_number" t-value="0"></t>
+                        <t t-set="parent_ticket"
+                           t-value="request.env['sale.order'].search([('parent_ticket_id', '=', doc.parent_ticket_id.id)], limit=1)"/>
+
+
+                        <tr t-foreach="parent_ticket.order_line" t-as="d">
+                            <t t-set="serial_number" t-value="serial_number+1"/>
+                            <td>
+                                <t t-esc="serial_number"/>
+                            </td>
+                            <td>
+                                <t t-esc="d.asset_id.name"/>
+
+                            </td>
+                            <td>
+                                <t t-esc="d.product_template_id.default_code"/>
+                            </td>
+                            <td>
+                                <span t-field="d.name"/>
+
+                            </td>
+                            <td>
+                                <span t-field="d.product_uom_qty"/>
+                            </td>
+                            <td>
+                                <span t-field="d.warranty_select"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <p style="page-break-after: always;"/>
+            </t>
+        </template>
+        <template id="loaner_order_report_document">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ppts_parent_ticket.loaner_order_report"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

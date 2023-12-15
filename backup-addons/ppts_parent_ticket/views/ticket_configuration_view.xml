@@ -1,0 +1,902 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ticket_config_form" model="ir.ui.view">
+        <field name="name">ticket.configuration.form</field>
+        <field name="model">ticket.configuration</field>
+        <field name="arch" type="xml">
+            <form>
+            </form>
+        </field>
+    </record>
+
+    <!--Parent Ticket Configuration-->
+    <record id="parent_ticket_config_search_view" model="ir.ui.view">
+        <field name="name">parent.ticket.config.search.view</field>
+        <field name="model">parent.ticket.configuration</field>
+        <field name="arch" type="xml">
+            <search string="Search in Parent Ticket configuration">
+                <field name="create_date"/>
+                <field name="parent_config_name"/>
+                <field name="service_type_id"/>
+                <field name="work_flow_id"/>
+                <field name="service_category_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="parent_ticket_config_form" model="ir.ui.view">
+        <field name="name">parent.ticket.configuration.form</field>
+        <field name="model">parent.ticket.configuration</field>
+        <field name="arch" type="xml">
+            <form>
+                <h1>
+                    <field name="parent_config_name" placeholder="Parent Ticket Name" required="1"/>
+                </h1>
+                <label for="service_type_id" string="Parent Service Type"/>
+                <field name="service_type_id"/>
+                <label for="service_category_id" string="Parent Service Category"/>
+                <field name="service_category_id"/>
+                <label for="is_child_ticket_auto" string="Create Child Ticket Automatically"/>
+                <field name="is_child_ticket_auto" widget="boolean_toggle"/>
+                <field name="child_ticket_type_id"
+                       attrs="{'invisible': [('is_child_ticket_auto','=',False)]}"
+                       placeholder="Child Ticket Type"/>
+                <!--                <field name="control_point_id"-->
+                <!--                       attrs="{'invisible': [('is_child_ticket_auto','=',False)]}"-->
+                <!--                       placeholder="Control Point"/>-->
+                <field name="task_id"
+                       attrs="{'invisible': [('is_child_ticket_auto','=',False)]}"
+                       placeholder="Status With Action"/>
+                <!--Inventory-->
+                <group>
+                    <group string="Inventory" name="inventory">
+                        <field name="is_inventory" widget="boolean_toggle"/>
+                    </group>
+                    <group>
+                    </group>
+                    <group string="Receipts" name="receipts" attrs="{'invisible': [('is_inventory','=',False)]}">
+
+                        <!-- Receipts-->
+                        <field name="is_inward_receipts" attrs="{'invisible': [('is_inventory','=',False)]}"
+                               widget="boolean_toggle"/>
+                        <field name="receipts_operation_type_id"
+                               attrs="{'invisible': ['|',('is_inward_receipts','=',False),('is_inventory','=',False)]}"/>
+                        <label for="alert_receipts"
+                               attrs="{'invisible': ['|',('is_inward_receipts','=',False),('is_inventory','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="alert_receipts"
+                                   attrs="{'invisible': ['|',('is_inward_receipts','=',False),('is_inventory','=',False)]}"
+                                   widget="radio"/>
+                            <div attrs="{'invisible': ['|',('is_inward_receipts','=',False),('is_inventory','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_receipts_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|','|',('is_inward_receipts','=',False),('is_inventory','=',False),('alert_receipts','=',False)]}"
+                                       placeholder="Designation"/>
+                                <field name="alert_receipts_email_template_id"
+                                       attrs="{'invisible': ['|','|',('is_inward_receipts','=',False),('is_inventory','=',False),('alert_receipts','=',False)]}"
+                                       placeholder="Email Template"/>
+                            </div>
+                        </div>
+                        <field name="receipts_cust_email_template_id"
+                               attrs="{'invisible': ['|',('is_inward_receipts','=',False),('is_inventory','=',False)]}"/>
+                    </group>
+
+                    <group name="delivery" string="Delivery" attrs="{'invisible': [('is_inventory','=',False)]}">
+                        <field name="is_outward_delivery_order" attrs="{'invisible': [('is_inventory','=',False)]}"
+                               widget="boolean_toggle"/>
+                        <field name="delivery_operation_type_id"
+                               attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"/>
+                        <label for="alert_delivery"
+                               attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="alert_delivery"
+                                   attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"
+                                   widget="radio"/>
+                            <div attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_delivery_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|','|',('is_outward_delivery_order','=',False),('is_inventory','=',False),('alert_delivery','=',False)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_delivery_email_template_id"
+                                       attrs="{'invisible': ['|','|',('is_outward_delivery_order','=',False),('is_inventory','=',False),('alert_delivery','=',False)]}"
+                                       placeholder="Email Template"/>
+                            </div>
+                        </div>
+                        <field name="delivery_cust_email_template_id"
+                               attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"/>
+                        <label for="is_approval_required_delivery"
+                               attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_delivery"
+                                   attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_delivery', '=', False)]}"
+                                 class="w-100">
+                                <field name="delivery_approval_team_ids" placeholder="Team"
+                                       widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_approval_required_delivery','=',False),('is_inventory','=',False)]}"/>
+                            </div>
+                        </div>
+
+                    </group>
+                    <group name="transfer" string="Transfer" attrs="{'invisible': [('is_inventory','=',False)]}">
+                        <field name="is_material_movement" attrs="{'invisible': [('is_inventory','=',False)]}"
+                               widget="boolean_toggle"/>
+                        <field name="transfer_operation_type_ids" widget="many2many_tags"
+                               attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"/>
+                        <label for="alert_transfer"
+                               attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="alert_transfer"
+                                   attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"
+                                   widget="radio"/>
+                            <div attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_transfer_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|','|',('is_material_movement','=',False),('is_inventory','=',False),('alert_transfer','=',False)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_transfer_email_template_id"
+                                       attrs="{'invisible': ['|','|',('is_material_movement','=',False),('is_inventory','=',False),('alert_transfer','=',False)]}"
+                                       placeholder="Email Template"/>
+                            </div>
+                        </div>
+                        <field name="transfer_cust_email_template_id"
+                               attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"/>
+                        <label for="is_approval_required_transfer"
+                               attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_transfer"
+                                   attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_transfer', '=', False)]}"
+                                 class="w-100">
+                                <field name="transfer_approval_team_ids" placeholder="Team"
+                                       widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_approval_required_transfer','=',False),('is_inventory','=',False)]}"/>
+                            </div>
+                        </div>
+
+                    </group>
+
+                    <group name="spares" string="Spares">
+                        <field name="is_spares"
+                               widget="boolean_toggle"/>
+                        <label for="alert_spares"
+                               attrs="{'invisible': [('is_spares','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="alert_spares"
+                                   attrs="{'invisible': [('is_spares','=',False)], 'required': [('is_spares','=',True)]}"
+                                   widget="radio"/>
+                            <div attrs="{'invisible': [('is_spares','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_spares_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_spares','=',False),('alert_spares','=',False)], 'required': [('is_spares','=',True)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_spares_email_template_id"
+                                       attrs="{'invisible': ['|',('is_spares','=',False),('alert_spares','=',False)], 'required': [('is_spares','=',True)]}"
+                                       placeholder="Email Template"/>
+                            </div>
+                        </div>
+                        <field name="spares_cust_email_template_id"
+                               attrs="{'invisible': [('is_spares','=',False)]}"/>
+                        <label for="is_approval_required_spares"
+                               attrs="{'invisible': [('is_spares','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_spares"
+                                   attrs="{'invisible': [('is_spares','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_spares', '=', False)]}" class="w-100">
+                                <field name="spares_approval_team_ids" placeholder="Approval Teams"
+                                       widget="many2many_tags"
+                                       attrs="{'invisible': [('is_approval_required_spares','=',False)], 'required': [('is_approval_required_spares','=',True)]}"/>
+                            </div>
+                        </div>
+
+                    </group>
+
+                    <group name="loaners" string="Loaners">
+                        <field name="is_loaners"
+                               widget="boolean_toggle"/>
+                        <label for="alert_loaners"
+                               attrs="{'invisible': [('is_loaners','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="alert_loaners"
+                                   attrs="{'invisible': [('is_loaners','=',False)], 'required': [('is_loaners','=',True)]}"
+                                   widget="radio"/>
+                            <div attrs="{'invisible': [('is_loaners','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_loaners_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_loaners','=',False),('alert_loaners','=',False)], 'required': [('is_loaners','=',True)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_loaners_email_template_id"
+                                       attrs="{'invisible': ['|',('is_loaners','=',False),('alert_loaners','=',False)], 'required': [('is_loaners','=',True)]}"
+                                       placeholder="Email Template"/>
+                            </div>
+                        </div>
+                        <field name="loaners_cust_email_template_id"
+                               attrs="{'invisible': [('is_loaners','=',False)]}"/>
+                        <label for="is_approval_required_loaners"
+                               attrs="{'invisible': [('is_loaners','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_loaners"
+                                   attrs="{'invisible': [('is_loaners','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_loaners', '=', False)]}"
+                                 class="w-100">
+                                <field name="loaners_approval_team_ids" placeholder="Team"
+                                       widget="many2many_tags"
+                                       attrs="{'invisible': [('is_approval_required_loaners','=',False)], 'required': [('is_approval_required_loaners','=',True)]}"/>
+                            </div>
+                        </div>
+
+                    </group>
+
+                    <group name="warranty" string="Waranty">
+                        <field name="is_warranty_replacement"
+                               widget="boolean_toggle"/>
+                        <label for="alert_warranty"
+                               attrs="{'invisible': [('is_warranty_replacement','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="alert_warranty"
+                                   attrs="{'invisible': [('is_warranty_replacement','=',False)], 'required': [('is_warranty_replacement','=',True)]}"
+                                   widget="radio"/>
+                            <div attrs="{'invisible': [('is_warranty_replacement','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_warranty_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_warranty_replacement','=',False),('alert_warranty','=',False)], 'required': [('is_warranty_replacement','=',True)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_warranty_email_template_id"
+                                       attrs="{'invisible': ['|',('is_warranty_replacement','=',False),('alert_warranty','=',False)], 'required': [('is_warranty_replacement','=',True)]}"
+                                       placeholder="Email Template"/>
+                            </div>
+                        </div>
+                        <field name="warranty_cust_email_template_id"
+                               attrs="{'invisible': [('is_warranty_replacement','=',False)]}"/>
+                        <label for="is_approval_required_warranty"
+                               attrs="{'invisible': [('is_warranty_replacement','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_warranty"
+                                   attrs="{'invisible': [('is_warranty_replacement','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_warranty', '=', False)]}"
+                                 class="w-100">
+                                <field name="warranty_approval_team_ids" placeholder="Team"
+                                       widget="many2many_tags"
+                                       attrs="{'invisible': [('is_approval_required_warranty','=',False)], 'required': [('is_approval_required_warranty','=',True)]}"/>
+                            </div>
+                        </div>
+
+                    </group>
+                </group>
+                <!-- End Inventory-->
+                <!-- Parent Ticket-->
+                <group>
+                    <group string="Parent Ticket" name="parent_ticket">
+                        <field name="is_create_alert"
+                               widget="boolean_toggle"/>
+                        <field name="notification_template_id"
+                               attrs="{'invisible': [('is_create_alert','=',False)], 'required': [('is_create_alert','=',True)]}"/>
+                        <field name="customer_type"
+                               attrs="{'invisible': [('is_create_alert','=',False)], 'required': [('is_create_alert','=',True)]}"
+                               widget="radio" options="{'horizontal': True}"/>
+                    </group>
+                    <!--End Parent Ticket-->
+                    <!-- Quality-->
+                    <group string="Quality" name="quality">
+                        <field name="is_quality" widget="boolean_toggle"/>
+                        <field name="inward_receipts" widget="boolean_toggle"
+                               attrs="{'invisible': [('is_quality','=',False)]}"/>
+                        <field name="is_outward_receipts" widget="boolean_toggle"
+                               attrs="{'invisible': [('is_quality','=',False)]}"/>
+                    </group>
+                    <!-- End Quality-->
+                    <!--Logical Check-->
+                    <group string="Logical Check" name="is_logical_check">
+                        <field name="is_logical_check" widget="boolean_toggle"/>
+                        <field name="in_oem_warranty_approved" attrs="{'invisible': [('is_logical_check','=',False)]}"
+                               widget="boolean_toggle"/>
+                        <field name="in_oo_warranty_approved" attrs="{'invisible': [('is_logical_check','=',False)]}"
+                               widget="boolean_toggle"/>
+                        <field name="in_repair_warranty_approved"
+                               attrs="{'invisible': [('is_logical_check','=',False)]}"
+                               widget="boolean_toggle"/>
+                        <field name="oo_repair_warranty_approved"
+                               attrs="{'invisible': [('is_logical_check','=',False)]}"
+                               widget="boolean_toggle"/>
+                        <field name="paid_repair_approved" attrs="{'invisible': [('is_logical_check','=',False)]}"
+                               widget="boolean_toggle"/>
+                    </group>
+                    <!-- End Logical Check-->
+                    <!--General-->
+                    <group string="General" name="general">
+                        <field name="is_general" widget="boolean_toggle"/>
+                    </group>
+                    <group string="OEM Warranty Check" name="oem_warranty_check"
+                           attrs="{'invisible': [('is_general','=',False)]}">
+                        <field name="oem_warranty_check" attrs="{'invisible': [('is_general','=',False)]}"
+                               widget="radio" options="{'horizontal': True}"/>
+                        <field name="oem_inwarranty_approval"
+                               attrs="{'invisible': ['|', ('is_general','=',False), ('oem_warranty_check','=','no')]}"
+                               widget="radio" options="{'horizontal': True}"/>
+                        <field name="oem_outwarranty_approval"
+                               attrs="{'invisible': ['|', ('is_general','=',False), ('oem_warranty_check','=','no')]}"
+                               widget="radio" options="{'horizontal': True}"/>
+                        <field name="oem_approval_team_ids" widget="many2many_tags"
+                               attrs="{'invisible': ['|', ('is_general','=',False), ('oem_warranty_check','=','no')], 'required': [('oem_warranty_check','=',True)]}"/>
+                        <field name="oem_warranty_void_approval"
+                               attrs="{'invisible': ['|', ('is_general','=',False), ('oem_warranty_check','=','no')]}"
+                               widget="radio" options="{'horizontal': True}"/>
+                        <field name="void_oem_approval_team_ids" widget="many2many_tags"
+                               attrs="{'invisible': ['|', '|',('is_general','=',False), ('oem_warranty_check','=','no'), ('oem_warranty_void_approval','=','no')]}"/>
+
+                        <separator string="Send Notification Automatically"
+                                   attrs="{'invisible': ['|', '|',('is_general','=',False), ('oem_warranty_check','=','no'), ('oem_warranty_void_approval','=','no')]}"/>
+                        <field name="notification_oem_approval_team_ids" string="Team" widget="many2many_tags"
+                               attrs="{'invisible': ['|', '|', ('is_general','=',False), ('oem_warranty_check','=','no'), ('oem_warranty_void_approval','=','no')]}"/>
+                        <field name="notification_oem_email_template_id"
+                               attrs="{'invisible': ['|', '|', ('is_general','=',False), ('oem_warranty_check','=','no'), ('oem_warranty_void_approval','=','no')]}"/>
+                        <field name="is_send_notification_auto_oem" invisible="1"/>
+                    </group>
+                    <group name="repair" string="Repair" attrs="{'invisible': [('is_general','=',False)]}">
+                        <field name="repair_warranty_check" attrs="{'invisible': [('is_general','=',False)]}"
+                               widget="radio" options="{'horizontal': True}"/>
+                        <field name="repair_inwarranty_approval"
+                               attrs="{'invisible': ['|', ('is_general','=',False), ('repair_warranty_check','=','no')]}"
+                               widget="radio" options="{'horizontal': True}"/>
+                        <field name="repair_outwarranty_approval"
+                               attrs="{'invisible': ['|', ('is_general','=',False), ('repair_warranty_check','=','no')]}"
+                               widget="radio" options="{'horizontal': True}"/>
+                        <field name="repair_approval_team_ids" widget="many2many_tags"
+                               attrs="{'invisible': ['|', ('is_general','=',False), ('repair_warranty_check','=','no')], 'required': [ ('repair_warranty_check','=',True)]}"/>
+                        <field name="repair_warranty_void_approval"
+                               attrs="{'invisible': ['|', ('is_general','=',False), ('repair_warranty_check','=','no')]}"
+                               widget="radio" options="{'horizontal': True}"/>
+                        <field name="void_repair_approval_team_ids" widget="many2many_tags"
+                               attrs="{'invisible': ['|', '|',('is_general','=',False), ('repair_warranty_check','=','no'), ('repair_warranty_void_approval','=','no')]}"/>
+
+                        <separator string="Send Notification Automatically"
+                                   attrs="{'invisible': ['|', '|',('is_general','=',False), ('repair_warranty_check','=','no'), ('repair_warranty_void_approval','=','no')]}"/>
+                        <field name="notification_repair_approval_team_ids" string="Team" widget="many2many_tags"
+                               attrs="{'invisible': ['|', '|',('is_general','=',False), ('repair_warranty_check','=','no'), ('repair_warranty_void_approval','=','no')]}"/>
+                        <field name="notification_repair_email_template_id"
+                               attrs="{'invisible': ['|', '|',('is_general','=',False), ('repair_warranty_check','=','no'), ('repair_warranty_void_approval','=','no')]}"/>
+                        <field name="is_job_not_resolved" widget="radio"
+                               attrs="{'invisible': ['|', '|',('is_general','=',False), ('repair_warranty_check','=','no'), ('repair_warranty_void_approval','=','no')]}"
+                               options="{'horizontal': True}"/>
+                        <field name="is_send_notification_auto_repair" invisible="1"/>
+                    </group>
+                    <group name="work_flow_grp" string="Work Flow">
+                        <field name="work_flow_id"/>
+                    </group>
+                </group>
+                <!-- End General-->
+                <!--Pages-->
+                <notebook>
+                    <page string="Child Ticket" name="add_child_ticket">
+                        <field name="child_ticket_ids">
+                            <tree string="Child Tickets" editable="bottom">
+                                <field name="child_ids" widget="many2many_tags"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+                <!--End Pages-->
+            </form>
+        </field>
+    </record>
+
+    <record id="ticket_config_parent_tree" model="ir.ui.view">
+        <field name="name">parent.ticket.configuration.tree</field>
+        <field name="model">parent.ticket.configuration</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="create_date"/>
+                <field name="parent_config_name"/>
+                <field name="service_type_id"/>
+                <field name="work_flow_id"/>
+                <field name="service_category_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="parent_action_ticket_config" model="ir.actions.act_window">
+        <field name="name">Parent Ticket Configuration</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">parent.ticket.configuration</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="ticket_config_parent_tree"/>
+        <field name="search_view_id" ref="parent_ticket_config_search_view"/>
+    </record>
+    <!--End Parent Ticket Configuration-->
+    <!--Child Ticket Configuration-->
+
+    <record id="child_ticket_config_search_view" model="ir.ui.view">
+        <field name="name">child.ticket.config.search.view</field>
+        <field name="model">child.ticket.configuration</field>
+        <field name="arch" type="xml">
+            <search string="Search in Parent Ticket configuration">
+                <field name="create_date"/>
+                <field name="child_config_name"/>
+                <field name="child_ticket_type"/>
+                <field name="child_ticket_type"/>
+                <field name="work_flow_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="child_ticket_config_form" model="ir.ui.view">
+        <field name="name">child.ticket.configuration.form</field>
+        <field name="model">child.ticket.configuration</field>
+        <field name="arch" type="xml">
+            <form>
+                <h1>
+                    <field name="child_config_name" placeholder="Child Ticket Name" required="1"/>
+                </h1>
+                <field name="child_ticket_type" placeholder="Child Type" required="1"/>
+                <!--Inventory-->
+                <group>
+                    <group string="Inventory" name="inventory">
+                        <field name="is_inventory" widget="boolean_toggle"/>
+                    </group>
+                    <group>
+                    </group>
+                    <group string="Receipts" name="receipts" attrs="{'invisible': [('is_inventory','=',False)]}">
+                        <!-- Receipts-->
+                        <field name="is_inward_receipts" attrs="{'invisible': [('is_inventory','=',False)]}"
+                               widget="boolean_toggle"/>
+                        <field name="receipts_operation_type_id"
+                               attrs="{'invisible': ['|',('is_inward_receipts','=',False),('is_inventory','=',False)]}"/>
+                        <label for="alert_receipts"
+                               attrs="{'invisible': ['|',('is_inward_receipts','=',False),('is_inventory','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="alert_receipts"
+                                   attrs="{'invisible': ['|',('is_inward_receipts','=',False),('is_inventory','=',False)]}"
+                                   widget="radio"/>
+                            <div attrs="{'invisible': ['|',('is_inward_receipts','=',False),('is_inventory','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_receipts_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|','|',('is_inward_receipts','=',False),('is_inventory','=',False),('alert_receipts','=',False)]}"
+                                       placeholder="Designation"/>
+                                <field name="alert_receipts_email_template_id"
+                                       attrs="{'invisible': ['|','|',('is_inward_receipts','=',False),('is_inventory','=',False),('alert_receipts','=',False)]}"
+                                       placeholder="Email Template"/>
+                            </div>
+                        </div>
+                        <field name="receipts_cust_email_template_id"
+                               attrs="{'invisible': ['|',('is_inward_receipts','=',False),('is_inventory','=',False)]}"/>
+                    </group>
+                    <group name="delivery" string="Delivery" attrs="{'invisible': [('is_inventory','=',False)]}">
+                        <field name="is_outward_delivery_order" attrs="{'invisible': [('is_inventory','=',False)]}"
+                               widget="boolean_toggle"/>
+                        <field name="delivery_operation_type_id"
+                               attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"/>
+                        <label for="alert_delivery"
+                               attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="alert_delivery"
+                                   attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"
+                                   widget="radio"/>
+                            <div attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_delivery_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|','|',('is_outward_delivery_order','=',False),('is_inventory','=',False),('alert_delivery','=',False)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_delivery_email_template_id"
+                                       attrs="{'invisible': ['|','|',('is_outward_delivery_order','=',False),('is_inventory','=',False),('alert_delivery','=',False)]}"
+                                       placeholder="Email Template"/>
+                            </div>
+                        </div>
+                        <field name="delivery_cust_email_template_id"
+                               attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"/>
+                        <label for="is_approval_required_delivery"
+                               attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_delivery"
+                                   attrs="{'invisible': ['|',('is_outward_delivery_order','=',False),('is_inventory','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_delivery', '=', False)]}"
+                                 class="w-100">
+                                <field name="delivery_approval_team_ids" placeholder="Team" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_approval_required_delivery','=',False),('is_inventory','=',False)]}"/>
+                            </div>
+                        </div>
+                    </group>
+                    <group name="transfer" string="Transfer" attrs="{'invisible': [('is_inventory','=',False)]}">
+                        <field name="is_material_movement" attrs="{'invisible': [('is_inventory','=',False)]}"
+                               widget="boolean_toggle"/>
+                        <field name="transfer_operation_type_ids" widget="many2many_tags"
+                               attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"/>
+                        <label for="alert_transfer"
+                               attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="alert_transfer"
+                                   attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"
+                                   widget="radio"/>
+                            <div attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_transfer_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|','|',('is_material_movement','=',False),('is_inventory','=',False),('alert_transfer','=',False)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_transfer_email_template_id"
+                                       attrs="{'invisible': ['|','|',('is_material_movement','=',False),('is_inventory','=',False),('alert_transfer','=',False)]}"
+                                       placeholder="Email Template"/>
+                            </div>
+                        </div>
+                        <field name="transfer_cust_email_template_id"
+                               attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"/>
+                        <label for="is_approval_required_transfer"
+                               attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_transfer"
+                                   attrs="{'invisible': ['|',('is_material_movement','=',False),('is_inventory','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_transfer', '=', False)]}"
+                                 class="w-100">
+                                <field name="transfer_approval_team_ids" placeholder="Team" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_approval_required_transfer','=',False),('is_inventory','=',False)]}"/>
+                            </div>
+                        </div>
+                    </group>
+                    <group name="spares" string="Spares">
+                        <field name="is_spares"
+                               widget="boolean_toggle"/>
+                        <label for="alert_spares"
+                               attrs="{'invisible': [('is_spares','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="alert_spares"
+                                   attrs="{'invisible': [('is_spares','=',False)], 'required': [('is_spares','=',True)]}"
+                                   widget="radio"/>
+                            <div attrs="{'invisible': [('is_spares','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_spares_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_spares','=',False),('alert_spares','=',False)], 'required': [('is_spares','=',True)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_spares_email_template_id"
+                                       attrs="{'invisible': ['|',('is_spares','=',False),('alert_spares','=',False)], 'required': [('is_spares','=',True)]}"
+                                       placeholder="Email Template"/>
+                            </div>
+                        </div>
+                        <field name="spares_cust_email_template_id"
+                               attrs="{'invisible': [('is_spares','=',False)]}"/>
+                        <label for="is_approval_required_spares"
+                               attrs="{'invisible': [('is_spares','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_spares"
+                                   attrs="{'invisible': [('is_spares','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_spares', '=', False)]}" class="w-100">
+                                <field name="spares_approval_team_ids" placeholder="Team" widget="many2many_tags"
+                                       attrs="{'invisible': [('is_approval_required_spares','=',False)], 'required': [('is_approval_required_spares','=',True)]}"/>
+                            </div>
+                        </div>
+                    </group>
+                    <group name="loaners" string="Loaners">
+                        <field name="is_loaners"
+                               widget="boolean_toggle"/>
+                        <label for="alert_loaners"
+                               attrs="{'invisible': [('is_loaners','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="alert_loaners"
+                                   attrs="{'invisible': [('is_loaners','=',False)]}"
+                                   widget="radio"/>
+                            <div attrs="{'invisible': [('is_loaners','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_loaners_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_loaners','=',False),('alert_loaners','=',False)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_loaners_email_template_id"
+                                       attrs="{'invisible': ['|',('is_loaners','=',False),('alert_loaners','=',False)]}"
+                                       placeholder="Email Template"/>
+                            </div>
+                        </div>
+                        <field name="loaners_cust_email_template_id"
+                               attrs="{'invisible': [('is_loaners','=',False)]}"/>
+                        <label for="is_approval_required_loaners"
+                               attrs="{'invisible': [('is_loaners','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_loaners"
+                                   attrs="{'invisible': [('is_loaners','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_loaners', '=', False)]}"
+                                 class="w-100">
+                                <field name="loaners_approval_team_ids" placeholder="Team" widget="many2many_tags"
+                                       attrs="{'invisible': [('is_approval_required_loaners','=',False)]}"/>
+                            </div>
+                        </div>
+                    </group>
+
+                    <group name="warranty" string="Waranty">
+                        <field name="is_warranty_replacement"
+                               widget="boolean_toggle"/>
+                        <label for="alert_warranty"
+                               attrs="{'invisible': [('is_warranty_replacement','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="alert_warranty"
+                                   attrs="{'invisible': [('is_warranty_replacement','=',False)], 'required': [('is_warranty_replacement','=',True)]}"
+                                   widget="radio"/>
+                            <div attrs="{'invisible': [('is_warranty_replacement','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_warranty_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_warranty_replacement','=',False),('alert_warranty','=',False)], 'required': [('is_warranty_replacement','=',True)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_warranty_email_template_id"
+                                       attrs="{'invisible': ['|',('is_warranty_replacement','=',False),('alert_warranty','=',False)], 'required': [('is_warranty_replacement','=',True)]}"
+                                       placeholder="Email Template"/>
+                            </div>
+                        </div>
+                        <field name="warranty_cust_email_template_id"
+                               attrs="{'invisible': [('is_warranty_replacement','=',False)]}"/>
+                        <label for="is_approval_required_warranty"
+                               attrs="{'invisible': [('is_warranty_replacement','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_warranty"
+                                   attrs="{'invisible': [('is_warranty_replacement','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_warranty', '=', False)]}"
+                                 class="w-100">
+                                <field name="warranty_approval_team_ids" placeholder="Team" widget="many2many_tags"
+                                       attrs="{'invisible': [('is_approval_required_warranty','=',False)], 'required': [('is_approval_required_warranty','=',True)]}"/>
+                            </div>
+                        </div>
+
+                    </group>
+                </group>
+                <!-- End Inventory-->
+                <!-- Child Ticket-->
+                <group>
+                    <group string="Child Ticket" name="child_ticket">
+                        <field name="is_create_alert"
+                               widget="boolean_toggle"/>
+                        <field name="notification_template_id" attrs="{'invisible': [('is_create_alert','=',False)]}"/>
+                        <field name="customer_type" attrs="{'invisible': [('is_create_alert','=',False)]}"
+                               widget="radio" options="{'horizontal': True}"/>
+                    </group>
+                    <!--End Child Ticket-->
+                    <!-- Quality-->
+                    <group string="Quality" name="quality">
+                        <field name="is_quality" widget="boolean_toggle"/>
+                        <field name="inward_receipts" widget="boolean_toggle"
+                               attrs="{'invisible': [('is_quality','=',False)]}"/>
+                        <field name="is_outward_receipts" widget="boolean_toggle"
+                               attrs="{'invisible': [('is_quality','=',False)]}"/>
+                        <field name="quality_check_after_repair" attrs="{'invisible': [('is_quality','=',False)]}"
+                               widget="boolean_toggle"/>
+                        <field name="inprocess_inspection" attrs="{'invisible': [('is_quality','=',False)]}"
+                               widget="boolean_toggle"/>
+                        <field name="transfer_inspection" attrs="{'invisible': [('is_quality','=',False)]}"
+                               widget="boolean_toggle"/>
+                    </group>
+
+                    <!-- End Quality-->
+                    <!-- Assign Engineer-->
+                    <group string="Assign Engineer" name="assign_engineer">
+                        <field name="is_auto_alert"
+                               widget="boolean_toggle"/>
+                    </group>
+                    <!--End Assign Engineer-->
+                    <!-- Diagnosis-->
+                    <group string="Diagnosis" name="diagnosis">
+                        <field name="is_diagnosis" widget="boolean_toggle"/>
+                        <label for="is_auto_send_report_diagnosis"
+                               attrs="{'invisible': [('is_diagnosis','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_auto_send_report_diagnosis"
+                                   attrs="{'invisible': [('is_diagnosis','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_diagnosis','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_diagnosis_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_diagnosis','=',False),('is_auto_send_report_diagnosis','=',False)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_diagnosis_email_template_id"
+                                       attrs="{'invisible': ['|',('is_diagnosis','=',False),('is_auto_send_report_diagnosis','=',False)]}"
+                                       placeholder="Template"/>
+                            </div>
+                        </div>
+                        <label for="is_approval_required_diagnosis"
+                               attrs="{'invisible': [('is_diagnosis','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_diagnosis"
+                                   attrs="{'invisible': [('is_diagnosis','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_diagnosis', '=', False)]}" class="w-100">
+                                <field name="diagnosis_approval_team_ids" placeholder="Team" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_approval_required_diagnosis','=',False),('is_diagnosis','=',False)]}"/>
+                            </div>
+                        </div>
+                    </group>
+                    <!--End Diagnosis-->
+                    <!-- Repair-->
+                    <group string="Repair" name="repair">
+                        <field name="is_repair" widget="boolean_toggle"/>
+                        <label for="is_auto_send_report_repair"
+                               attrs="{'invisible': [('is_repair','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_auto_send_report_repair"
+                                   attrs="{'invisible': [('is_repair','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_repair','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_repair_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_repair','=',False),('is_auto_send_report_repair','=',False)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_repair_email_template_id"
+                                       attrs="{'invisible': ['|',('is_repair','=',False),('is_auto_send_report_repair','=',False)]}"
+                                       placeholder="Template"/>
+                            </div>
+                        </div>
+                        <label for="is_approval_required_repair"
+                               attrs="{'invisible': [('is_repair','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_repair"
+                                   attrs="{'invisible': [('is_repair','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_repair', '=', False)]}" class="w-100">
+                                <field name="repair_approval_team_ids" placeholder="Team" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_approval_required_repair','=',False),('is_repair','=',False)]}"/>
+                            </div>
+                        </div>
+                    </group>
+                    <!--End Repair-->
+                    <!-- Installation-->
+                    <group string="Installation" name="installation">
+                        <field name="is_installation" widget="boolean_toggle"/>
+                        <label for="is_auto_send_report_installation"
+                               attrs="{'invisible': [('is_installation','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_auto_send_report_installation"
+                                   attrs="{'invisible': [('is_installation','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_installation','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_installation_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_installation','=',False),('is_auto_send_report_installation','=',False)], 'required': [('is_auto_send_report_installation','=',True)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_installation_email_template_id"
+                                       attrs="{'invisible': ['|',('is_installation','=',False),('is_auto_send_report_installation','=',False)], 'required': [('is_auto_send_report_installation','=',True)]}"
+                                       placeholder="Template"/>
+                            </div>
+                        </div>
+                        <!--                        <label for="is_approval_required_installation"-->
+                        <!--                               attrs="{'invisible': [('is_installation','=',False)]}"/>-->
+                        <!--                        <div class="o_checkbox_optional_field">-->
+                        <!--                            <field name="is_approval_required_installation"-->
+                        <!--                                   attrs="{'invisible': [('is_installation','=',False)]}"/>-->
+                        <!--                            <div attrs="{'invisible': [('is_approval_required_installation', '=', False)]}"-->
+                        <!--                                 class="w-100">-->
+                        <!--                                <field name="installation_approval_team_ids" placeholder="Team" widget="many2many_tags"-->
+                        <!--                                       attrs="{'invisible': ['|',('is_approval_required_installation','=',False),('is_installation','=',False)]}"/>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                    </group>
+                    <!--End Installation-->
+                    <!-- Maintenance-->
+                    <group string="Maintenance" name="maintenance">
+                        <field name="is_maintenance" widget="boolean_toggle"/>
+                        <label for="is_auto_send_report_maintenance"
+                               attrs="{'invisible': [('is_maintenance','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_auto_send_report_maintenance"
+                                   attrs="{'invisible': [('is_maintenance','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_maintenance','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_maintenance_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_maintenance','=',False),('is_auto_send_report_maintenance','=',False)], 'required': [('is_auto_send_report_maintenance','=',True)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_maintenance_email_template_id"
+                                       attrs="{'invisible': ['|',('is_maintenance','=',False),('is_auto_send_report_maintenance','=',False)], 'required': [('is_auto_send_report_maintenance','=',True)]}"
+                                       placeholder="Template"/>
+                            </div>
+                        </div>
+                        <label for="is_approval_required_maintenance"
+                               attrs="{'invisible': [('is_maintenance','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_maintenance"
+                                   attrs="{'invisible': [('is_maintenance','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_maintenance', '=', False)]}"
+                                 class="w-100">
+                                <field name="maintenance_approval_team_ids" placeholder="Approval Team"
+                                       widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_approval_required_maintenance','=',False),('is_maintenance','=',False)], 'required': [('is_approval_required_maintenance','=',True)]}"/>
+                            </div>
+                        </div>
+                    </group>
+                    <!--End Maintenance-->
+                    <!-- Testing-->
+                    <group string="Testing" name="testing">
+                        <field name="is_testing" widget="boolean_toggle"/>
+                        <field name="is_auto_alert_notification_testing" widget="boolean_toggle"
+                               attrs="{'invisible': [('is_testing','=',False)]}"/>
+                        <label for="is_auto_send_report_testing"
+                               attrs="{'invisible': [('is_testing','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_auto_send_report_testing"
+                                   attrs="{'invisible': [('is_testing','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_testing','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_testing_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_testing','=',False),('is_auto_send_report_testing','=',False)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_testing_email_template_id"
+                                       attrs="{'invisible': ['|',('is_testing','=',False),('is_auto_send_report_testing','=',False)]}"
+                                       placeholder="Template"/>
+                            </div>
+                        </div>
+                        <label for="is_approval_required_testing"
+                               attrs="{'invisible': [('is_testing','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_testing"
+                                   attrs="{'invisible': [('is_testing','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_testing', '=', False)]}" class="w-100">
+                                <field name="testing_approval_team_ids" placeholder="Team" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_approval_required_testing','=',False),('is_testing','=',False)]}"/>
+                            </div>
+                        </div>
+                    </group>
+                    <!--End Testing-->
+                    <!--Repair Quality Check-->
+                    <group string="Quality" name="repair_quality">
+                        <field name="is_repair_quality" widget="boolean_toggle"/>
+                        <field name="is_auto_alert_notification_quality" widget="boolean_toggle"
+                               attrs="{'invisible': [('is_repair_quality','=',False)]}"/>/>
+                        <label for="is_auto_send_report_repair_quality"
+                               attrs="{'invisible': [('is_repair_quality','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_auto_send_report_repair_quality"
+                                   attrs="{'invisible': [('is_repair_quality','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_repair_quality','=',False)]}"
+                                 class="w-100">
+                                <field name="alert_repair_quality_approval_team_ids" widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_repair_quality','=',False),('is_auto_send_report_repair_quality','=',False)]}"
+                                       placeholder="Team"/>
+                                <field name="alert_repair_quality_email_template_id"
+                                       attrs="{'invisible': ['|',('is_repair_quality','=',False),('is_auto_send_report_repair_quality','=',False)]}"
+                                       placeholder="Template"/>
+                            </div>
+                        </div>
+                        <label for="is_approval_required_repair_quality"
+                               attrs="{'invisible': [('is_repair_quality','=',False)]}"/>
+                        <div class="o_checkbox_optional_field">
+                            <field name="is_approval_required_repair_quality"
+                                   attrs="{'invisible': [('is_repair_quality','=',False)]}"/>
+                            <div attrs="{'invisible': [('is_approval_required_repair_quality', '=', False)]}"
+                                 class="w-100">
+                                <field name="repair_quality_approval_team_ids" placeholder="Team"
+                                       widget="many2many_tags"
+                                       attrs="{'invisible': ['|',('is_approval_required_repair_quality','=',False),('is_repair_quality','=',False)]}"/>
+                            </div>
+                        </div>
+                    </group>
+                    <!--End Repair Quality Check-->
+                    <group name="work_flow_grp" string="Work Flow">
+                        <field name="work_flow_id"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="ticket_config_child_tree" model="ir.ui.view">
+        <field name="name">child.ticket.configuration.tree</field>
+        <field name="model">child.ticket.configuration</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="create_date"/>
+                <field name="child_config_name"/>
+                <field name="child_ticket_type"/>
+                <field name="child_ticket_type"/>
+                <field name="work_flow_id"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="child_action_ticket_config" model="ir.actions.act_window">
+        <field name="name">Child Ticket Configuration</field>
+        <field name="res_model">child.ticket.configuration</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="ticket_config_child_tree"/>
+    </record>
+
+    <record id="action_ticket_config" model="ir.actions.act_window">
+        <field name="name">Configuration</field>
+        <field name="res_model">ticket.configuration</field>
+        <field name="view_mode">form</field>
+    </record>
+
+    <!--End Child Ticket Configuration-->
+    <!--Menus-->
+    <menuitem id="ticket_config" name="Ticket Configurations" sequence="19"
+              parent="ppts_service_request.service_request_configuration"
+              groups="-ppts_service_request.service_request_group_ct_user,-ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+    <menuitem action="parent_action_ticket_config" id="parent_ticket_config" parent="ticket_config"
+              name="Parent Ticket Configuration" sequence="1"/>
+    <menuitem action="child_action_ticket_config" id="child_ticket_config" parent="ticket_config"
+              name="Child Ticket Configuration" sequence="2"/>
+    <!--End Menus-->
+</odoo>

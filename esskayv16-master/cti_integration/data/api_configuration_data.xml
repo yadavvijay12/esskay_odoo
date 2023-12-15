@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="cti_integration_api" model="cti.integration">
+        <field name="name">Manual Dial Data</field>
+            <field name="api_url">https://in1-ccaas-api.ozonetel.com/CAServices/AgentManualDial.php</field>
+            <field name="api_key">KK65a1332976e68e8d3a3f7aeab51a679c</field>
+            <field name="username">esskay</field>
+            <field name="agent_id">Agent1</field>
+            <field name="campaign_name">Progressive</field>
+            <field name="uui">Test</field>
+        </record>
+    </data>
+    <data noupdate="1">
+     <record id="cti_integration_api_bulkdata" model="cti.integration">
+            <field name="name">Bulk Campaign Data</field>
+            <field name="api_url">https://in1-ccaas-api.ozonetel.com/cloudAgentRestAPI/index.php/AddCampaignBulkData/addBulkData/format/json?</field>
+            <field name="api_key">KK65a1332976e68e8d3a3f7aeab51a679c</field>
+            <field name="username">esskay</field>
+            <field name="agent_id">esskay30</field>
+            <field name="campaign_name">Progressive</field>
+            <field name="uui">Bulkdata</field>
+        </record>
+    </data>
+
+    <data noupdate="1">
+     <record id="cti_integration_api_delete_data" model="cti.integration">
+            <field name="name">Delete Call Data</field>
+            <field name="api_url">https://in1-ccaas-api.ozonetel.com/cloudAgentRestAPI/index.php/AddCampaignBulkData/addBulkData/format/json?</field>
+            <field name="api_key">KK65a1332976e68e8d3a3f7aeab51a679c</field>
+            <field name="username">esskay</field>
+            <field name="agent_id">esskay30</field>
+            <field name="campaign_name">Progressive</field>
+        </record>
+    </data>
+</odoo>

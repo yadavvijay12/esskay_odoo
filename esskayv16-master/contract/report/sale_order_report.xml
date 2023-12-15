@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_saleorder_quotation" inherit_id="sale.report_saleorder_document">
+            <xpath expr="//table[hasclass('o_main_table')]/thead" position="replace">
+
+                <tr t-if="doc.quotation_with == 'order_line_price'">
+                    <th name="th_description" class="text-start">Description</th>
+                    <th name="th_quantity" class="text-end">Quantity</th>
+                    <th name="th_priceunit" class="text-end">Unit Price</th>
+                    <th name="th_discount" t-if="display_discount" class="text-end"
+                        groups="product.group_discount_per_so_line">
+                        <span>Disc.%</span>
+                    </th>
+                    <th name="th_taxes" class="text-end">Taxes</th>
+                    <th name="th_subtotal" class="text-end">
+                        <span groups="account.group_show_line_subtotals_tax_excluded">Amount</span>
+                        <span groups="account.group_show_line_subtotals_tax_included">Total Price</span>
+                    </th>
+                </tr>
+                <tr t-else="">
+                    <th name="th_description" class="text-start">Description</th>
+                    <th name="th_quantity" class="text-end">Quantity</th>
+                    <th name="th_discount" t-if="display_discount" class="text-end"
+                        groups="product.group_discount_per_so_line">
+                        <span>Disc.%</span>
+                    </th>
+                    <th name="th_taxes" class="text-end">Taxes</th>
+
+                </tr>
+
+            </xpath>
+            <xpath expr="//table[hasclass('o_main_table')]/tbody/t/tr" position="replace">
+
+                <tr t-if="doc.quotation_with == 'order_line_price'">
+                    <t t-if="not line.display_type">
+                        <td name="td_name">
+                            <span t-field="line.name"/>
+                        </td>
+                        <td name="td_quantity" class="text-end">
+                            <span t-field="line.product_uom_qty"/>
+                            <span t-field="line.product_uom"/>
+                        </td>
+                        <td name="td_priceunit" class="text-end">
+                            <span t-field="line.price_unit"/>
+                        </td>
+                        <td t-if="display_discount" class="text-end" groups="product.group_discount_per_so_line">
+                            <span t-field="line.discount"/>
+                        </td>
+                        <td name="td_taxes" class="text-end">
+                            <span t-out="', '.join(map(lambda x: (x.description or x.name), line.tax_id))"/>
+                        </td>
+                        <td t-if="not line.is_downpayment" name="td_subtotal" class="text-end o_price_total">
+                            <span t-field="line.price_subtotal"
+                                  groups="account.group_show_line_subtotals_tax_excluded"/>
+                            <span t-field="line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+                        </td>
+                    </t>
+                    <t t-elif="line.display_type == 'line_section'">
+                        <td name="td_section_line" colspan="99">
+                            <span t-field="line.name"/>
+                        </td>
+                        <t t-set="current_section" t-value="line"/>
+                        <t t-set="current_subtotal" t-value="0"/>
+                    </t>
+                    <t t-elif="line.display_type == 'line_note'">
+                        <td name="td_note_line" colspan="99">
+                            <span t-field="line.name"/>
+                        </td>
+                    </t>
+                </tr>
+                <tr t-else="">
+                    <t t-if="not line.display_type">
+                        <td name="td_name">
+                            <span t-field="line.name"/>
+                        </td>
+                        <td name="td_quantity" class="text-end">
+                            <span t-field="line.product_uom_qty"/>
+                            <span t-field="line.product_uom"/>
+                        </td>
+
+                        <td t-if="display_discount" class="text-end" groups="product.group_discount_per_so_line">
+                            <span t-field="line.discount"/>
+                        </td>
+                        <td name="td_taxes" class="text-end">
+                            <span t-out="', '.join(map(lambda x: (x.description or x.name), line.tax_id))"/>
+                        </td>
+
+                    </t>
+                    <t t-elif="line.display_type == 'line_section'">
+                        <td name="td_section_line" colspan="99">
+                            <span t-field="line.name"/>
+                        </td>
+                        <t t-set="current_section" t-value="line"/>
+                        <t t-set="current_subtotal" t-value="0"/>
+                    </t>
+                    <t t-elif="line.display_type == 'line_note'">
+                        <td name="td_note_line" colspan="99">
+                            <span t-field="line.name"/>
+                        </td>
+                    </t>
+                </tr>
+
+            </xpath>
+
+            <xpath expr="//tr[@class='is-subtotal text-end']" position="replace">
+                <tr t-if="doc.quotation_with == 'order_line_price'">
+                    <td name="td_section_subtotal" colspan="99" style="text-align:right">
+                        <strong class="mr16">Subtotal</strong>
+                        <span
+                                t-out="current_subtotal"
+                                t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'
+                        />
+                    </td>
+                </tr>
+                <tr t-else=" "/>
+
+            </xpath>
+            <xpath expr="//h4[@name='h_optional_products']" position="replace">
+                <p style="page-break-before: always;"/>
+                <h4>
+                    <span>Options</span>
+                </h4>
+            </xpath>
+            <xpath expr="//table[@name='table_optional_products']/thead" position="replace">
+                <tr t-if="doc.quotation_with == 'order_line_price'">
+                    <th name="th_option_name" class="text-start">Description</th>
+                    <th t-if="has_option_discount" name="th_option_discount" groups="product.group_discount_per_so_line"
+                        class="text-start">Disc.%
+                    </th>
+                    <th name="th_option_price_unit" class="text-end">Unit Price</th>
+                    <th name="th_quantity" class="text-end">Quantity</th>
+
+                </tr>
+                <tr t-else="">
+                    <tr>
+                        <th name="th_option_name" class="text-start">Description</th>
+                        <th t-if="has_option_discount" name="th_option_discount"
+                            groups="product.group_discount_per_so_line" class="text-start">Disc.%
+                        </th>
+                        <th name="th_quantity" class="text-end">Quantity</th>
+                    </tr>
+                </tr>
+            </xpath>
+            <xpath expr="//table[@name='table_optional_products']/tbody" position="replace">
+                <tr t-if="doc.quotation_with == 'order_line_price'">
+                    <tr t-foreach="doc.sale_order_option_ids" t-as="option">
+                        <td name="td_option_name">
+                            <span t-field="option.name"/>
+                        </td>
+                        <td t-if="has_option_discount" name="td_option_discount"
+                            groups="product.group_discount_per_so_line">
+                            <strong t-if="option.discount != 0.0" class="text-info">
+                                <t t-out="((option.discount % 1) and '%s' or '%d') % option.discount"/>%
+                            </strong>
+                        </td>
+                        <td name="td_option_price_unit">
+                            <strong class="text-end">
+                                <div t-field="option.price_unit"
+                                     t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'
+                                     t-att-style="option.discount and 'text-decoration: line-through' or None"
+                                     t-att-class="option.discount and 'text-danger' or None"/>
+                                <div t-if="option.discount">
+                                    <t t-out="'%.2f' % ((1-option.discount / 100.0) * option.price_unit)"/>
+                                </div>
+                            </strong>
+                        </td>
+                        <td name="td_quantity" class="text-end">
+                            <span t-field="line.product_uom_qty"/>
+                            <span t-field="line.product_uom"/>
+                        </td>
+
+                    </tr>
+                </tr>
+                <tr t-else="">
+                    <tr t-foreach="doc.sale_order_option_ids" t-as="option">
+                        <td name="td_option_name">
+                            <span t-field="option.name"/>
+                        </td>
+                        <td t-if="has_option_discount" name="td_option_discount"
+                            groups="product.group_discount_per_so_line">
+                            <strong t-if="option.discount != 0.0" class="text-info">
+                                <t t-out="((option.discount % 1) and '%s' or '%d') % option.discount"/>%
+                            </strong>
+                        </td>
+                        <td name="td_quantity" class="text-end">
+                            <span t-field="line.product_uom_qty"/>
+                            <span t-field="line.product_uom"/>
+                        </td>
+
+                    </tr>
+
+                </tr>
+
+            </xpath>
+        </template>
+    </data>
+</odoo>

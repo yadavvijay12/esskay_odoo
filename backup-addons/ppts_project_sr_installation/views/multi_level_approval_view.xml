@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="multi_approval_view_form_inherit_installation_id" model="ir.ui.view">
+            <field name="name">multi.approval.installation_id</field>
+            <field name="model">multi.approval</field>
+            <field name="inherit_id" ref="multi_level_approval.multi_approval_view_form"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='contact_id']" position="before">
+                    <field name="installation_id" readonly="1" attrs="{'invisible': [('installation_id','=', False)]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

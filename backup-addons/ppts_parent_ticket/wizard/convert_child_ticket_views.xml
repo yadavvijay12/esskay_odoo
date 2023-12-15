@@ -1,0 +1,30 @@
+<odoo>
+       <record id="view_convert_child_ticket" model="ir.ui.view">
+            <field name="name">Convert to Child Ticket</field>
+            <field name="model">convert.child.ticket</field>
+            <field name="arch" type="xml">
+                <form string="Convert to Child Ticket">
+                    <group>
+                    	<group>
+	                        <field name="child_ticket_configuration_id" options='{"no_open": True, "no_create": True}'/>
+                            <field name="request_type_id" options='{"no_open": True, "no_create": True}'/>
+                    	</group>
+                    </group>
+                    <footer>
+                    	<button name="action_child_ticket_create" string="Convert to CT" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+      <record id="action_convert_child_ticket" model="ir.actions.act_window">
+            <field name="name">Convert to Child Ticket</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">convert.child.ticket</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_convert_child_ticket"/>
+      </record>
+</odoo>

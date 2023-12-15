@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_production_lot_form_inherit">
+        <field name="name">stock.production.lot.form.inherit</field>
+        <field name="model">stock.lot</field>
+        <field name="priority" eval="16"/>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet" position="before">
+                <header>
+                    <field name="is_transfer_done" invisible="1"/>
+                    <button name="action_service_request" string="Create SR" type="object" class="oe_highlight"/>
+                    <button name="action_parent_ticket" string="Create Ticket" type="object"
+                            class="oe_highlight"/>
+                    <button name="state_active_button" string="Active" type="object" class="oe_highlight"
+                            attrs="{'invisible': [('state', '=', 'state_active')]}"/>
+                    <button name="state_inactive_button" string="Inactive"
+                            attrs="{'invisible': [('state', '=', 'state_inactive')]}" type="object"
+                            class="oe_highlight"/>
+                    <button name="state_not_traceable_button"
+                            attrs="{'invisible': [('state', '=', 'state_not_traceable')]}" string="Not traceable"
+                            type="object" class="oe_highlight"/>
+                    <button name="state_not_repairable_button"
+                            attrs="{'invisible': [('state', '=', 'state_not_repairable')]}" string="Not Repairable"
+                            type="object" class="oe_highlight"/>
+                    <button name="action_internal_transfer" string="Create Transfer" type="object" class="oe_highlight"
+                            attrs="{'invisible': [('is_transfer_done', '=', True)]}"/>
+                    <button name="create_sale_order" string="Create Sale Order" type="object"
+                            class="oe_highlight"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="state_active,state_inactive,state_not_traceable,state_not_repairable"/>
+                </header>
+            </xpath>
+
+            <xpath expr="/form/sheet/div[@name='button_box']/button[@name='action_lot_open_transfers']"
+                   position="before">
+                <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                        modifiers="{&quot;invisible&quot;: [[&quot;active&quot;, &quot;=&quot;, true]]}"/>
+                <button name="action_view_service_request" type="object" class="oe_stat_button"
+                        icon="fa-pencil-square-o" attrs="{'invisible': [('service_request_count', '=', 0)]}">
+                    <field name="service_request_count" widget="statinfo" string="Service Request"/>
+                </button>
+                <button name="action_view_parent_ticket" type="object" class="oe_stat_button"
+                        icon="fa-pencil-square-o" attrs="{'invisible': [('parent_ticket_count', '=', 0)]}">
+                    <field name="parent_ticket_count" widget="statinfo" string="Parent Ticket"/>
+                </button>
+
+                <button class="oe_stat_button" type="object" name="action_view_reports" icon="fa-tasks"
+                        string="Reports">
+                </button>
+                <button class="oe_stat_button" type="object" name="action_view_invoices" icon="fa-list"
+                        string="Invoices">
+                </button>
+                <button class="oe_stat_button" type="object" name="action_view_approvals" icon="fa-cogs"
+                        string="Approvals">
+                </button>
+                <button class="oe_stat_button" type="object" name="action_view_purchases" icon="fa-retweet"
+                        string="Purchase Request">
+                </button>
+                <button class="oe_stat_button" type="object" name="action_view_internal_transfer" icon="fa-truck"
+                        string="Transfers"
+                        attrs="{'invisible': [('is_transfer_done', '=', False)]}">
+                </button>
+            </xpath>
+
+
+            <xpath expr="//field[@name='product_id']" position="before">
+                <field name="customer_id" string="Customer"/>
+                <field name="customer_account" string="Customer Account" readonly="1" force_save="1"/>
+                <field name="external_id"/>
+            </xpath>
+            <xpath expr="//label[@for='name']" position="replace">
+                <field name="is_lot" invisible="1"/>
+                <label for="name" attrs="{'invisible': [('is_lot', '!=', False)]}" string="Asset Serial Number"/>
+                <label for="name" attrs="{'invisible': [('is_lot', '!=', True)]}" string="Asset Lot Number"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="attrs">{'readonly': [('id', '!=', False)]}
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_id']" position="after">
+                <!--                <field name="product_serial_number" string="Product Serial No" invisible="1"/>-->
+                <field name="currency_id" invisible="1"/>
+                <field name="product_price" string="Product Price"
+                       options="{'currency_field': 'currency_id', 'field_digits': True}" readonly="1" force_save="1"/>
+            </xpath>
+            <xpath expr="//field[@name='product_id']" position="replace">
+                <label for="product_id" string="Product"/>
+                <div class="o_row">
+                    <field name="product_id" context="{'default_detailed_type': 'product', 'default_tracking': 'lot'}"
+                           readonly="context.get('set_product_readonly', False)" force_save="1"
+                           help="Product this lot/serial number contains. You cannot change it anymore if it has already been moved."
+                    />
+                    <button type="object" name="action_open_product_template" icon="fa-arrow-right"
+                            attrs="{'invisible': [('product_id', '=', False)]}" title="Product"/>
+                </div>
+            </xpath>
+            <xpath expr="/form/sheet/group[@name='main_group']/group[2]" position="inside">
+                <field name="product_eol"/>
+                <field name="product_eosl"/>
+                <field name="contract_flow_id" string="Contract Flow" invisible="1"/>
+                <field name="contract_id"/>
+                <field name="asset_category_id"/>
+                <field name="asset_type_id"/>
+                <field name="product_part_no"/>
+                <field name="active" invisible="1"/>
+            </xpath>
+            <xpath expr="/form/sheet/group[@name='main_group']/group[2]" position="after">
+                <group name="properties_grp" string="Properties"></group>
+                <field name="stock_lot_properties" nolabel="1" columns="2" hideKanbanOption="1"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook" position="attributes">
+                <attribute name="attrs">{'invisible': False}</attribute>
+            </xpath>
+
+            <xpath expr="/form/sheet/notebook/page[@name='description']" position="before">
+                <page string="General Information" name="general_information_stock_lot">
+                    <group string="Sale Information" name="group_general">
+                        <group>
+                            <field name="custom_sale_order" string="Sale Order" options="{'no_create': True}"/>
+                            <field name="custom_sale_order_date" string="SaleOrder Date"/>
+                            <field name="asset_tag_ids" widget="many2many_tags" string="Asset Tag"/>
+                            <field name="id" string="Asset ID" readonly="1"/>
+                            <field name="service_support_commitment" string="Service Support Commitment"/>
+                        </group>
+                        <group>
+                            <field name="replacement_for"/>
+                            <field name="product_types_id"/>
+                            <field name="asset_id_allias" string="Asset ID Allias"/>
+                            <field name="invoice_number" string="Invoice Number"/>
+                            <field name="invoice_number"/>
+                            <field name="order_number"/>
+                        </group>
+                    </group>
+                    <group string="Warranty Information" name="warranty_information">
+                        <group>
+                            <field name="warranty_start_date"/>
+                            <field name="extended_warranty_start_date"/>
+                            <field name="repair_warranty_start_date"/>
+                            <field name="oem_warranty_check" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="warranty_end_date"/>
+                            <field name="extended_warranty_end_date"/>
+                            <field name="repair_warranty_end_date"/>
+                            <field name="oem_repair_warranty_check" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Installation Information" name="installation_information">
+                        <group>
+                            <field name="installation_date"/>
+                        </group>
+                        <group>
+                            <field name="installation_end_date"/>
+                        </group>
+                    </group>
+                    <group string="General Information" name="general_information_group">
+                        <group>
+                            <field name="asset_arrival_date"/>
+                            <field name="asset_location_id"/>
+                            <field name="lattitude"/>
+                            <field name="longitutde"/>
+                            <field name="faulty_sticker"/>
+                            <field name="rsp_name"/>
+                        </group>
+                        <group>
+                            <field name="region_customer" readonly="1" force_save="1"/>
+                            <field name="unit_type_id"/>
+                            <field name="industry_id"/>
+                            <field name="hardware_version"/>
+                            <field name="software_version"/>
+                            <field name="mc_skt"/>
+                        </group>
+                        <field name="custom_asset_warranty_line" widget="one2many" readonly="1">
+                            <tree string="Warranty" delete="0">
+                                <field name="sale_order_id"/>
+                                <field name="warranty_start_date"/>
+                                <field name="warranty_end_date"/>
+                                <field name="warranty_type"/>
+                                <field name="is_active"/>
+
+                            </tree>
+                        </field>
+                    </group>
+
+                </page>
+                <page name="Loaner" string="Loaner">
+                    <field name="asset_loaner_ids" nolabel="1" readonly="1">
+                        <tree string="Loaner Product">
+                            <field name="name"/>
+                            <field name="company_id"/>
+                            <field name="partner_id"/>
+                            <field name="date_order"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <group>
+                                    <field name="name"/>
+                                    <field name="company_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="date_order"/>
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+                <page name="customer" string="Customer">
+                </page>
+                <!--                <page name="service_ticket" string="Ticket">-->
+                <!--                    <field name="service_ticket_ids" nolabel="1" readonly="1">-->
+                <!--                        <tree string="Service Tickets" editable="bottom" create="0" edit="0" delete="0">-->
+                <!--                            <field name="name"/>-->
+                <!--                            <field name="partner_id"/>-->
+                <!--                            <field name="product_name"/>-->
+                <!--                            <field name="custom_product_serial"/>-->
+                <!--                        </tree>-->
+                <!--                    </field>-->
+                <!--                </page>-->
+                <page string="Tickets">
+                    <field name="all_ticket_ids" readonly="1">
+                        <tree string="All Tickets" create="0" edit="0" delete="0" editable="bottom">
+                            <field name="service_request_id"/>
+                            <field name="parent_ticket_id"/>
+                            <field name="child_ticket_id"/>
+                            <field name="problem_description"/>
+                            <field name="ticket_create_date"/>
+                            <field name="ticket_type"/>
+                            <field name="service_type_id"/>
+                            <field name="ct_user_id"/>
+                            <field name="engineer_id"/>
+                            <field name="contract_details" widget="many2many_tags"/>
+                            <field name="status"/>
+                        </tree>
+                    </field>
+                </page>
+                <page name="contract" string="Contract">
+                </page>
+                <page name="calibration" string="Calibration">
+                </page>
+                <page name="warranty_replacement" string="Warranty Replacement">
+                </page>
+                <page name="attachment_page" string="Attachment">
+                    <field name="asset_attachment_ids" widget="many2many_binary" string="Attach a file"/>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

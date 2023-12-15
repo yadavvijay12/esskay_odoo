@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sr_maintenance_request_view_tree" model="ir.ui.view">
+        <field name="name">sr.maintenance.request.tree</field>
+        <field name="model">maintenance.request</field>
+        <field name="arch" type="xml">
+            <tree string="maintenance Request" multi_edit="1" sample="1">
+                <field name="message_needaction" invisible="1"/>
+                <field name="name" string="ID"/>
+                <field name="maintenance_install_start_date"/>
+                <field name="title"/>
+                <field name="owner_user_id"/>
+                <field name="user_id"/>
+                <field name="partner_id" readonly="1"/>
+                <field name="maintenance_state"/>
+                <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+                <field name="activity_exception_decoration" widget="activity_exception"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="sr_maintenance_request_view_search" model="ir.ui.view">
+        <field name="name">sr.maintenance.request.search</field>
+        <field name="model">maintenance.request</field>
+        <field name="arch" type="xml">
+            <search string="Maintenance Request Search">
+                <field name="name" string="Request"/>
+                <field name="category_id"/>
+                <field name="user_id"/>
+                <field name="equipment_id"/>
+                <field name="owner_user_id"/>
+                <field name="stage_id"/>
+                <field name="maintenance_team_id"/>
+                <filter string="My Maintenances" name="my_maintenances" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="To Do" name="todo" domain="[('stage_id.done', '=', False)]"/>
+                <separator/>
+                <filter string="Blocked" name="kanban_state_block" domain="[('kanban_state', '=', 'blocked')]"/>
+                <filter string="Ready" name="done" domain="[('kanban_state', '=', 'done')]"/>
+                <separator/>
+                <filter string="High-priority" name="high_priority" domain="[('priority', '=', '3')]"/>
+                <separator/>
+                <filter string="Unscheduled" name="unscheduled" domain="[('schedule_date', '=', False)]"/>
+                <separator/>
+                <filter name="filter_request_date" date="request_date"/>
+                <filter name="filter_schedule_date" date="schedule_date"/>
+                <filter name="filter_close_date" date="close_date"/>
+                <separator/>
+                <filter string="Unread Messages" name="message_needaction"
+                        domain="[('message_needaction', '=', True)]"/>
+                <separator/>
+                <filter invisible="1" string="Late Activities" name="activities_overdue"
+                        domain="[('my_activity_date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                        help="Show all records which has next action date is before today"/>
+                <filter invisible="1" string="Today Activities" name="activities_today"
+                        domain="[('my_activity_date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter invisible="1" string="Future Activities" name="activities_upcoming_all"
+                        domain="[('my_activity_date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('archive', '=', True)]"/>
+                <group expand='0' string='Group by...'>
+                    <filter string='Assigned to' name="assigned" domain="[]" context="{'group_by': 'user_id'}"/>
+                    <filter string='Category' name="category" domain="[]" context="{'group_by' : 'category_id'}"/>
+                    <filter string='Stage' name="stages" domain="[]" context="{'group_by' : 'stage_id'}"/>
+                    <filter string='Created By' name='created_by' domain="[]" context="{'group_by': 'owner_user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="sr_maintenance_request_view_form" model="ir.ui.view">
+        <field name="name">sr.maintenance.request.form</field>
+        <field name="model">maintenance.request</field>
+        <field name="arch" type="xml">
+            <form string="Maintenance Request">
+                <field name="company_id" invisible="1"/>
+                <field name="category_id" invisible="1"/>
+                <field name="is_send_for_approvals" invisible="1"/>
+                <header>
+                    <button string="Cancel" name="action_cancel" type="object" class="btn btn-danger"
+                            attrs="{'invisible': [('maintenance_state', 'not in', ['completed'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!--                    <button string="Reopen Request" name="reset_equipment_request" type="object" attrs="{'invisible': [('archive', '=', False)]}"/>-->
+                    <!--                    CUSTOMIZE-->
+                    <button string="Start" name="action_start_process" type="object" class="btn btn-success"
+                            attrs="{'invisible': [('maintenance_state', 'not in', ['new','rescheduled'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button string="In Progress" name="action_in_progress" type="object" class="btn btn-warning"
+                            attrs="{'invisible': [('maintenance_state', 'not in', ['started'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button string="Complete" name="action_complete" type="object" class="btn btn-success"
+                            attrs="{'invisible': ['|', ('maintenance_state', 'not in', ['approved']),('is_send_for_approvals', '=',False)]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button string="Complete" name="action_complete" type="object" class="btn btn-success"
+                            attrs="{'invisible': ['|', ('maintenance_state', 'not in', ['in_progress']),('is_send_for_approvals', '=',True)]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button string="Ready For Testing" name="action_ready_for_testing" type="object"
+                            class="btn btn-info"
+                            attrs="{'invisible': [('maintenance_state', 'not in', ['in_progress'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button string="Ready For Quality Check" name="action_ready_for_qc" type="object"
+                            class="btn btn-info"
+                            attrs="{'invisible': [('maintenance_state', 'not in', ['in_progress'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button string="Return" name="action_return" type="object" class="btn btn-info"
+                            attrs="{'invisible': [('maintenance_state', 'not in', ['in_progress'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button string="Request For Approval" name="action_request_approval" type="object" class="btn btn-info" attrs="{'invisible': ['|',('maintenance_state','!=','in_progress'),('is_send_for_approvals', '=',False)]}" groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!--                    <button string="Approve" name="action_approved" type="object" class="btn btn-success" attrs="{'invisible': [('maintenance_state', 'not in', ['waiting_for_approval'])]}"/>-->
+                    <!--                    <button string="On-Hold" name="action_on_hold" type="object" class="btn btn-warning" attrs="{'invisible': [('maintenance_state', 'not in', ['waiting_for_approval'])]}"/>-->
+                    <!--                    <button string="Reject" name="action_reject" type="object" class="btn btn-danger" attrs="{'invisible': [('maintenance_state', 'not in', ['waiting_for_approval'])]}"/>-->
+                    <button string="Send Mail" name="reset_equipment_request" type="object"
+                            attrs="{'invisible': [('maintenance_state', 'not in', ['started','in_progress'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!--                    <button string="Spare Request" name="action_request_spares" type="object" attrs="{'invisible': [('maintenance_state', 'not in', ['started','in_progress'])]}" groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>-->
+                    <button string="Return Spares Request" name="action_return_spares" type="object"
+                            attrs="{'invisible': [('maintenance_state', 'not in', ['started','in_progress'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <button string="Reschedule" name="action_reset_maintenance" type="object" class="btn btn-warning"
+                            attrs="{'invisible': [('maintenance_state', 'not in', ['cancelled','completed'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!--                    <button string="Generate Report" name="action_generate_report" type="object" groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>-->
+                    <button string="Create Service Request" name="action_service_request_maintenance" type="object"
+                            attrs="{'invisible': [('maintenance_state', 'not in', ['completed'])]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!--                    CUSTOMIZE-->
+                </header>
+                <header>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"
+                           invisible="1"/>
+                    <field name="maintenance_state" widget="statusbar"
+                           statusbar_visible="new,started,in_progress,waiting_for_approval,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_service_request" type="object" class="oe_stat_button"
+                                icon="fa-gavel" attrs="{'invisible': [('service_request_count', '=', 0)]}">
+                            <field name="service_request_count" widget="statinfo" string="Service Request"/>
+                        </button>
+                        <button name="action_view_approvals" type="object" class="oe_stat_button" string="Approvals"
+                                icon="fa-users">
+                            <field name="approvals_count" widget="statinfo" string="Approvals"/>
+                        </button>
+                        <button name="action_view_reports" type="object" class="oe_stat_button" string="Reports"
+                                icon="fa-list"/>
+                        <button name="action_view_survey" type="object" class="oe_stat_button" string="Survey"
+                                icon="fa-star"/>
+                    </div>
+                    <field name="image_1920" widget="image" class="oe_avatar"/>
+                    <!--                    <div attrs="{'invisible': [('archive', '=', False)]}">-->
+                    <!--                        <span class="badge text-bg-warning float-end">Canceled</span>-->
+                    <!--                    </div>-->
+                    <!--                    <div class="oe_right">-->
+                    <!--                        <field name="kanban_state" class="oe_inline" widget="state_selection"/>-->
+                    <!--                    </div>-->
+                    <div class="oe_title">
+                        <label for="name" string="Maintenance Process ID"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                            <field name="is_sr_maintenance" readonly="1" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Maintenance" name="maintenance_group">
+                            <field name="maintenance_process_alias_id" readonly="1"/>
+                            <field name="maintenance_install_start_date" readonly="1"/>
+                            <field name="maintenance_install_end_date" readonly="1"/>
+                            <field name="title"/>
+                            <field name="reported_fault" readonly="1"/>
+                            <field name="service_request_id" readonly="1"/>
+                            <field name="parent_ticket_id" readonly="1"/>
+                            <field name="child_ticket_id" readonly="1"/>
+                            <field name="external_reference" readonly="1"/>
+                            <field name="service_category_id" readonly="1"/>
+                            <field name="service_type_id" readonly="1"/>
+                            <field name="child_ticket_type_id" readonly="1"/>
+                        </group>
+                        <group name="other_info" string="Other Informations">
+                            <field name="worksheet_id" readonly="1"/>
+                            <field name="origin"/>
+                            <field name="po_number"/>
+                            <field name="po_date"/>
+                            <field name="invoice_number"/>
+                            <field name="invoice_date"/>
+                            <field name="warranty_status" readonly="1"/>
+                            <field name="warranty_end_date" readonly="1"/>
+                            <field name="extended_warranty_status" readonly="1"/>
+                            <field name="extended_warranty_end_date" readonly="1"/>
+                            <field name="amc_status" readonly="1"/>
+                            <field name="amc_end_date" readonly="1"/>
+                            <field name="cmc_status" readonly="1"/>
+                            <field name="cmc_end_date" readonly="1"/>
+                            <field name="action_taken_site" readonly="1"/>
+                        </group>
+                        <group name="product_group" string="Product Details">
+                            <label for="product_id" string="Products/Assets"/>
+                            <div class="o_row">
+                                <field name="product_id" attrs="{'readonly': [('maintenance_state','not in',('new'))]}"
+                                       options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                                <button type="object" title="Product" name="action_open_product_template"
+                                        icon="fa-arrow-right" attrs="{'invisible': [('product_id', '=', False)]}"/>
+                            </div>
+                            <field name="stock_lot_id"/>
+                            <field name="categ_id"/>
+                            <field name="asset_tag_ids" widget="many2many_tags"/>
+                            <field name="product_code_no"/>
+                            <field name="cat_no"/>
+                        </group>
+                        <group name="customer_details" string="Customer Details">
+                            <field name="partner_id"/>
+                            <field name="customer_account_id"/>
+                            <field name="company_id"/>
+                            <field name="user_id" string="Responsible"/>
+                            <field name="team_id"/>
+                        </group>
+                        <group invisible="1">
+                            <field name="owner_user_id" string="Requested By" invisible="1"/>
+                            <field name="equipment_id"
+                                   context="{'default_company_id':company_id, 'default_category_id':category_id}"/>
+                            <field name="category_id" groups="maintenance.group_equipment_manager"
+                                   context="{'default_company_id':company_id}"
+                                   attrs="{'invisible': [('equipment_id', '=', False)]}"/>
+                            <field name="request_date" readonly="True"/>
+                            <field name="done" invisible="1"/>
+                            <field name="close_date" attrs="{'invisible': [('done', '!=', True)]}" readonly="True"/>
+                            <field name="archive" invisible="1"/>
+                            <field name="maintenance_type" widget="radio"/>
+                        </group>
+                        <group invisible="1">
+                            <field name="maintenance_team_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="user_id" string="Responsible"/>
+                            <field name="schedule_date"/>
+                            <label for="duration"/>
+                            <div>
+                                <field name="duration"
+                                       widget="float_time"
+                                       class="oe_inline"/>
+                                <span class="ml8">hours</span>
+                            </div>
+                            <field name="priority" widget="priority"/>
+                            <field name="email_cc" string="Email cc" groups="base.group_no_one"/>
+                            <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group iname="properties_group" style="color:black" string="Properties">
+                    </group>
+                    <field name="maintenance_properties_definition" nolabel="1" columns="2" hideKanbanOption="1"/>
+                    <notebook>
+                        <!--                        <page string="Approvals" name="approvals_page">-->
+                        <!--                            <field name="approver_ids" readonly="1">-->
+                        <!--                                <tree string="Approvals" create="false" delete="false" edit="false">-->
+                        <!--                                    <field name="sequence" invisible="1"/>-->
+                        <!--                                    <field name="user_id"/>-->
+                        <!--                                    <field name="require_opt"/>-->
+                        <!--                                    <field name="state"/>-->
+                        <!--                                    <field name="approved_on"/>-->
+                        <!--                                    <field name="reject_reason"/>-->
+                        <!--                                    <field name="rejected_on"/>-->
+                        <!--                                    <field name="hold_reason"/>-->
+                        <!--                                    <field name="hold_on"/>-->
+                        <!--                                </tree>-->
+                        <!--                                <form string="Approvals" name="approvals">-->
+                        <!--                                    <group>-->
+                        <!--                                        <group>-->
+                        <!--                                            <field name="user_id"/>-->
+                        <!--                                            <field name="require_opt"/>-->
+                        <!--                                            <field name="state"/>-->
+                        <!--                                        </group>-->
+                        <!--                                        <group>-->
+                        <!--                                            <field name="approved_on"/>-->
+                        <!--                                            <field name="reject_reason"/>-->
+                        <!--                                            <field name="rejected_on"/>-->
+                        <!--                                            <field name="hold_reason"/>-->
+                        <!--                                            <field name="hold_on"/>-->
+                        <!--                                        </group>-->
+                        <!--                                    </group>-->
+                        <!--                                </form>-->
+                        <!--                            </field>-->
+                        <!--                        </page>-->
+                        <page name="maintenance_page" string="Maintenance"></page>
+                        <page name="asset_page" string="Asset">
+                            <field name="maintenance_asset_ids" widget="many2many_kanban">
+                                <tree string="maintenance" editable="top" create="false" delete="false">
+                                    <field name="name"/>
+                                    <field name="create_date"/>
+                                    <field name="customer_id"/>
+                                    <field name="product_price"/>
+                                    <field name="product_qty"/>
+                                    <field name="last_delivery_partner_id"/>
+                                    <field name="ref"/>
+
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="product_page" string="Product"></page>
+                        <page name="customer_page" string="Customer"></page>
+                        <page name="returns_page" string="Returns"></page>
+                        <page name="parts_page" string="Parts"></page>
+                        <page name="status_page" string="Update Status"></page>
+                        <page name="customer_observations_page" string="Customer Observations">
+                            <field name="text_customer_observations" placeholder="Type for Commands"/>
+                        </page>
+                        <page name="engineer_observations_page" string="Engineer Observations">
+                            <field name="text_engineer_observations" placeholder="Type for Commands"/>
+                        </page>
+                        <page name="recommend_observations_page" string="Recommendations">
+                            <field name="text_recommend_observations" placeholder="Type for Commands"/>
+                        </page>
+                        <page name="notes_page" string="Notes"></page>
+                        <page name="quality_page" string="Quality"></page>
+                        <page name="testing_page" string="Testing"></page>
+                        <page name="diagnosis_page" string="Diagnosis"></page>
+                        <page name="attachment_page" string="Attachment">
+                            <field name="maintenance_attachment_ids" widget="many2many_binary" string="Attach a file"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="sr_maintenance_request_action" model="ir.actions.act_window">
+        <field name="name">Maintenance</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids"
+               eval="[(5, 0, 0),
+                          (0, 0, {'view_mode': 'tree', 'view_id': ref('sr_maintenance_request_view_tree')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('sr_maintenance_request_view_form')})]"/>
+        <field name="search_view_id" ref="sr_maintenance_request_view_search"/>
+        <field name="domain">[('is_sr_maintenance', '=', True)]</field>
+        <field name="context">{'default_user_id': uid,'default_is_sr_maintenance': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new maintenance request
+            </p>
+            <p>
+                Follow the process of the request and communicate with the collaborator.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="action_menu_sr_maintenance" name="Maintenance" action="sr_maintenance_request_action"
+              parent="ppts_service_request.service_request_main_menu" sequence="6"
+              groups="-ppts_service_request.service_request_group_ct_user,-ppts_service_request.service_request_group_manager,-ppts_service_request.service_request_national_head"/>
+
+
+</odoo>

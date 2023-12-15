@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="child_ticket_form_view_inherit_ppts_maintenance" model="ir.ui.view">
+        <field name="name">child.ticket.maintenance.view.form</field>
+        <field name="model">child.ticket</field>
+        <field name="inherit_id" ref="ppts_parent_ticket.child_ticket_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_create_maintenance" string="Maintenance Request" type="object"
+                        class="btn btn-info"
+                        attrs="{'invisible': ['|',('is_create_maintenance','=', False),('is_maintenance_created','=', True)]}"/>
+            </xpath>
+             <xpath expr="/form/sheet/div[@name='button_box']/button[@name='action_view_send_for_approvals']"
+                   position="after">
+<!--            <xpath expr="//sheet[@name='action_view_send_for_approvals']" position="after">-->
+                <button name="action_view_maintenance" type="object" class="oe_stat_button" icon="fa-wrench"
+                        string="Maintenance Request" attrs="{'invisible': [('maintenance_count','=', 0)]}">
+                    <field name="maintenance_count" widget="statinfo" string="Maintenance"/>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="is_create_maintenance" invisible="1"/>
+                <field name="is_maintenance_created" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="before">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert"
+                     attrs="{'invisible': ['|',('is_create_maintenance','=', False),('is_maintenance_created','=',True)]}">
+                    Please create Maintenance Request to proceed further
+                    <button data-bs-dismiss="alert" aria-label="Close" class="btn-close" special="cancel"/>
+                </div>
+            </xpath>
+            <xpath expr="//page[@name='maintenance']" position="inside">
+                <field name="maintenance_ids" nolabel="1" readonly="1">
+                    <tree string="Maintenance">
+                        <field name="name"/>
+                        <field name="product_id"/>
+                        <field name="stock_lot_id"/>
+                        <field name="maintenance_state"/>
+                    </tree>
+                    <form string="Maintenance">
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="product_id"/>
+                                <field name="stock_lot_id"/>
+                                <field name="maintenance_state"/>
+                            </group>
+                        </group>
+                    </form>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

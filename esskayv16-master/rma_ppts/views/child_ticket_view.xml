@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="child_ticket_form_view_inherit_rma_ppts" model="ir.ui.view">
+        <field name="name">child.ticket.rma_ppts.view.form</field>
+        <field name="model">child.ticket</field>
+        <field name="inherit_id" ref="ppts_parent_ticket.child_ticket_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="is_create_repair" invisible="1"/>
+                <field name="is_repair_created" invisible="1"/>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_perform_repair" string="Perform Repair" type="object"
+                        class="btn btn-success"
+                        attrs="{'invisible': ['|',('is_create_repair','=', False),('is_repair_created','=', True)]}"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_repair" type="object" class="oe_stat_button" icon="fa-wrench"
+                        string="Repair" attrs="{'invisible': [('repair_count','=', 0)]}">
+                    <field name="repair_count" widget="statinfo" string="Repair"/>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='repair']" position="inside">
+                <field name="repair_ids" nolabel="1" readonly="1">
+                    <tree string="Repair">
+                        <field name="code"/>
+                        <field name="name"/>
+                        <field name="partner_id"/>
+                        <field name="date"/>
+                        <field name="state"/>
+                    </tree>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

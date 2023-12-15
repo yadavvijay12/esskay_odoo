@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="blast_survey_view_form" model="ir.ui.view">
+        <field name="name">blast_survey.view.form</field>
+        <field name="model">blast.survey</field>
+        <field name="arch" type="xml">
+            <form string="Blast Survey" create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="customer_id" />
+                        <field name="customer_account_id" />
+                        <field name="result" />
+                        <field name="service_type_id" />
+                        <field name="service_category_id" />
+                        <field name="survey_id" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="blast_survey_view_tree" model="ir.ui.view">
+        <field name="name">blast_survey.view.tree</field>
+        <field name="model">blast.survey</field>
+        <field name="arch" type="xml">
+            <tree string="Blast Survey" create="0" delete="0">
+                <field name="name" />
+                <field name="customer_id" />
+                <field name="customer_account_id" />
+                <field name="result" />
+                <field name="service_type_id" />
+                <field name="service_category_id" />
+                <field name="survey_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="blast_survey_action" model="ir.actions.act_window">
+        <field name="name">Blast Survey</field>
+        <field name="res_model">blast.survey</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <record model="ir.actions.server" id="action_server_blast_survey">
+        <field name="name">Blast Survey</field>
+        <field name="model_id" ref="stryker_survey.model_blast_survey"/>
+        <field name="binding_model_id" ref="stryker_survey.model_blast_survey"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            action = records.action_blast_survey()
+        </field>
+        <!-- <field name="groups_id" eval="[(4, ref('base.group_erp_manager'))]"/> -->
+    </record>
+
+    <menuitem name="Blast Survey" id="survey_blast_menu" parent="survey.menu_surveys" sequence="150"/>
+
+</odoo>
+<!-- blast_survey form view -->

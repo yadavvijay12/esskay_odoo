@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="spares_indent_report_paper_format" model="report.paperformat">
+            <field name="name">Spares Indent SE Inhouse Form</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">39.75</field>
+            <field name="margin_bottom">28.75</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">90</field>
+        </record>
+        <record id="spares_indent_order_report" model="ir.actions.report">
+            <field name="name">Spare Indent Form</field>
+            <field name="model">child.ticket</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">ppts_parent_ticket.spares_indent_se_inhouse_form_report_print_document</field>
+            <field name="report_file">ppts_parent_ticket.spares_indent_se_inhouse_form_report_print_document</field>
+            <field name="print_report_name">'SPARE INDENT FORM'</field>
+            <field name="binding_model_id" ref="model_child_ticket"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="spares_indent_report_paper_format"/>
+        </record>
+
+        <template id="spare_indent_order_report">
+            <t t-set="spare"
+               t-value="request.env['request'].sudo().search([('child_ticket_id', '=', doc.id)])"/>
+            <t t-set="internal_spr"
+               t-value="request.env['spare.request'].sudo().search([('child_ticket_id', '=', doc.id)])"/>
+            <t t-set="internal_spares"
+               t-value="request.env['stock.picking'].sudo().search([('child_ticket_id', '=', doc.id),('is_return', '=', True)])"/>
+            <!--            <t t-set="product"-->
+            <!--               t-value="request.env['product.template'].sudo().search([('child_ticket_id', '=', doc.id))])"/>-->
+
+            <!--            <t t-foreach="spare" t-as="d">-->
+            <t t-call="web.basic_layout">
+                <style>table{ font-size:15px; width:100%; } tr,td,th{ border:1px solid #dcdcdc; font-size:15px;
+                    padding:8px; }
+                </style>
+                <div class="header">
+                    <div class="row">
+                        <table style="width:100%; border:1px solid #dcdcdc;">
+                            <tr>
+                                <th>
+                                    <center>
+                                        <h1>
+                                            <b>Stryker</b>
+                                        </h1>
+                                        <p style="color:#ff8c00;font-size:20px">SIPL FORM</p>
+                                    </center>
+                                </th>
+                                <th>
+                                    <center>
+                                        <br/>
+                                        <p>SPARE INDENT FORM</p>
+                                    </center>
+                                </th>
+                                <th>
+                                    <p style="text-align:left;padding:5px;">Document Number: IFQ-CPMS-007-05</p>
+                                    <p style="text-align:left;padding:5px;">Revision No:01</p>
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <br/>
+                <br></br>
+                <br></br>
+
+                <!--                    <t t-if="d.external_state in ['available','confirm','issued']">-->
+                <div class="page">
+                    <table style="height:150px;">
+                        <tbody>
+                            <tr>
+                                <td width="25%">
+                                    <strong>Requested Date:</strong>
+                                </td>
+                                <td width="75%">
+                                    <t t-esc="doc.create_date" t-options="{'widget': 'date'}" class="m-0"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <strong>Requested By:</strong>
+                                </td>
+                                <td width="75%">
+                                    <t t-esc="doc.user_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <strong>Customer Ref:</strong>
+                                </td>
+                                <td width="75%">
+                                    <span t-field="doc.partner_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    <strong>JDE Call No:</strong>
+                                </td>
+                                <td width="75%">
+                                    <t t-if="doc.parent_ticket_id">
+                                        <t t-esc="doc.parent_ticket_id.parent_ticket_id_alias"/>
+                                    </t>
+                                    <t t-elif="doc.child_ticket_id">
+                                        <t t-esc="doc.child_ticket_id.child_ticket_id_alias"/>
+                                    </t>
+                                    <t t-else="">
+
+                                    </t>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <hr/>
+                    <h5>
+                        <b>Issued Spares</b>
+                    </h5>
+                    <table border="1">
+                        <tr style="background-color:#bfbbbb;height:35px;">
+                            <th class="text-center">
+                                <span>SN</span>
+                            </th>
+                            <th class="text-center">
+                                <span>Cat No</span>
+                            </th>
+                            <th class="text-center">
+                                <span>Description</span>
+                            </th>
+                            <th class="text-center">
+                                <span>Qty Required</span>
+                            </th>
+                            <th class="text-center">
+                                <span>Qty issued</span>
+                            </th>
+                            <th class="text-center">
+                                <span>Date Issued</span>
+                            </th>
+                        </tr>
+                        <t t-set="serial_number" t-value="0"></t>
+                        <tr t-foreach="spare.asset_ids" t-as="line">
+                            <t t-set="serial_number" t-value="serial_number+1"/>
+                            <tr style="height:35px;">
+                                <td>
+                                    <center>
+                                        <t t-esc="serial_number"/>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <t t-esc="line.part_number"/>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <t t-esc="line.description"/>
+
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <t t-esc="line.quantity"/>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <t t-esc="line.available"/>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <t t-esc="line.write_date" t-options="{'widget': 'date'}"
+                                           class="m-0"/>
+                                    </center>
+                                </td>
+                                <!--                                <td>-->
+                                <!--                                    <center>-->
+                                <!--                                        <t t-esc="line.return_quantity"/>-->
+                                <!--                                    </center>-->
+                                <!--                                </td>-->
+                            </tr>
+                        </tr>
+
+                        <tr t-foreach="internal_spr.spare_request_line" t-as="lines">
+                            <t t-set="serial_number" t-value="serial_number+1"/>
+                            <tr style="height:35px;">
+                                <td>
+                                    <center>
+                                        <t t-esc="serial_number"/>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <t t-esc="doc.product_id.product_tmpl_id.product_part"/>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <t t-esc="lines.description"/>
+
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <t t-esc="lines.product_uom_qty"/>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <t t-esc="lines.product_uom_qty_issued"/>
+                                    </center>
+                                </td>
+
+                                <td>
+                                    <center>
+                                        <t t-esc="lines.write_date" t-options="{'widget': 'date'}"
+                                           class="m-0"/>
+                                    </center>
+                                </td>
+                            </tr>
+                        </tr>
+                    </table>
+                    <br></br>
+
+                    <t t-if="internal_spares">
+                        <h5>
+                            <b>Returned Spares</b>
+                        </h5>
+                        <table border="1">
+                            <tr style="background-color:#bfbbbb;height:35px;">
+                                <th class="text-center">
+                                    <span>SN</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Cat No</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Description</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Qty Required</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Qty Returned</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Date Returned</span>
+                                </th>
+                            </tr>
+                            <t t-set="serial_number" t-value="0"></t>
+                            <tr t-foreach="internal_spares.move_ids_without_package" t-as="line">
+                                <t t-set="serial_number" t-value="serial_number+1"/>
+                                <tr style="height:35px;">
+                                    <td>
+                                        <center>
+                                            <t t-esc="serial_number"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="line.product_id.product_tmpl_id.product_part"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="line.description_picking"/>
+
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="line.product_uom_qty"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="line.quantity_done"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="line.write_date" t-options="{'widget': 'date'}"
+                                               class="m-0"/>
+                                        </center>
+                                    </td>
+                                </tr>
+                            </tr>
+                        </table>
+                    </t>
+
+                    <t t-elif="spare">
+                        <h5>
+                            <b>Returned Spares</b>
+                        </h5>
+                        <table border="1">
+                            <tr style="background-color:#bfbbbb;height:35px;">
+                                <th class="text-center">
+                                    <span>SN</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Cat No</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Description</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Qty Required</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Qty Returned</span>
+                                </th>
+                                <th class="text-center">
+                                    <span>Date Returned</span>
+                                </th>
+                            </tr>
+                            <t t-set="serial_number" t-value="0"></t>
+                            <tr t-foreach="spare.return_ids" t-as="external">
+                                <t t-set="serial_number" t-value="serial_number+1"/>
+                                <tr style="height:35px;">
+                                    <td>
+                                        <center>
+                                            <t t-esc="serial_number"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="external.part_number"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="external.description"/>
+
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="external.quantity"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="external.return_quantity"/>
+                                        </center>
+                                    </td>
+                                    <td>
+                                        <center>
+                                            <t t-esc="external.write_date" t-options="{'widget': 'date'}"
+                                               class="m-0"/>
+                                        </center>
+                                    </td>
+                                </tr>
+                            </tr>
+                        </table>
+                    </t>
+                </div>
+                <p style="page-break-after:always;"/>
+                <div class="footer">
+                    <center>
+                        <b>
+                            TEMPLATE IQF_C SUP_001_03,Rev 01-Page No:
+                            <span class="page"/>
+                            of
+                            <span class="topage"/>
+                        </b>
+                    </center>
+                </div>
+            </t>
+        </template>
+        <template id="spares_indent_se_inhouse_form_report_print_document">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ppts_parent_ticket.spare_indent_order_report">
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,266 @@
+<odoo>
+    <data>
+        <record id="Warranty_Replacement_report_paper_format" model="report.paperformat">
+            <field name="name">Warranty Replacement Paper Format</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">29.75</field>
+            <field name="margin_bottom">28.75</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">90</field>
+        </record>
+        <record id="Warranty_Replacement_Form_reports_print" model="ir.actions.report">
+            <field name="name">Warranty Replacement</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">ppts_warranty_replacement.Warranty_Replacement_Form_report_print</field>
+            <field name="report_file">ppts_warranty_replacement.Warranty_Replacement_Form_report_print</field>
+            <field name="print_report_name">'W R - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="Warranty_Replacement_report_paper_format"/>
+        </record>
+        <template id="Warranty_Replacement_Form_report_print">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.basic_layout">
+                        <style>table{ width:100%; border-collapse:collapse; } tr,th,td{ border:1px solid lightGrey;
+                            padding:5px; }
+                        </style>
+                        <!--                        <t t-set="engineer_visits" t-value="doc.field_service_report_values()"/>-->
+                        <t t-set="task_list_id"
+                           t-value="request.env['tasks.master.line'].search([('parent_ticket_id', '=', doc.parent_ticket_id.id),('is_end_task', '=', True)], limit=1)"/>
+                        <!--                        <t t-set="parent_ticket"-->
+                        <!--                           t-value="request.env['sale.order'].search([('parent_ticket_id', '=', doc.parent_ticket_id.id)], limit=1)"/>-->
+                        <div class="header">
+                            <div class="row" style="report_header_style">
+                                <style>table{ width:100%; border-collapse:collapse; } tr,th,td{ border:1px solid
+                                    lightGrey; padding:5px; }
+                                </style>
+                                <table border="1">
+                                    <tr style="height:35px;">
+                                        <td style="width:25%">
+                                            <center>
+                                                <h2 style="font-weight:bold;color:black;">Stryker</h2>
+                                                <h5 style="color:orange;">SIPL FORM</h5>
+                                            </center>
+                                        </td>
+                                        <td style="width:40%">
+                                            <br/>
+                                            <center>
+                                                <p>
+                                                    <b>PRODUCT REPLACEMENT FORM</b>
+                                                </p>
+                                            </center>
+                                        </td>
+                                        <td style="width:35%">
+                                            <strong>Document No:</strong>
+                                            <span>IQF-CPMS-002-01</span>
+                                            <br/>
+                                            <br/>
+                                            <strong>Rev.No.:</strong>
+                                            03
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="row">
+                            <table border="1">
+                                <thead>
+                                    <tr style="height:35px;">
+                                        <th style="width:100%">
+                                            <center>
+                                                <p>
+                                                    <b>Note:Please Complete and send this form to CIC RAQA within 24
+                                                        hours(1 business day) from date of event awareness
+                                                    </b>
+                                                </p>
+                                            </center>
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <t t-set="task_data" t-value="doc.parent_ticket_id.wr_task_values()"/>
+                            <table border="1">
+                                <tr style="height:35px;">
+                                    <td style="width:25%">
+                                        <strong>JDE Request Date:</strong>
+                                    </td>
+                                    <td style="width:25%">
+                                        <span t-esc="task_data['job_started']"/>
+                                    </td>
+                                    <td style="width:25%">
+                                        <strong>Customer Name:</strong>
+                                    </td>
+                                    <td style="width:25%">
+                                        <span t-field="doc.partner_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr style="height:35px;">
+                                    <td style="width:25%">
+                                        <strong>Region:</strong>
+                                    </td>
+                                    <td style="width:25%">
+                                        <span t-field="doc.partner_id.customer_region"/>
+                                    </td>
+                                    <td style="width:25%">
+                                        <strong>City State:</strong>
+                                    </td>
+                                    <td style="width:25%">
+                                        <p>
+                                            <span t-field="doc.partner_id.city"></span>
+                                            <span t-field="doc.partner_id.state_id"></span>
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr style="height:35px;">
+                                    <td style="width:25%">
+                                        <strong>Work End Date:</strong>
+                                    </td>
+                                    <td style="width:25%">
+                                        <span t-esc="task_data['job_end']"/>
+                                    </td>
+                                    <td style="width:25%">
+                                        <strong>Billing Type:</strong>
+                                    </td>
+                                    <td style="width:25%">
+                                        <span t-esc="doc.billing_type"/>
+                                    </td>
+                                </tr>
+                                <tr style="height:35px;">
+                                    <td style="width:25%">
+                                        <strong>Stryker Invoice No:</strong>
+                                    </td>
+                                    <td style="width:25%">
+                                        <span t-esc="doc.invoice_number"/>
+                                    </td>
+                                    <td style="width:25%">
+                                        <strong>Invoice Date:</strong>
+                                    </td>
+                                    <td style="width:25%">
+                                        <span t-esc="doc.invoice_date"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <hr/>
+                        <div class="row">
+                            <table border="1">
+                                <thead>
+                                    <tr style="height:35px;">
+                                        <td style="width:13%">
+                                            <strong>Product Information (List all products associated with the event)
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <table border="1">
+                                <tr style="background-color:#bfbbbb;height:35px;">
+                                    <th style="width:13%">
+                                        <span>JDE callWork Order No.</span>
+                                    </th>
+                                    <th style="width:13%">
+                                        <span>Old Cat No.</span>
+                                    </th>
+                                    <th style="width:13%">
+                                        <span>Old Product Sr.No.</span>
+                                    </th>
+                                    <th style="width:13%">
+                                        <span>New Cat No.</span>
+                                    </th>
+                                    <th style="width:13%">
+                                        <span>New Product Sr.No.</span>
+                                    </th>
+                                    <th style="width:13%">
+                                        <span>Product Description</span>
+                                    </th>
+                                    <th style="width:13%">
+                                        <span>Quantity</span>
+                                    </th>
+                                </tr>
+                                <!--                                <t t-set="parent_ticket_line"-->
+                                <!--                                   t-value="request.env['sale.order'].search([('parent_ticket_id', '=', doc.parent_ticket_id.id)], limit=1)"/>-->
+                                <tr t-foreach="doc.order_line" t-as="d">
+                                    <tr style="height:35px;">
+                                        <td>
+                                            <t t-esc="doc.parent_ticket_id.parent_ticket_id_alias"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="doc.product_part_no"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="doc.product_serial_no"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="d.product_id.product_part"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="d.stock_lot_id.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="d.product_id.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="d.product_uom_qty"/>
+                                        </td>
+                                    </tr>
+                                </tr>
+                            </table>
+                        </div>
+                        <hr/>
+                        <div class="row">
+                            <table border="1">
+                                <tr style="height:35px;">
+                                    <td style="width:50%">
+                                        <strong>Customer Signature:</strong>
+                                        <t t-esc="task_list_id.signature"/>
+                                    </td>
+                                    <td style="width:50%">
+                                        <strong>For Stryker India private Limited</strong>
+                                    </td>
+                                </tr>
+                                <tr style="height:35px;">
+                                    <td>
+                                        <strong>Customer name :</strong>
+                                        <span t-field="doc.partner_id.name"/>
+                                    </td>
+                                    <td>
+                                        <strong>Engineer name :</strong>
+                                        <span t-field="doc.user_id.name"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="footer">
+                            <center>
+                                <p>
+                                    <b>IQF-CPMS-002-01 Rev 03</b>
+                                </p>
+                                <li class="list-inline-item">
+                                    <span class="page"/>
+                                </li>
+                                <li class="list-inline-item">of</li>
+                                <li class="list-inline-item">
+                                    <span class="topage"/>
+                                </li>
+                            </center>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

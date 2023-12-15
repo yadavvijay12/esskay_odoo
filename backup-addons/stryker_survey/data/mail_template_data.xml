@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="child_ticket_survey_generation" model="mail.template">
+            <field name="name">Child Ticket Survey</field>
+            <field name="email_from">{{(user.partner_id.email)}}</field>
+            <field name="email_to">{{(object.partner_id.email)}}</field>
+            <field name="reply_to">{{(user.partner_id.email)}}</field>
+            <field name="subject">Child Ticket Survey</field>
+            <field name="model_id" ref="ppts_parent_ticket.model_child_ticket"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear <t t-out="object.partner_id.name or ''"></t>,</p>
+                    <p>We hope you have had a great service experience.<br/></p>
+                    <p>In our endeavour to serve you better, we request you to share your feedback on your recent Service Experience. Click below to begin this short survey.</p>
+                    <div style="margin: 16px 0px 16px 0px; text-align: left;">
+                        <a t-att-href="ctx.get('url')" style="display: inline-block; padding: 10px; text-decoration: none; font-size: 12px; background-color: #875A7B; color: #fff; border-radius: 5px;">
+                            <strong>Take the survey</strong>
+                        </a>
+                    </div>
+                    <p>We appreciate your feedback and read every single comment received from you..<br/></p>
+                </div>
+            </field>
+        </record>
+
+        <record id="parent_ticket_survey_generation" model="mail.template">
+            <field name="name">Parent Ticket Survey</field>
+            <field name="email_from">{{(user.partner_id.email)}}</field>
+            <field name="email_to">{{(object.partner_id.email)}}</field>
+            <field name="reply_to">{{(user.partner_id.email)}}</field>
+            <field name="subject">Parent Ticket Survey</field>
+            <field name="model_id" ref="ppts_parent_ticket.model_parent_ticket"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear <t t-out="object.partner_id.name or ''"></t>,</p>
+                    <p>We hope you have had a great service experience.<br/></p>
+                    <p>In our endeavour to serve you better, we request you to share your feedback on your recent Service Experience. Click below to begin this short survey.</p>
+                    <div style="margin: 16px 0px 16px 0px; text-align: left;">
+                        <a t-att-href="ctx.get('url')" style="display: inline-block; padding: 10px; text-decoration: none; font-size: 12px; background-color: #875A7B; color: #fff; border-radius: 5px;">
+                            <strong>Take the survey</strong>
+                        </a>
+                    </div>
+                    <p>We appreciate your feedback and read every single comment received from you..<br/></p>
+                </div>
+            </field>
+        </record>
+
+        <record id="child_success_survey_generation" model="mail.template">
+            <field name="name">Survey Success Child</field>
+            <field name="email_from">{{(user.partner_id.email)}}</field>
+            <field name="email_to">{{(object.partner_id.email)}}</field>
+            <field name="reply_to">{{(user.partner_id.email)}}</field>
+            <field name="subject">Survey Success Child</field>
+            <field name="model_id" ref="ppts_parent_ticket.model_child_ticket"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear <t t-out="object.partner_id.name or ''"></t>,</p>
+                    <p>Thank You for valueable feedback<br/></p>
+                    <p>Take a moment to submit survey by clicking the below Button</p>
+                    <div style="margin: 16px 0px 16px 0px; text-align: left;">
+                        <a t-att-href="ctx.get('url')" style="display: inline-block; padding: 10px; text-decoration: none; font-size: 12px; background-color: #875A7B; color: #fff; border-radius: 5px;">
+                            <strong>Take Survey</strong>
+                        </a>
+                    </div>
+                </div>
+            </field>
+        </record>
+
+    <record id="parent_success_survey_generation" model="mail.template">
+            <field name="name">Survey Success Parent</field>
+            <field name="email_from">{{(user.partner_id.email)}}</field>
+            <field name="email_to">{{(object.partner_id.email)}}</field>
+            <field name="reply_to">{{(user.partner_id.email)}}</field>
+            <field name="subject">Survey Success Parent</field>
+            <field name="model_id" ref="ppts_parent_ticket.model_parent_ticket"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear <t t-out="object.partner_id.name or ''"></t>,</p>
+                    <p>Thank You for valueable feedback<br/></p>
+                    <p>Take a moment to submit survey by clicking the below Button</p>
+                    <div style="margin: 16px 0px 16px 0px; text-align: left;">
+                        <a t-att-href="ctx.get('url')" style="display: inline-block; padding: 10px; text-decoration: none; font-size: 12px; background-color: #875A7B; color: #fff; border-radius: 5px;">
+                            <strong>Take Survey</strong>
+                        </a>
+                    </div>
+                </div>
+            </field>
+        </record>
+
+        <record id="rsm_survey_escalation" model="mail.template">
+            <field name="name">RSM Escalation</field>
+            <field name="email_from">"{{ object.company_id.name }}" &lt;{{ (object.company_id.email or user.email) }}&gt;</field>
+            <field name="email_to">{{ctx.get('email_to')}}</field>
+            <!-- <field name="reply_to">{{(user.partner_id.email)}}</field> -->
+            <field name="subject">Service Request RSM</field>
+            <field name="model_id" ref="ppts_service_request.model_service_request"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear <t t-out="ctx.get('partner_name') or ''"></t>,</p>
+                    
+                    <p>The below Service Ticket has been assigned to you, Since it doesn't meet the customers satisfaction.</p>
+                    <span style="font-weight: bold;"  t-out="object.name or ''">SR/0045</span>
+  
+                </div>
+            </field>
+        </record>
+
+        <record id="sr_escalation_lvl_one" model="mail.template">
+            <field name="name">SR Open Escalation</field>
+            <field name="email_from">"{{ object.company_id.name }}" &lt;{{ (object.company_id.email or user.email) }}&gt;</field>
+            <field name="email_to">{{ctx.get('email_to')}}</field>
+            <!-- <field name="reply_to">{{(user.partner_id.email)}}</field> -->
+            <field name="subject">Service Request Open</field>
+            <field name="model_id" ref="ppts_service_request.model_service_request"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear <t t-out="ctx.get('nsm_name') or ''"/>,</p>
+                    <p>The below Service was open, Please have a look at it. </p>
+                    <span style="font-weight: bold;"  t-out="object.name or ''">SR/0045</span>
+                </div>
+            </field>
+        </record> 
+
+        <record id="sr_escalation_lvl_two" model="mail.template">
+            <field name="name">SR In Progress Escalation</field>
+            <field name="email_from">"{{ object.company_id.name }}" &lt;{{ (object.company_id.email or user.email) }}&gt;</field>
+            <field name="email_to">{{ctx.get('email_to')}}</field>
+            <!-- <field name="reply_to">{{(user.partner_id.email)}}</field> -->
+            <field name="subject">Service Request Inprogress</field>
+            <field name="model_id" ref="ppts_service_request.model_service_request"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear <t t-out="ctx.get('nsm_name') or ''"/>,</p>
+                    <p>The below Service Ticket was not closed, Please have a look at it. </p>
+                    <span style="font-weight: bold;"  t-out="object.name or ''">SR/0045</span>
+                </div>
+            </field>
+        </record>            
+
+    </data>
+</odoo>

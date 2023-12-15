@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="whatsapp_history_form_view" model="ir.ui.view">
+        <field name="name">whatsapp.history.form.view</field>
+        <field name="model">whatsapp.history</field>
+        <field name="arch" type="xml">
+            <form string="Whatsapp History" create="0">
+                <sheet>
+                    <group>
+                        <group string="Send" readonly="True">
+                            <field name="sent_to" readonly="True"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="sent_on" readonly="True"/>
+                            <field name="sent_by" readonly="True"/>
+                        </group>
+                        <group string="Receive" readonly="True">
+                            <field name="delivered_on" readonly="True"/>
+                            <field name="state" readonly="True"/>
+                            <field name="rqst_ack_id" readonly="True"/>
+                            <field name="read_on" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="whatsapp_history_tree_view" model="ir.ui.view">
+        <field name="name">whatsapp.history.tree.view</field>
+        <field name="model">whatsapp.history</field>
+        <field name="arch" type="xml">
+            <tree string="Whatsapp History" create="0">
+                <field name="sent_on" />
+                <field name="sent_to"/>
+                <field name="sent_by"/>
+                <field name="delivered_on"/>
+                <field name="read_on"/>
+                <field name="state"/>
+                <field name="rqst_ack_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_whatsapp_history_filter" model="ir.ui.view">
+        <field name="name">whatsapp.history.search.view</field>
+        <field name="model">whatsapp.history</field>
+        <field name="arch" type="xml">
+            <search >
+
+                <field name="sent_to" />
+                <!-- <field name="sent_by" /> -->
+                <field name="partner_id" />
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="state" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Sent Time" name="sent_on" domain="[]" context="{'group_by':'sent_on'}"/>
+                    <filter string="Deliver Time" name="delivered_on" domain="[]"
+                            context="{'group_by':'delivered_on'}"/>
+                     <filter string="Read Time" name="read_on" domain="[]"
+                            context="{'group_by':'read_on'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <record id="action_whatsapp_history" model="ir.actions.act_window">
+        <field name="name">Whatsapp History</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">whatsapp.history</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new whatsapp history!
+            </p>
+        </field>
+    </record>
+</odoo>

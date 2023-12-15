@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="product_custom_fields_inherit">
+        <field name="name">product.custom.fields.inherit</field>
+        <field name="model">product.template</field>
+        <field name="priority" eval="16"/>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Contract Product Configuration" name="contract_product_config"
+                      attrs="{'invisible': [('detailed_type','!=','service')]}">
+                    <label for="contract_product_temp_ids"/>
+                    <div class="o_row">
+                        <field name="contract_product_temp_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="default_code"/>
+                                <field name="name"/>
+                                <field name="uom_id"/>
+                                <field name="qty_available"/>
+                            </tree>
+                        </field>
+                    </div>
+                    <label for="contract_product_categ_ids"/>
+                    <div class="o_row">
+                        <field name="contract_product_categ_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="parent_id"/>
+                            </tree>
+                        </field>
+                    </div>
+                </page>
+            </xpath>
+
+            <xpath expr="//button[@name='action_open_quants']//span[hasclass('o_stat_text')]" position="replace">
+                <span class="o_stat_text">Quantity</span>
+            </xpath>
+            <xpath expr="//button[@name='action_update_quantity_on_hand']" position="after">
+                <button name="state_active_button" string="Active" type="object" class="oe_highlight"
+                        attrs="{'invisible': [('state', '=', 'state_active')]}"/>
+                <button name="state_inactive_button" string="Inactive"
+                        attrs="{'invisible': [('state', '=', 'state_inactive')]}" type="object"
+                        class="oe_highlight"/>
+                <button name="state_discontinued_button"
+                        attrs="{'invisible': [('state', '=', 'state_discontinued')]}" string="Discontinued"
+                        type="object" class="oe_highlight"/>
+                <button name="state_eop_button"
+                        attrs="{'invisible': [('state', '=', 'state_eop')]}" string="End of PL"
+                        help="End of Product Life"
+                        type="object" class="oe_highlight"/>
+                <button name="state_eos_button"
+                        attrs="{'invisible': [('state', '=', 'state_eos')]}" string="End of SS"
+                        help="End of Service Support"
+                        type="object" class="oe_highlight"/>
+
+                <field name="state" widget="statusbar"
+                       statusbar_visible="state_active,state_inactive,state_discontinued,state_eop"/>
+            </xpath>
+            <xpath expr="//label[@for='purchase_ok']" position="after">
+                <field name="is_accessories" string="Can be Accessories"/>
+                <label for="is_accessories"/>
+            </xpath>
+            <xpath expr="//page[@name='general_information']" position="after">
+
+                <page name="attachment" string="Attachment">
+                    <field name="product_attachment_ids" widget="many2many_binary" string="Attach a file"/>
+                </page>
+                <page name="description" string="Description">
+                    <field name="product_extra_description"/>
+                </page>
+            </xpath>
+            <xpath expr="//page[@name='description']" position="after">
+                <page string="Properties" name="properties_grp">
+                    <group string="" name="group_properties">
+                        <group>
+                            <field name="product_properties"/>
+                            <!--                             <field name="product_properties" nolabel="1" columns="2" hideKanbanOption="1"/> -->
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//page[@name='general_information']" position="replace">
+                <page string="General Informations" name="general_information">
+                    <group string="Product Information" name="group_general">
+                        <group>
+                            <field name="active" modifiers="{&quot;invisible&quot;: true}"/>
+                            <field name="detailed_type" on_change="1" modifiers="{&quot;required&quot;: true}"/>
+                            <field name="product_code"/>
+                            <field name="custom_product_serial" invisible="1"/>
+                            <field name="customer_account_id"/>
+                            <field name="product_types_id" invisible="1"/>
+                            <field name="order_type" attrs="{'invisible':[('detailed_type', '!=', 'service')]}"/>
+                            <field name="term_type_id"
+                                   attrs="{'required':[('order_type', '!=',False)], 'invisible':[('order_type', '=',False)]}"/>
+                            <field name="product_part"/>
+                            <field name="product_eol"/>
+                            <field name="product_eosl"/>
+                            <field name="accessories_ids" options="{'no_create': True}" widget="many2many_tags"
+                                   domain="[('is_accessories', '=', True)]"/>
+                            <field name="invoice_policy" on_change="1"
+                                   modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;=&quot;, &quot;service&quot;]], &quot;required&quot;: true}"/>
+                            <!--                            <field name="service_policy" string="Invoicing Policy" on_change="1"-->
+                            <!--                                   modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;!=&quot;, &quot;service&quot;]], &quot;required&quot;: [[&quot;type&quot;, &quot;=&quot;, &quot;service&quot;]]}"/>-->
+                            <!--                            <field name="service_tracking" on_change="1"-->
+                            <!--                                   modifiers="{&quot;invisible&quot;: [[&quot;type&quot;, &quot;!=&quot;, &quot;service&quot;]], &quot;required&quot;: true}"/>-->
+                            <!--                            <field name="project_id" context="{'default_allow_billable': True}"-->
+                            <!--                                   modifiers="{&quot;invisible&quot;: [[&quot;service_tracking&quot;, &quot;!=&quot;, &quot;task_global_project&quot;]], &quot;required&quot;: [[&quot;service_tracking&quot;, &quot;==&quot;, &quot;task_global_project&quot;]]}"-->
+                            <!--                                   can_create="true" can_write="true"/>-->
+                            <!--                            <field name="project_template_id"-->
+                            <!--                                   context="{'active_test': False, 'default_allow_billable': True}"-->
+                            <!--                                   modifiers="{&quot;invisible&quot;: [[&quot;service_tracking&quot;, &quot;not in&quot;, [&quot;task_in_project&quot;, &quot;project_only&quot;]]]}"-->
+                            <!--                                   can_create="true" can_write="true"/>-->
+                            <!--                            <field name="expense_policy" widget="radio"-->
+                            <!--                                   modifiers="{&quot;invisible&quot;: [[&quot;visible_expense_policy&quot;, &quot;=&quot;, false]]}"/>-->
+                            <field name="product_variant_id" invisible="1"
+                                   modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+                            <field name="company_id" options="{'no_create': True}" on_change="1" can_create="true"
+                                   can_write="true"/>
+                            <field name="uom_po_id"/>
+                        </group>
+                        <group>
+                            <field name="categ_id" string="Product Category" on_change="1"
+                                   modifiers="{&quot;required&quot;: true}" can_create="true" can_write="true"/>
+                            <field name="default_code" on_change="1"
+                                   modifiers="{&quot;invisible&quot;: [[&quot;product_variant_count&quot;, &quot;&gt;&quot;, 1]]}"/>
+                            <field name="barcode"
+                                   modifiers="{&quot;invisible&quot;: [[&quot;product_variant_count&quot;, &quot;&gt;&quot;, 1]]}"/>
+                            <field name="modality_id" can_create="true" can_write="true" invisible="1"/>
+                            <field name="manufacturer_id" can_create="true" can_write="true"/>
+                            <field name="product_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"
+                                   can_create="true" can_write="true"/>
+                            <field name="uom_id"/>
+                            <field name="service_support_commitment" invisible="1"/>
+                            <field name="invoice_number" invisible="1"/>
+                            <field name="external_reference"/>
+                        </group>
+                    </group>
+                    <group string="Prices" name="group_standard_price">
+                        <group>
+                            <label for="list_price" class="mt-1"/>-->
+                            <div name="pricing">
+                                <field name="list_price" class="oe_inline" widget="monetary"
+                                       options="{'currency_field': 'currency_id', 'field_digits': True}"
+                                       on_change="1"/>
+                                <span class="ms-2"/>
+                                <field name="tax_string" modifiers="{&quot;readonly&quot;: true}"/>
+                            </div>
+                            <field name="service_price" widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="taxes_id" widget="many2many_tags"
+                                   context="{'default_type_tax_use':'sale', 'search_default_sale': 1, 'search_default_service': type == 'service', 'search_default_goods': type == 'consu'}"
+                                   on_change="1" can_create="true" can_write="true"/>
+                            <label for="standard_price"
+                                   modifiers="{&quot;invisible&quot;: [[&quot;product_variant_count&quot;, &quot;&gt;&quot;, 1], [&quot;is_product_variant&quot;, &quot;=&quot;, false]]}"/>
+                            <div name="standard_price_uom"
+                                 modifiers="{&quot;invisible&quot;: [[&quot;product_variant_count&quot;, &quot;&gt;&quot;, 1], [&quot;is_product_variant&quot;, &quot;=&quot;, false]]}">
+                                <field name="standard_price" class="oe_inline" widget="monetary"
+                                       options="{'currency_field': 'cost_currency_id', 'field_digits': True}"/>
+                            </div>
+
+
+                        </group>
+                        <group>
+                            <field name="currency_id"
+                                   modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+                            <field name="cost_currency_id"
+                                   modifiers="{&quot;invisible&quot;: true, &quot;readonly&quot;: true}"/>
+
+                        </group>
+                    </group>
+                </page>
+
+            </xpath>
+            <xpath expr="//div[hasclass('oe_title')]" position="inside">
+                <div class="oe_title mb24">
+                    <label for="description" string="Product Details"/>
+                    <h3>
+                        <field colspan="2" name="description" nolabel="1"
+                               placeholder="This note is only for internal purposes."/>
+                    </h3>
+                </div>
+            </xpath>
+<!--            <xpath expr="//sheet" position="inside">-->
+<!--                <group name="properties_grp" string="Properties"></group>-->
+<!--                <field name="product_properties" nolabel="1" columns="2" hideKanbanOption="1"/>-->
+<!--            </xpath>-->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" type="object" name="action_view_reports" icon="fa-tasks"
+                        string="Reports">
+                </button>
+            </xpath>
+            <xpath expr="//button[@name='open_pricelist_rules']" position="before">
+                <button class="oe_stat_button" type="object" name="action_view_service_requests" icon="fa-list-ul"
+                        string="Service Requests">
+                    <field string="Service Requests" name="service_count" widget="statinfo"/>
+                </button>
+                <button class="oe_stat_button" type="object" name="action_view_parent_ticket" icon="fa-list-ul"
+                        string="Parent Ticket">
+                    <field string="Parent Tickets" name="parent_count" widget="statinfo"/>
+                </button>
+                <button class="oe_stat_button" type="object" name="action_view_child_ticket" icon="fa-list-ul"
+                        string="Child Ticket">
+                    <field string="Child Tickets" name="child_count" widget="statinfo"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!--  Product Modality Master List -->
+    <record id="view_product_modality" model="ir.ui.view">
+        <field name="name">product.modality.form.view</field>
+        <field name="model">product.modality</field>
+        <field name="arch" type="xml">
+            <form string="Modality">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="modality" required="1"/>
+                            <field name="name"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_product_modality_tree_view" model="ir.ui.view">
+        <field name="name">product.modality.tree.view</field>
+        <field name="model">product.modality</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="modality"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_service_request_product_modality" model="ir.actions.act_window">
+        <field name="name">Product Modality</field>
+        <field name="res_model">product.modality</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_product_modality_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+    <!--  End Product Modality Master List -->
+
+
+    <!--  Product Manufacturer Master List -->
+    <record id="view_product_manufacturer" model="ir.ui.view">
+        <field name="name">product.manufacturer.form.view</field>
+        <field name="model">product.manufacturer</field>
+        <field name="arch" type="xml">
+            <form string="Manufacturer">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="manufacturer" required="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_product_manufacturer_tree_view" model="ir.ui.view">
+        <field name="name">product.manufacturer.tree.view</field>
+        <field name="model">product.manufacturer</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="manufacturer"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_service_request_product_manufacturer" model="ir.actions.act_window">
+        <field name="name">Product Manufacturer</field>
+        <field name="res_model">product.manufacturer</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_product_manufacturer_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+    <!--  End Product Manufacturer Master List -->
+
+    <!--  Product Type Master List -->
+    <record id="view_product_types" model="ir.ui.view">
+        <field name="name">product_types.form.view</field>
+        <field name="model">product.types</field>
+        <field name="arch" type="xml">
+            <form string="Product Types">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_types" required="1"/>
+                            <field name="name"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_product_types_tree_view" model="ir.ui.view">
+        <field name="name">product.types.tree.view</field>
+        <field name="model">product.types</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="product_types"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_service_request_product_types" model="ir.actions.act_window">
+        <field name="name">Product Types</field>
+        <field name="res_model">product.types</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_product_types_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+
+    </record>
+    <!--  End Product Type Master List -->
+
+    <!--    Menus-->
+
+    <menuitem name="Modality" id="product_modality_menu" parent="stock.menu_product_in_config_stock"
+              action="action_service_request_product_modality" sequence="1"/>
+    <menuitem name="Manufacturer" id="product_manufacturer_menu" parent="stock.menu_product_in_config_stock"
+              action="action_service_request_product_manufacturer" sequence="2"/>
+    <menuitem name="Product Types" id="product_types_menu" parent="stock.menu_product_in_config_stock"
+              action="action_service_request_product_types" sequence="3"/>
+
+</odoo>

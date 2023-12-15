@@ -1,0 +1,1068 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Inherited fields-->
+    <record id="res_partner_custom_fields_inherit_geoloc" model="ir.ui.view">
+        <field name="name">res.partner.custom.fields.inherit.geoloc</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base_geolocalize.view_crm_partner_geo_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//page[@name='geo_location']" position="attributes">
+                <attribute name="string">GEO Location</attribute>
+            </xpath>
+            <xpath expr="//page[@name='geo_location']/group/group" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='geo_location']" position="inside">
+                <button attrs="{'invisible': ['|', ('partner_latitude', '!=', 0), ('partner_longitude', '!=', 0)]}"
+                        icon="fa-gear" string="Compute based on address" title="Compute Localization"
+                        name="geo_localize" type="object" class="btn btn-link p-0"/>
+                <button attrs="{'invisible': [('partner_latitude', '=', 0), ('partner_longitude', '=', 0)]}"
+                        icon="fa-refresh" string="Refresh" title="Refresh Localization"
+                        name="geo_localize" type="object" class="btn btn-link p-0"/>
+                <group>
+                    <group>
+                        <span>Lat :
+                            <field name="partner_latitude" nolabel="1" class="oe_inline"/>
+                        </span>
+                    </group>
+                    <group>
+                        <span>Long :
+                            <field name="partner_longitude" nolabel="1" class="oe_inline"/>
+                        </span>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_partner_custom_fields_inher" model="ir.ui.view">
+        <field name="name">res.partner.custom.fields.inher</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='contact_addresses']" position="after">
+                <field name="is_customer_account_required" invisible="1"/>
+                <page string="Stock Checking Process" attrs="{'invisible':[('is_customer_account_required','=',True)]}">
+                    <field name="stock_checking_process_ids">
+                        <tree string="Stock Checking Process" editable="bottom">
+                            <field name="request_type"/>
+                            <field name="stock_request_type"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+            <xpath expr="//sheet" position='before'>
+                <header>
+                    <button name="service_ticket_creation" string="Create Service Request" type="object"
+                            class="oe_highlight"/>
+                    <button name="ticket_creation" string="Create Ticket" type="object"
+                            class="oe_highlight"/>
+                </header>
+            </xpath>
+            <field name="vat" position="after">
+                <field name="is_block_partner" readonly="1"/>
+            </field>
+            <xpath expr="//page[@name='internal_notes']" position='attributes'>
+                <attribute name='invisible'>1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="fax_no"/>
+            </xpath>
+
+            <xpath expr="//field[@name='city']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('o_address_format')]/field[@name='city']" position="after">
+                <field name="city_id" class="o_address_city" placeholder="City"/>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']/form/sheet/group/group/div/div/field[@name='city']"
+                   position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']/form/sheet/group/group/div/div/field[@name='city']"
+                   position="after">
+                <field name="city_id" class="o_address_city" placeholder="City"/>
+            </xpath>
+            <!--Pages-->
+            <xpath expr="//field[@name='company_name']" position="attributes">
+                <attribute name="placeholder">Customer Name...</attribute>
+            </xpath>
+            <xpath expr="//page[@name='sales_purchases']" position="after">
+                <page string="Assets" name="asset">
+                    <field name="stock_lot_ids" nolabel="1" readonly="1">
+                        <tree string="Assets" editable="bottom" create="0" edit="0" delete="0">
+                            <field name="name"/>
+                            <field name="product_id"/>
+                        </tree>
+                    </field>
+                </page>
+
+                <page string="Tickets" name="tickets">
+                    <field name="ticket_ids" nolabel="1" readonly="1">
+                        <tree string="Service Tickets" editable="bottom" create="0" edit="0" delete="0">
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="product_name"/>
+                            <field name="custom_product_serial"/>
+                        </tree>
+                    </field>
+                </page>
+
+                <page string="Contracts" name="contracts">
+                </page>
+
+                <page string="Loaners" name="loaners">
+                    <field name="loaner_ids" nolabel="1" readonly="1">
+                        <tree string="Loaner Product">
+                            <field name="name"/>
+                            <field name="company_id"/>
+                            <field name="partner_id"/>
+                            <field name="date_order"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <group>
+                                    <field name="name"/>
+                                    <field name="company_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="date_order"/>
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+
+                <page string="Dealer &amp; Distributor">
+                    <field name="dealer_distributer_ids">
+                        <tree string="Dealer &amp; Distributor" editable="bottom" name="dealer_distributor">
+                            <field name="dealer_id" options='{"no_open": True, "no_create": True}'/>
+                        </tree>
+                    </field>
+                </page>
+                <page string="Branches" attrs="{'invisible': [('custom_company_type', '!=', 'branch')]}">
+                    <field name="contact_branch_ids" readonly="1" delete="0">
+                        <tree>
+                            <field name="name"/>
+                        </tree>
+                    </field>
+                </page>
+                <page string="Attachment">
+                    <field name="customer_attachments" widget="many2many_binary" string="Attach a file"/>
+                </page>
+            </xpath>
+            <!--End Pages-->
+            <!--fields-->
+            <xpath expr="//form/sheet/div[hasclass('oe_title')]/h1" position="after">
+                <group string="Basic Informations" name="basic_info" style="font-size:small;">
+                </group>
+            </xpath>
+            <xpath expr="//group[@name='basic_info']" position="before">
+                <h3>
+                    <group>
+                        <field name="ex_customer_type"/>
+                        <field name="parent_customer_id"
+                               attrs="{'required': [('custom_company_type', '=', 'branch')]}"/>
+                        <field name="customer_account" invisible="1"/>
+                        <field name="is_customer_account_required" invisible="1"/>
+                        <field name="customer_account_id"
+                               attrs="{'required': [('ex_customer_type','=', 'create_customer')], 'invisible': [('ex_customer_type','=', 'create_account')]}"/>
+                        <field name="customer_type_partner"
+                               attrs="{'invisible': [('customer_account_id','!=', False)]}"/>
+
+                    </group>
+                </h3>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="vat" string="TAX ID"/>
+                <field name="gst_no"/>
+                <field name="pan_number"/>
+            </xpath>
+            <xpath expr="//page[@name='internal_notes']" position="attributes">
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="after">
+                <widget name="web_ribbon" title="Blocked" bg_color="bg-danger"
+                        attrs="{'invisible': [('is_block_partner', '!=', 'blocked')]}"/>
+            </xpath>
+
+            <xpath expr="//form/sheet/group" position="after">
+
+                <group name="internal_notes" string="Internal Notes" style="font-size:small;" colspan="4">
+                    <group>
+                        <br/>
+                        <br/>
+                        <field name="comment" placeholder="Internal notes..."/>
+                    </group>
+                </group>
+                <group name="properties_grp" string="Properties" style="font-size:small;" colspan="4">
+                </group>
+                <field name="properties" nolabel="1" columns="2" hideKanbanOption="1"/>
+            </xpath>
+
+            <xpath expr="//form/sheet/group" position="after">
+                <group string="Other Informations" name="other_info" style="font-size:small;" colspan="4">
+                    <group>
+                        <field name="id" readonly="1" string="Customer ID"/>
+                        <field name="customer_id_alias"/>
+                        <field name="customer_type"/>
+                        <field name="customer_region"/>
+                        <field name="target_group"/>
+                        <field name="tier_tier"/>
+                        <field name="reference"/>
+                        <field name="customer_group"/>
+                        <field name="location_id"/>
+
+                    </group>
+                    <group>
+                        <field name="hospital_name"/>
+                        <field name="surgeon_name"/>
+                        <field name="description"/>
+                        <field name="secondary_contact_number"/>
+                        <!--                After Esskay team testing, they told us to remove those three fields. File name : Test Results-From Esskay, line number31-->
+                        <!--<field name="branch_id"/>-->
+                        <!--                        <field name="branch_actual_id" readonly="1"/>-->
+                        <!--                        <field name="branch_id_alias" readonly="1"/>-->
+                        <field name="vendor_code"/>
+                        <field name="c_number"/>
+                        <field name="d_number"/>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" type="object" name="action_view_parent_tickets" icon="fa-book"
+                        string="Parent Tickets" attrs="{'invisible': [('parent_count', '=', 0)]}">
+                    <field string="Parent Tickets" name="parent_count" widget="statinfo"/>
+                </button>
+                <button class="oe_stat_button" type="object" name="action_view_child_tickets" icon="fa-lg fa-save"
+                        string="Child Tickets" attrs="{'invisible': [('child_count', '=', 0)]}">
+                    <field string="Child Tickets" name="child_count" widget="statinfo"/>
+                </button>
+                <button class="oe_stat_button" type="object" name="action_view_service_requests" icon="fa-usd"
+                        string="Service Requests">
+                    <field string="Service Requests" name="service_count" widget="statinfo"/>
+                </button>
+                <button class="oe_stat_button" type="object" name="action_view_reports" icon="fa-tasks"
+                        string="Reports">
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='company_type']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='company_type']" position='after'>
+                <field name="custom_company_type" widget="radio" options="{'horizontal': true}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_partner_custom_fields_tree_inherit" model="ir.ui.view">
+        <field name="name">res.partner.custom.tree.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='phone']" position="before">
+                <field name="customer_type_partner"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="partner_wizard_action_block_customer" model="ir.actions.server">
+        <field name="name">Block Customer</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">action = records.action_block_customer()</field>
+    </record>
+
+    <record id="res_partner_server_action_unblocked_partner" model="ir.actions.server">
+        <field name="name">Un-Block Customer</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">action = records.action_unblock_customer()</field>
+    </record>
+
+    <!--End Inherited Fields-->
+
+    <!--  Customer Type Master -->
+
+    <record id="customer_type_form_view" model="ir.ui.view">
+        <field name="name">customer.type.form.view</field>
+        <field name="model">customer.type</field>
+        <field name="arch" type="xml">
+            <form string="Customer type">
+                <sheet>
+                    <h1>
+                        <field name="sequence" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="is_customer_account_required" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="customer_type_tree_view" model="ir.ui.view">
+        <field name="name">customer.type.tree.view</field>
+        <field name="model">customer.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.rule" id="customer_type_comp_rule">
+        <field name="name">Customer Type multi-company</field>
+        <field name="model_id" ref="model_customer_type"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="action_customer_type" model="ir.actions.act_window">
+        <field name="name">Customer Type</field>
+        <field name="res_model">customer.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="customer_type_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+    <record id="customer_city_form_view" model="ir.ui.view">
+        <field name="name">customer.city.form.view</field>
+        <field name="model">customer.city</field>
+        <field name="arch" type="xml">
+            <form string="Customer City">
+                <sheet>
+                    <h1>
+                        <field name="sequence" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="customer_city_tree_view" model="ir.ui.view">
+        <field name="name">customer.city.tree.view</field>
+        <field name="model">customer.city</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.rule" id="cust_city_comp_rule">
+        <field name="name">Customer City multi-company</field>
+        <field name="model_id" ref="model_customer_city"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="action_customer_city" model="ir.actions.act_window">
+        <field name="name">Customer City</field>
+        <field name="res_model">customer.city</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="customer_city_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+    <record id="branch_branch_form_view" model="ir.ui.view">
+        <field name="name">branch.branch.form.view</field>
+        <field name="model">branch.branch</field>
+        <field name="arch" type="xml">
+            <form string="Branches">
+                <sheet>
+                    <h1>
+                        <field name="sequence" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                        </group>
+                        <group>
+                            <field name="id"/>
+                            <field name="id_alias"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="branch_branch_tree_view" model="ir.ui.view">
+        <field name="name">branch.branch.tree.view</field>
+        <field name="model">branch.branch</field>
+        <field name="arch" type="xml">
+            <tree>
+
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.rule" id="branch_comp_rule">
+        <field name="name">Branch multi-company</field>
+        <field name="model_id" ref="model_branch_branch"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="action_branch_branch" model="ir.actions.act_window">
+        <field name="name">Branches</field>
+        <field name="res_model">branch.branch</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="branch_branch_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+    <!--End Customer Type Master -->
+    <record id="res_company_customer_account" model="ir.ui.view">
+        <field name="name">res.company.custom.fields</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook/page[@name='general_info']" position="after">
+                <page string="Ticket Configurations" name="ticket_config">
+                    <group>
+                        <field name="auto_close_pt" widget="boolean_toggle"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!--Tree Views-->
+
+    <!--  To create region tree View -->
+
+    <record model="ir.ui.view" id="region_tree_views">
+        <field name="name">region.tree.view</field>
+        <field name="model">customer.region</field>
+        <field name="arch" type="xml">
+            <tree default_order='sequence asc' editable="bottom">
+                <field name="sequence" readonly="1"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.rule" id="cust_region_comp_rule">
+        <field name="name">Customer Region multi-company</field>
+        <field name="model_id" ref="model_customer_region"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--  To create region Search View -->
+    <record id="region_filter_view" model="ir.ui.view">
+        <field name="name">region.filter.view</field>
+        <field name="model">customer.region</field>
+        <field name="arch" type="xml">
+            <search string="Name">
+                <field name="name" filter_domain="['|',('name', 'ilike', self), ('sequence', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="name" context="{'group_by':'name'}"/>
+                    <filter string="sequence" name="code" context="{'group_by':'sequence'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--  To create action for region-->
+    <record id="custom_region_action" model="ir.actions.act_window">
+        <field name="name">Region</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">customer.region</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="region_tree_views"/>
+        <field name="search_view_id" ref="region_filter_view"/>
+    </record>
+
+
+    <!--    < To create target tree View>-->
+    <record model="ir.ui.view" id="target_group_tree_views">
+        <field name="name">target.group.tree.view</field>
+        <field name="model">target.group</field>
+        <field name="arch" type="xml">
+            <tree default_order='sequence asc' editable="bottom">
+                <field name="sequence" readonly="1"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.rule" id="target_group_comp_rule">
+        <field name="name">Target Group multi-company</field>
+        <field name="model_id" ref="model_target_group"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--  To create target Search View -->
+    <record id="target_group_filter_view" model="ir.ui.view">
+        <field name="name">target.group.filter.view</field>
+        <field name="model">target.group</field>
+        <field name="arch" type="xml">
+            <search string="Name">
+                <field name="name" filter_domain="['|',('name', 'ilike', self), ('sequence', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="name" context="{'group_by':'name'}"/>
+                    <filter string="sequence" name="code" context="{'group_by':'sequence'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--  To create action for target -->
+    <record id="custom_target_group_action" model="ir.actions.act_window">
+        <field name="name">Target Group</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">target.group</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="target_group_tree_views"/>
+        <field name="search_view_id" ref="target_group_filter_view"/>
+    </record>
+
+
+    <!--    <To create for view for tier>-->
+
+    <record model="ir.ui.view" id="tier_tree_views">
+        <field name="name">tier.tree.view</field>
+        <field name="model">tier.tier</field>
+        <field name="arch" type="xml">
+            <tree default_order='sequence asc' editable="bottom">
+                <field name="sequence" readonly="1"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.rule" id="tier_tier_comp_rule">
+        <field name="name">Tier multi-company</field>
+        <field name="model_id" ref="model_tier_tier"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--  To create Search View  for tier-->
+    <record id="tier_filter_view" model="ir.ui.view">
+        <field name="name">tier_filter.view</field>
+        <field name="model">tier.tier</field>
+        <field name="arch" type="xml">
+            <search string="Name">
+                <field name="name" filter_domain="['|',('name', 'ilike', self), ('sequence', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="name" context="{'group_by':'name'}"/>
+                    <filter string="sequence" name="code" context="{'group_by':'sequence'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- To create action for tier-->
+    <record id="tier_group_action" model="ir.actions.act_window">
+        <field name="name">Tier</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">tier.tier</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="tier_tree_views"/>
+        <field name="search_view_id" ref="tier_filter_view"/>
+    </record>
+
+    <!--    <To create a tree view for customer group>-->
+
+    <record model="ir.ui.view" id="customer_group_tree_views">
+        <field name="name">customer.group.tree.view</field>
+        <field name="model">customer.group</field>
+        <field name="arch" type="xml">
+            <tree default_order='sequence asc' editable="bottom">
+                <field name="sequence" readonly="1"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.rule" id="customer_group_comp_rule">
+        <field name="name">Customer Group multi-company</field>
+        <field name="model_id" ref="model_customer_group"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- To create a search view for customer group -->
+    <record id="customer_group_filter_view" model="ir.ui.view">
+        <field name="name">customer.group.search.view</field>
+        <field name="model">customer.group</field>
+        <field name="arch" type="xml">
+            <search string="Name">
+                <field name="name" filter_domain="['|',('name', 'ilike', self), ('sequence', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="name" context="{'group_by':'name'}"/>
+                    <filter string="sequence" name="code" context="{'group_by':'sequence'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- To create action for customer group-->
+    <record id="customer_group_action" model="ir.actions.act_window">
+        <field name="name">Customer Group</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">customer.group</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="customer_group_tree_views"/>
+        <field name="search_view_id" ref="customer_group_filter_view"/>
+    </record>
+
+    <!--    Form view Asset Location-->
+    <record model="ir.ui.view" id="asset_location_form_view">
+        <field name="name">asset.location.form.view</field>
+        <field name="model">asset.location</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="sequence" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <span class="o_form_label o_td_label" name="address_name">
+                                <label for="street_page_lead" string="Address"/>
+                            </span>
+                            <div class="o_address_format">
+                                <field name="street" id="street_page_lead" placeholder="Street..."
+                                       class="o_address_street"/>
+                                <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                <field name="city_id" placeholder="City" class="o_address_city"/>
+                                <field name="state_id" class="o_address_state" placeholder="State"/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!--    End Form View Asset Location-->
+
+    <!--<To create a Tree view for location>-->
+
+    <record model="ir.ui.view" id="asset_location_tree_views">
+        <field name="name">asset.location.tree.view</field>
+        <field name="model">asset.location</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="user_id"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.rule" id="asset_location_comp_rule">
+        <field name="name">Asset Location multi-company</field>
+        <field name="model_id" ref="model_asset_location"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--<To create a search filter for location>-->
+    <record id="asset_location_filter_view" model="ir.ui.view">
+        <field name="name">asset.location.search.view</field>
+        <field name="model">asset.location</field>
+        <field name="arch" type="xml">
+            <search string="Name">
+                <field name="name" filter_domain="['|',('name', 'ilike', self), ('sequence', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="name" context="{'group_by':'name'}"/>
+                    <filter string="sequence" name="code" context="{'group_by':'sequence'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--<To create action for location >-->
+    <record id="asset_location_action" model="ir.actions.act_window">
+        <field name="name">Location</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">asset.location</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="asset_location_tree_views"/>
+        <field name="search_view_id" ref="asset_location_filter_view"/>
+    </record>
+
+    <!--  To create process tree View -->
+
+    <record model="ir.ui.view" id="process_tree_view">
+        <field name="name">process.tree.view</field>
+        <field name="model">process.process</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.rule" id="process_process_comp_rule">
+        <field name="name">Process multi-company</field>
+        <field name="model_id" ref="model_process_process"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--  To create process Search View -->
+    <record id="process_filter_view" model="ir.ui.view">
+        <field name="name">process.filter.view</field>
+        <field name="model">process.process</field>
+        <field name="arch" type="xml">
+            <search string="Name">
+                <field name="name" filter_domain="['|',('name', 'ilike', self), ('sequence', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="Name" context="{'group_by':'name'}"/>
+                    <filter string="Sequence" name="Sequence" context="{'group_by':'sequence'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--  To create action for process-->
+    <record id="custom_process_action" model="ir.actions.act_window">
+        <field name="name">Process</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">process.process</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="process_tree_view"/>
+        <field name="search_view_id" ref="process_filter_view"/>
+    </record>
+
+
+    <!--  To create role tree View -->
+
+    <record model="ir.ui.view" id="role_tree_view">
+        <field name="name">role.tree.view</field>
+        <field name="model">role.role</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.rule" id="role_role_comp_rule">
+        <field name="name">Role multi-company</field>
+        <field name="model_id" ref="model_role_role"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--  To create role Search View -->
+    <record id="role_filter_view" model="ir.ui.view">
+        <field name="name">role.filter.view</field>
+        <field name="model">role.role</field>
+        <field name="arch" type="xml">
+            <search string="Name">
+                <field name="name" filter_domain="['|',('name', 'ilike', self), ('sequence', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="Name" context="{'group_by':'name'}"/>
+                    <filter string="Sequence" name="Sequence" context="{'group_by':'sequence'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--  To create action for role-->
+    <record id="custom_role_action" model="ir.actions.act_window">
+        <field name="name">Roles Channel</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">role.role</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="role_tree_view"/>
+        <field name="search_view_id" ref="role_filter_view"/>
+    </record>
+
+
+    <!--  To create base tree View -->
+
+    <record model="ir.ui.view" id="base_tree_view">
+        <field name="name">base.tree.view</field>
+        <field name="model">base.base</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.rule" id="base_type_comp_rule">
+        <field name="name">Base Type multi-company</field>
+        <field name="model_id" ref="model_base_base"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--  To create base Search View -->
+    <record id="base_filter_view" model="ir.ui.view">
+        <field name="name">base.filter.view</field>
+        <field name="model">base.base</field>
+        <field name="arch" type="xml">
+            <search string="Name">
+                <field name="name" filter_domain="['|',('name', 'ilike', self), ('sequence', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="Name" context="{'group_by':'name'}"/>
+                    <filter string="Sequence" name="Sequence" context="{'group_by':'sequence'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--  To create action for base-->
+    <record id="custom_base_action" model="ir.actions.act_window">
+        <field name="name">Base Type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">base.base</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="base_tree_view"/>
+        <field name="search_view_id" ref="base_filter_view"/>
+    </record>
+
+
+    <!--  To create base tree View -->
+
+    <record model="ir.ui.view" id="industry_tree_view">
+        <field name="name">industry.tree.view</field>
+        <field name="model">industry.industry</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.rule" id="industry_comp_rule">
+        <field name="name">Industry multi-company</field>
+        <field name="model_id" ref="model_industry_industry"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--  To create base Search View -->
+    <record id="industry_filter_view" model="ir.ui.view">
+        <field name="name">industry.filter.view</field>
+        <field name="model">industry.industry</field>
+        <field name="arch" type="xml">
+            <search string="Name">
+                <field name="name" filter_domain="['|',('name', 'ilike', self), ('sequence', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="Name" context="{'group_by':'name'}"/>
+                    <filter string="Sequence" name="Sequence" context="{'group_by':'sequence'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--  To create action for base-->
+    <record id="custom_industry_action" model="ir.actions.act_window">
+        <field name="name">Industry</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">industry.industry</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="industry_tree_view"/>
+        <field name="search_view_id" ref="industry_filter_view"/>
+    </record>
+
+
+    <!--    create  tree view for work location-->
+
+
+    <record model="ir.ui.view" id="work_location_tree_view">
+        <field name="name">work.location.tree.view</field>
+        <field name="model">work.location</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.rule" id="work_location_comp_rule">
+        <field name="name">Work Location multi-company</field>
+        <field name="model_id" ref="model_work_location"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--  To create work location Search View -->
+    <record id="work_location_filter_view" model="ir.ui.view">
+        <field name="name">work.location.filter.view</field>
+        <field name="model">work.location</field>
+        <field name="arch" type="xml">
+            <search string="Name">
+                <field name="name" filter_domain="['|',('name', 'ilike', self), ('sequence', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="Name" context="{'group_by':'name'}"/>
+                    <filter string="Sequence" name="Sequence" context="{'group_by':'sequence'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--  To create action for work location-->
+    <record id="custom_work_location_action" model="ir.actions.act_window">
+        <field name="name">Work Location</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">work.location</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="work_location_tree_view"/>
+        <field name="search_view_id" ref="work_location_filter_view"/>
+    </record>
+
+
+    <!--    create  tree view for spare category -->
+
+    <record model="ir.ui.view" id="spare_category_tree_view">
+        <field name="name">spare.category.tree.view</field>
+        <field name="model">spare.category</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.rule" id="spare_category_comp_rule">
+        <field name="name">Spare Category multi-company</field>
+        <field name="model_id" ref="model_spare_category"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--  To create spare category Search View -->
+    <record id="spare_category_filter_view" model="ir.ui.view">
+        <field name="name">spare.category.filter.view</field>
+        <field name="model">spare.category</field>
+        <field name="arch" type="xml">
+            <search string="Name">
+                <field name="name" filter_domain="['|',('name', 'ilike', self), ('sequence', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Name" name="Name" context="{'group_by':'name'}"/>
+                    <filter string="Sequence" name="Sequence" context="{'group_by':'sequence'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--  To create action for spare category-->
+    <record id="custom_spare_category_action" model="ir.actions.act_window">
+        <field name="name">Spare Category</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">spare.category</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="spare_category_tree_view"/>
+        <field name="search_view_id" ref="spare_category_filter_view"/>
+    </record>
+
+    <record id="view_res_partner_filter" model="ir.ui.view">
+        <field name="name">view.res.partner.filter.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <field name="category_id" position="after">
+                <field name="customer_account_id"/>
+                <field name="custom_company_type"/>
+                <field name="parent_customer_id"/>
+            </field>
+            <filter name="salesperson" position="before">
+                <filter name="custom_company_type" string="Company Type" domain="[]"
+                        context="{'group_by' : 'custom_company_type'}"/>
+                <filter name="customer_account" string="Customer Account" domain="[]"
+                        context="{'group_by' : 'customer_account_id'}"/>
+                <filter name="parent_customer" string="Parent Customer" domain="[]"
+                        context="{'group_by' : 'parent_customer_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+
+    <!--End Tree Views-->
+
+    <!--Menu Items-->
+
+    <menuitem id="sale_master_parent_menu" name="Masters" parent="sale.menu_sale_config"
+              action="sales_team.crm_team_action_config"
+              groups="ppts_custom_masters.group_show_res_user_show_master_menu" sequence="10"/>
+    <menuitem name="Customer Type" id="customer_type" parent="sale_master_parent_menu" action="action_customer_type"
+              sequence="3"/>
+    <menuitem name="Customer City" id="customer_city" parent="sale_master_parent_menu" action="action_customer_city"
+              sequence="4"/>
+    <menuitem name="Branches" id="branch_branch" parent="sale_master_parent_menu" action="action_branch_branch"
+              sequence="5"/>
+    <menuitem id="region_sub_menu" name="Region" parent="sale_master_parent_menu"
+              action="ppts_custom_masters.custom_region_action" sequence="1"/>
+    <menuitem id="customer_group_sub_menu" name="Customer Group" parent="sale_master_parent_menu"
+              action="ppts_custom_masters.customer_group_action" sequence="6"/>
+    <menuitem id="target_group_sub_menu" name="Target Group" parent="sale_master_parent_menu"
+              action="ppts_custom_masters.custom_target_group_action" sequence="3"/>
+    <menuitem id="tier_sub_menu" name="Tier" parent="sale_master_parent_menu"
+              action="ppts_custom_masters.tier_group_action" sequence="4"/>
+    <menuitem id="location_sub_menu" name="Location" parent="sale_master_parent_menu"
+              action="ppts_custom_masters.asset_location_action" sequence="5"/>
+    <menuitem id="process_sub_menu" name="Process" parent="sale_master_parent_menu"
+              action="ppts_custom_masters.custom_process_action" sequence="6"/>
+    <menuitem id="roles_channel_sub_menu" name="Roles/Channel" parent="sale_master_parent_menu"
+              action="ppts_custom_masters.custom_role_action" sequence="7"/>
+    <menuitem id="base_type_sub_menu" name="Base Type" parent="sale_master_parent_menu"
+              action="ppts_custom_masters.custom_base_action" sequence="8"/>
+    <menuitem id="industry_sub_menu" name="Industry" parent="sale_master_parent_menu"
+              action="ppts_custom_masters.custom_industry_action" sequence="9"/>
+    <menuitem id="work_location_sub_menu" name="Work Location" parent="sale_master_parent_menu"
+              action="ppts_custom_masters.custom_work_location_action" sequence="10"/>
+    <menuitem id="spare_category_sub_menu" name="Spare Category" parent="sale_master_parent_menu"
+              action="ppts_custom_masters.custom_spare_category_action" sequence="11"/>
+
+    <!--End Menu Items-->
+
+</odoo>

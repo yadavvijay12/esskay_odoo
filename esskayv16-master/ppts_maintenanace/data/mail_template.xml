@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_template_notify_wr_approvers" model="mail.template">
+        <field name="name">Warranty Replacement Order: Approval</field>
+        <field name="model_id" ref="ppts_warranty_replacement.model_wr_approval"/>
+        <field name="subject">Warranty Replacement | Waiting for Approval</field>
+        <field name="partner_to">{{ object.user_id.partner_id.id }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.user_id.name or ''"></t>,
+                    <br/>
+                    This Warranty Replacement Order
+                    <t t-out="object.wr_id.name or ''"></t>
+                    is waiting for an approval.
+                    <br/>
+                    CLick on the below link to open the respective record to approve.
+                    <p style="margin: 16px 0px 16px 0px">
+                        <a t-attf-href="{{ ctx.get('rec_url')}}"
+                           style="background-color: #875A7B; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 15px;text-transform:uppercase;">
+                            View Service Ticket
+                        </a>
+                    </p>
+                    <br/>
+                    Thank you,
+                    <br/>
+                    % if object.user_id:
+                        ${object.user_id.signature | safe}
+                    % endif
+                </p>
+            </div>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+
+    <record id="res_company_fields" model="ir.ui.view">
+        <field name="name">res.company.custom.fields</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='favicon']" position="after">
+                <field name="parent_ticket_end_time"/>
+                <separator string="Automatic Ticket creation from Schedule"/>
+            </xpath>
+
+            <xpath expr="//notebook/page[@name='general_info']" position="after">
+                <page string="Remainder Notification Setup" name="remainder_notification" groups="base.group_no_one">
+                    <group>
+                        <group>
+                            <label for="recurring_interval"/>
+                            <div class="o_row">
+                                <field name="recurring_interval" class="oe_inline" nolabel="1"/>
+
+                                <field name="recurring_rule_type" class="oe_inline" nolabel="1"/>
+                            </div>
+                        </group>
+                    </group>
+                </page>
+                <page string="Automatic Ticket Creation From Schedule">
+                    <group>
+                        <group>
+                            <field name="service_category_id"/>
+                            <field name="service_type_id"/>
+                        </group>
+                        <group>
+                            <field name="request_type_id"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+
+        </field>
+    </record>
+
+
+</odoo>

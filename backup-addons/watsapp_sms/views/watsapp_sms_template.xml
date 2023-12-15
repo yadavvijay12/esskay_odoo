@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+      <record id="watsapp_template_setup_form_view" model="ir.ui.view">
+        <field name="name">watsapp.sms.template.form</field>
+        <field name="model">watsapp.sms.template</field>
+        <field name="arch" type="xml">
+             <form string="SMS Send">
+              <header>
+                <button name="action_send_approval" states='to_be_sent' type="object" class="oe_highlight" string="Send Approval"/>
+                <button name="action_status" type="object" states='pending' class="oe_highlight" string="Status"/>
+              </header>
+                <group>
+                    <field name="name"/>
+                    <field name="state" readonly="1"/>
+                    <field name="active"/>
+                </group>
+                <separator/>
+                <group>
+                  <group>
+                      <field name="template_gateway_id"/>
+                      <field name="gateway_id"/>
+                      <field name="model_id" options="{'no_create': True}"/>
+                      <field name="language" required="1"/>
+                      <field name="is_customer"/>
+                      <field name="is_internal"/>
+                      <field name="mobile_int"  attrs="{'invisible': [('is_internal', '=', False)]}"/>
+                      <field name="quote_usage"/>
+                      <field name="quote_revision_usage"/>
+                  </group>
+                </group>
+                   <notebook>
+                    <page string="Whatsapp Dynamic value">
+                      <field name="watsapp_dynamic_line" style="width:50% !important;">
+                      <tree editable="bottom">
+                        <field name="seq_no" widget="handle" invisible="1"/>
+                        <field name="sequence"/>
+                        <field name="name"/>                      
+                    </tree>
+                  </field>
+                  </page>
+                </notebook>
+
+                <separator/>
+                <h2>Body</h2>
+                  <field name="sms_html"/>
+                  <br/>
+
+                <h2>Response</h2>
+                  <field name="response"/>
+              </form>
+        </field>
+      </record>
+      <record id="watsapp_template_setup_tree_view" model="ir.ui.view">
+        <field name="name">watsapp.sms.template.list</field>
+        <field name="model">watsapp.sms.template</field>
+        <field name="arch" type="xml">
+            <tree string="SMS Template">
+                <field name="name"/>
+            </tree>
+        </field>
+      </record>
+      <record id="action_template_setup_watsapp" model="ir.actions.act_window">
+        <field name="name">SMS Template</field>
+        <field name="res_model">watsapp.sms.template</field>
+<!--         <field name="view_type">form</field>
+ -->        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" eval="False"/>
+        <field name="context">{}</field>
+      </record>
+ 	
+    <menuitem action="action_template_setup_watsapp" id="menu_action_template_setup_watsapp" parent="base.send_sms_watsapp" sequence="2" />
+
+  </data>
+</odoo>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="ppts_custom_cti_integration_form_view" model="ir.ui.view">
+            <field name="name">cti.integration.form</field>
+            <field name="model">cti.integration</field>
+            <field name="arch" type="xml">
+                <form create="0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="api_url"/>
+                                <field name="api_key"/>
+                                <field name="username"/>
+                            </group>
+                            <group>
+                                <field name="agent_id"/>
+                                <field name="code" invisible="1"/>
+                                <field name="campaign_name"/>
+                                <field name="uui"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="ppts_custom_cti_integration_tree_view" model="ir.ui.view">
+            <field name="name">cti.integration.tree</field>
+            <field name="model">cti.integration</field>
+            <field name="arch" type="xml">
+                <tree create="0">
+                    <field name="api_url"/>
+                    <field name="api_key"/>
+                    <field name="username"/>
+                    <field name="agent_id"/>
+                    <field name="campaign_name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ppts_custom_cti_integration_filter_view" model="ir.ui.view">
+            <field name="name">cti.integration.filter</field>
+            <field name="model">cti.integration</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="api_url"/>
+                    <field name="api_key"/>
+                    <field name="username"/>
+                    <field name="agent_id"/>
+                    <field name="code"/>
+                    <field name="campaign_name"/>
+                    <field name="uui"/>
+
+                    <separator/>
+                    <filter string="Agent" name="agent" domain="[('agent_id', '=', True)]"/>
+                    <separator/>
+                    <filter string="API Key" name="api_key" domain="[('api_key', '=', True)]"/>
+                    <separator/>
+                    <filter string="User Name" name="username" domain="[('username', '=', True)]"/>
+                    <separator/>
+                    <filter string="Campaign" name="campaign_name" domain="[('campaign_name', '=', True)]"/>
+                    <separator/>
+                    <filter string="UUI" name="uui" domain="[('uui', '=', True)]"/>
+                    <separator/>
+
+                    <group expand="0" string="Group By">
+                        <filter string="AgentID" name="agent_id" domain="[]" context="{'group_by': 'agent_id'}"/>
+                        <filter string="APIkey" name="api_key" domain="[]" context="{'group_by': 'api_key'}"/>
+                        <filter string="User Name" name="username" domain="[]" context="{'group_by': 'username'}"/>
+                        <filter string="Campaign" name="campaign" domain="[]" context="{'group_by': 'campaign_name'}"/>
+                        <filter string="UUI" name="uui" domain="[]" context="{'group_by': 'uui'}"/>
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+        <record id="action_cti_integration" model="ir.actions.act_window">
+            <field name="name">API Configuration</field>
+            <field name="res_model">cti.integration</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="ppts_custom_cti_integration_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="CTI Integration" id="cti_integration.menu_root_cti_integration" />
+
+        <menuitem name="API Configuration" id="cti_integration_main_menu"
+                  parent="cti_integration.menu_root_cti_integration"
+                  action="action_cti_integration" sequence="2"/>
+
+    </data>
+</odoo>

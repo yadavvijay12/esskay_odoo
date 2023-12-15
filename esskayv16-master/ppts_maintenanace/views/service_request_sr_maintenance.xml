@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ppts_maintenance_inherit_service_request_maintenance_form_view" model="ir.ui.view">
+        <field name="name">service.request.form.inherit</field>
+        <field name="model">service.request</field>
+        <field name="inherit_id" ref="ppts_service_request.service_request_maintenance_form_view"/>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+<!--            <xpath expr="//header" position="inside">-->
+<!--                <button string="Create Maintenance" name="action_create_maintenance" type="object"-->
+<!--                        attrs="{'invisible': [('state','not in',['approved'])]}"-->
+<!--                        groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"-->
+<!--                        class="oe_highlight"/>-->
+<!--            </xpath>-->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_maintenance_requests" type="object" class="oe_stat_button"
+                        icon="fa-repeat" attrs="{'invisible': [('maintenance_count', '=', 0)]}"
+                        groups="ppts_service_request.service_request_group_user">
+                    <field name="maintenance_count" widget="statinfo" string="Maintenance"/>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='customer_selection']" position="after">
+                <page string="Asset Selection">
+                    <field name="customer_asset_ids" attrs="{'readonly': [('state','not in',('new','in_review'))]}" >
+                        <tree string="Asset Lines" name="asset_line" editable="bottom">
+                            <field name="stock_lot_id" domain="[('customer_id','=', partner_id)]"/>
+                            <field name="product_id" options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                            <field name="notes"/>
+                            <field name="is_available" readonly="1"/>
+                            <field name="partner_id" invisible="1"/>
+                        </tree>
+                        <form string="Asset Lines">
+                            <group>
+                                <group>
+                                    <field name="stock_lot_id" domain="[('customer_id','=', partner_id)]"/>
+                                    <label for="product_id" string="Product"/>
+                                    <div class="o_row">
+                                        <field name="product_id" options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                                        <button type="object" title="Product" name="action_open_product_template" icon="fa-arrow-right" attrs="{'invisible': [('product_id', '=', False)]}"/>
+                                    </div>
+                                </group>
+                                <group>
+                                    <field name="notes"/>
+                                    <field name="is_available" readonly="1"/>
+                                    <field name="partner_id" invisible="1"/>
+                                </group>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//form/sheet/group/group[@name='customer_information']/div/field[@name='customer_street2']" position="after">
+                <field name="customer_city_id" class="o_address_city" placeholder="City" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+            </xpath>
+
+            <xpath expr="//form/sheet/notebook/page[@name='customer_selection']/group/group//div/field[@name='street2']" position="after">
+                <field name="city_id" class="o_address_city" placeholder="City" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+            </xpath>
+
+            <xpath expr="//form/sheet/notebook/page[@name='customer_selection']/group/group" position="inside">
+                <field name="customer_account_id"
+                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>
+                <field name="customer_type_id" options='{"no_open": True, "no_create": True}' attrs="{'readonly': [('state','!=','draft')]}" force_save="1"/>
+                <field name="customer_region_id" options='{"no_open": True, "no_create": True}' attrs="{'readonly': [('state','!=','draft')]}" force_save="1"/>
+                <field name="gst_no" attrs="{'readonly': [('state','!=','draft')]}" force_save="1"/>
+                <field name="tier_tier_id" options='{"no_open": True, "no_create": True}' attrs="{'readonly': [('state','!=','draft')]}" force_save="1"/>
+                <field name="d_number" attrs="{'readonly': [('state','!=','draft')]}" force_save="1"/>
+            </xpath>
+
+             <xpath expr="//form/sheet/notebook/page[@name='customer_selection']/group/group/field[@name='email']" position="after">
+                <field name="hospital_name" attrs="{'readonly': [('state','!=','draft')]}" force_save="1"/>
+                <field name="surgeon_name" attrs="{'readonly': [('state','!=','draft')]}" force_save="1"/>
+                <field name="customer_group_id" options='{"no_open": True, "no_create": True}' attrs="{'readonly': [('state','!=','draft')]}" force_save="1"/>
+                <field name="customer_id_alias" attrs="{'readonly': [('state','!=','draft')]}" force_save="1"/>
+                <field name="customer_id" readonly="1" force_save="1"/>
+             </xpath>
+        </field>
+    </record>
+</odoo>

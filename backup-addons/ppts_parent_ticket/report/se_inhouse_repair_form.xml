@@ -1,0 +1,383 @@
+<odoo>
+    <data>
+
+        <record id="field_report_paper_format" model="report.paperformat">
+            <field name="name">Field Report Reports Paper Format</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">37.75</field>
+            <field name="margin_bottom">28.75</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+        <report
+                id="action_service_report_config"
+                string="In House Repair - Create Work Order"
+                model="child.ticket"
+                report_type="qweb-pdf"
+                paperformat="ppts_parent_ticket.field_report_paper_format"
+                file="ppts_parent_ticket.service_request_report_config"
+                name="ppts_parent_ticket.service_request_report_config"
+                print_report_name="'In-House Repair Form'"/>
+
+        <template id="inhouse_repair_form_print">
+            <t t-call="web.basic_layout">
+                <!--                <t t-foreach="docs" t-as="o">-->
+                <div class="header">
+                    <style>table{ width:100%; border-collapse:collapse; border:1px solid lightGrey; } tr,th,td{
+                        border:1px solid lightGrey; padding:5px; }
+                    </style>
+                    <t t-set="installation_child_ticket"
+                       t-value="request.env['project.task'].sudo().search([('installation_child_ticket_id', '=', doc.id)], limit=1)"/>
+
+                    <div class="row" style="report_header_style">
+                        <table>
+                            <tr>
+                                <td>
+                                    <center>
+                                        <span style="font-size:40px;">
+                                            <b>Stryker</b>
+                                        </span>
+                                        <br/>
+                                        <span style="color:darkorange;font-size: 15px;">
+                                            <b>SIPL FORM</b>
+                                        </span>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <br/>
+                                        <strong>In-House Repair Form</strong>
+                                    </center>
+                                </td>
+                                <td style="padding:10px">
+                                    <p>
+                                        Document No:
+                                        <span>IQF-CPMS-005-08</span>
+                                    </p>
+                                    <p>Revision Level
+                                        :
+                                        <span t-field="doc.version"></span>
+                                    </p>
+
+
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="page">
+                    <t t-set="work_order"
+                       t-value="request.env['tasks.master.line'].search([('child_ticket_id', '=', doc.id),('is_wk', '=', True)], limit=1)"/>
+
+                    <div class="oe_structure"/>
+                    <hr/>
+                    <style>table{ width:100%; border:1px; border-collapse:collapse; border:1px solid lightGrey; }
+                        tr,th,td{ border:1px solid lightGrey; padding:5px; } span{ padding:5px; } .row_width{
+                        width:15%; } .row_width_two{ width:25%; } .row_width_three{ width:15%; }
+                    </style>
+                    <div class="row">
+                        <t t-set="engineer_visits" t-value="doc.field_service_report_values()"/>
+                        <table border="1">
+                            <tbody>
+                                <tr>
+                                    <td class="row_width_three">
+                                        <strong>
+                                            JDE Call
+                                            <br></br>
+                                            No:
+                                        </strong>
+                                    </td>
+                                    <td class="row_width_three">
+                                        <span t-field="doc.child_ticket_id_alias"></span>
+                                    </td>
+                                    <td class="row_width_three">
+                                        <strong>
+                                            In house
+                                            <br></br>
+                                            Receive
+                                            <br></br>
+                                            Date :
+                                        </strong>
+                                    </td>
+                                    <td class="row_width_three">
+                                        <t t-if="engineer_visits['received_engineer']">
+                                            <span t-esc="engineer_visits['received_engineer']"/>
+                                        </t>
+                                    </td>
+                                    <td class="row_width_three">
+                                        <strong>Region:</strong>
+                                    </td>
+                                    <td class="row_width_three">
+                                        <span t-field="doc.partner_id.customer_region"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="row_width_two">
+                                        <strong>
+                                            EXP/PI
+                                            <br></br>
+                                            No:
+                                        </strong>
+                                    </td>
+                                    <td class="row_width_two">
+                                        <span t-field="work_order.wk_exp_pi_no"/>
+                                    </td>
+                                    <td class="row_width_two">
+                                        <strong>
+                                            EXP/PI No,
+                                            <br></br>
+                                            Description:
+                                        </strong>
+                                    </td>
+                                    <td colspan="3">
+                                        <span t-esc="work_order.wk_exp_pi_description"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            Customer
+                                            <br></br>
+                                            Name:
+                                        </strong>
+                                    </td>
+                                    <td colspan="5">
+                                        <span t-field="doc.partner_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Address:</strong>
+                                    </td>
+                                    <td colspan="5">
+                                        <p>
+                                            <span t-field="doc.partner_id.street"></span>
+                                            ,
+                                            <span t-field="doc.partner_id.street2"></span>
+                                            ,
+                                            <span t-field="doc.partner_id.city"></span>
+                                            ,
+                                            <span t-field="doc.partner_id.state_id"></span>
+                                            ,
+                                            <span t-field="doc.partner_id.zip"></span>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr/>
+                    <div class="row">
+
+                        <table>
+                            <tr>
+                                <tr>
+                                    <td colspan="6">
+                                        <center>
+                                            <strong>Equipment Details</strong>
+                                        </center>
+                                    </td>
+                                </tr>
+                                <tbody>
+                                    <tr>
+                                        <td class="row_width_three">
+                                            <strong>Cat No:</strong>
+                                        </td>
+                                        <td class="row_width_three">
+                                            <span t-esc="work_order.wk_cat_no"/>
+
+                                        </td>
+                                        <td class="row_width_three">
+                                            <strong>
+                                                S.No/Lot No:
+                                            </strong>
+                                        </td>
+                                        <td class="row_width_three">
+                                            <span t-esc="work_order.wk_stock_lot_id.name"/>
+                                        </td>
+                                        <td class="row_width_three">
+                                            <strong>Quantity:</strong>
+                                        </td>
+                                        <td>
+                                            <span t-esc="work_order.wk_quantity"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Description:</strong>
+                                        </td>
+                                        <td colspan="5">
+                                            <span t-esc="work_order.wk_description"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </tr>
+                        </table>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <table>
+                            <tr>
+                                <td colspan="6">
+                                    <center>
+                                        <strong>Additional Accessories (If Any)</strong>
+                                    </center>
+                                </td>
+                            </tr>
+                            <tbody>
+                                <t t-foreach="work_order.accessories_line_ids" t-as="line">
+                                    <tr class="row_width_three">
+                                        <td>
+                                            <strong>Cat No:</strong>
+                                        </td>
+                                        <td class="row_width_three">
+                                            <t t-esc="line.aa_cat_no"/>
+                                        </td>
+                                        <td class="row_width_three">
+                                            <strong>
+                                                S.No/Lot No:
+                                            </strong>
+                                        </td>
+                                        <td class="row_width_three">
+                                            <t t-esc="line.aa_stock_lot"/>
+                                        </td>
+                                        <td class="row_width_three">
+                                            <strong>Quantity:</strong>
+                                        </td>
+                                        <td class="row_width_three">
+                                            <t t-esc="line.aa_quantity"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Description:</strong>
+                                        </td>
+                                        <td colspan="5">
+                                            <t t-esc="line.aa_description"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td colspan="4">
+                                        <center>
+                                            <strong>Customer Expectations</strong>
+                                        </center>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="row_width_two">
+                                        <strong>Repair Against Charge :</strong>
+                                    </td>
+                                    <td class="row_width_two">
+                                        <t t-esc="work_order.wk_repair_charge"/>
+                                    </td>
+                                    <td class="row_width_two">
+                                        <strong>Demo/Marketing/Loaner:</strong>
+                                    </td>
+                                    <td class="row_width_two">
+                                        <span t-field="doc.service_type_id.name"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="row_width_two">
+                                        <strong>Repair Under Warranty/Contract:</strong>
+                                    </td>
+                                    <td colspan="4">
+                                        <span t-field="doc.service_category_id.name"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <table border="1">
+                            <tbody>
+                                <tr>
+                                    <td colspan="4">
+                                        <center>
+                                            <strong>Under Warranty /Contract</strong>
+                                        </center>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="row_width_two">
+                                        <strong>Stryker Invoice No:</strong>
+                                    </td>
+                                    <td class="row_width_two">
+                                        <t t-esc="work_order.wk_inv_no"/>
+                                    </td>
+                                    <td class="row_width_two">
+                                        <strong>Date:</strong>
+                                    </td>
+                                    <td class="row_width_two">
+                                        <t t-esc="work_order.wk_date"/>
+                                        <!--                                        <span t-esc="work_order.wk_date.strftime('%d-%b-%Y %H:%M %p')"/>-->
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="row_width_two">
+                                        <strong>Warranty/Contract Period:</strong>
+                                    </td>
+                                    <td colspan="4">
+                                        <t t-esc="work_order.start_from"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="row_width_two">
+                                        <strong>Installation Date :</strong>
+                                    </td>
+                                    <td class="row_width_two">
+                                        <span t-esc="work_order.wk_install_date"/>
+                                    </td>
+                                    <td class="row_width_two">
+                                        <strong>SE Call No:</strong>
+                                    </td>
+                                    <td class="row_width_two">
+                                        <t t-esc="work_order.wk_se_call_no"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="footer o_standard_footer">
+                    <div class="row">
+                        <center>
+                            <strong>
+                                Template IQF-CSUP-001-3,Rev 01
+                                <span class="page"/>
+                                <span>of</span>
+                                <span class="topage"/>
+                            </strong>
+                        </center>
+                    </div>
+                </div>
+                <!--                </t>-->
+            </t>
+            <!--                         </t> -->
+        </template>
+        <template id="service_request_report_config">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ppts_parent_ticket.inhouse_repair_form_print"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+
+        <!--Service Request Email Template -->
+        <record id="email_template_service_request" model="mail.template">
+            <field name="name">Service Request Email</field>
+            <field name="model_id" ref="ppts_service_request.model_service_request"/>
+            <field name="email_from">{{ object.company_id.email }}</field>
+            <field name="email_to">{{object.partner_id.email }}</field>
+            <field name="subject">Ref {{ object.name }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="html">
+                <p>Hello
+                    <b>
+                        <t t-out="object.customer_name or ''"></t>
+                    </b>
+                    ,
+                </p>
+                <p>Your service request for
+                    <b>
+                        <t t-out="object.name or ''"></t>
+                    </b>
+                    has been processed.
+                </p>
+                <p>If you have any questions, please let us know.</p>
+                <p>Best regards,</p>
+            </field>
+        </record>
+
+        <record id="mail_template_notify_approvers" model="mail.template">
+            <field name="name">Service Ticket : Approval</field>
+            <field name="model_id" ref="ppts_service_request.model_service_ticket_approval"/>
+            <field name="subject">Service Ticket | Waiting for Approval</field>
+            <field name="partner_to">{{ object.user_id.partner_id.id }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Dear
+                        <t t-out="object.user_id.name or ''"></t>,
+                        <br/>
+                        This ticket
+                        <t t-out="object.service_request_id.name or ''"></t>
+                        is waiting for an approval.
+                        <br/>
+                        <br/>
+
+                        <strong>Equipment details : </strong>
+                        <br/>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>Product Name</td>
+                                    <td><t t-out="object.service_request_id.product_name or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>Serial Number</td>
+                                    <td><t t-out="object.service_request_id.custom_product_serial or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>Product Part Number</td>
+                                    <td><t t-out="object.service_request_id.product_part_number or ''"></t></td>
+                                </tr>
+                                <tr>
+                                    <td>Product Part Code</td>
+                                    <td><t t-out="object.service_request_id.product_part_code or ''"></t></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <strong>Warranty details : </strong>
+                        <strong t-if="ctx.get('warranty')"> OEM Warranty Status :<t t-out="ctx['warranty'] or ''"></t></strong>
+                        <br/>
+                        <strong t-if="ctx.get('repair')"> OEM Repair Status :<t t-out="ctx['repair'] or ''"></t></strong>
+                        <br/>
+                        <strong>Problem reported : </strong><t t-out="object.service_request_id.problem_reported or ''"></t>
+                        <br/>
+                        <strong>Engineer comment/reason : </strong><t t-out="object.service_request_id.reason or ''"></t>
+                        <br/>
+                        <br/>
+                        CLick on the below link to open the respective record to approve.
+                        <p style="margin: 16px 0px 16px 0px">
+                            <a t-attf-href="{{ ctx.get('rec_url')}}"
+                               style="background-color: #875A7B; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 15px;text-transform:uppercase;">
+                                View Service Ticket
+                            </a>
+                        </p>
+                        <br/>
+                        Thank you,
+                        <br/>
+                        <t t-if="object.user_id">
+                            <t t-out="object.user_id.signature"/>
+                        </t>
+                    </p>
+                </div>
+            </field>
+        </record>
+           <record id="email_template_stryker_request" model="mail.template">
+            <field name="name">Stryker Request Submitted:Email</field>
+            <field name="model_id" ref="ppts_service_request.model_service_request"/>
+            <field name="email_from">{{ (object.company_id.email) }}</field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="subject">Stryker Request Submitted</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="html">
+                <div>
+
+                    <p>
+                        <b>Hi CT users,</b>
+                    </p>
+                    <p>
+                        <b>There is a new ticket received from the web portal. Find the details below:</b>
+                    </p>
+                    <p>
+                        <b>Ticket No:
+                            <t t-out="object.name"/>
+                        </b>
+                    </p>
+                    <p>
+                        <b>Customer Name:
+                            <t t-out="object.user_id.name"/>
+                        </b>
+                    </p>
+                    <p>
+                        <b>Serial No:
+                            <t t-out="object.custom_product_serial"/>
+                        </b>
+                    </p>
+
+                    <div style="margin: 16px 0px 16px 0px; text-align: left;">
+                        <a t-att-href="ctx.get('rec_url')"
+                           style="display: inline-block; padding: 10px; text-decoration: none; font-size: 12px; background-color: #875A7B; color: #fff; border-radius: 5px;">
+                            <strong>View Ticket</strong>
+                        </a>
+                    </div>
+<!--                    <p>-->
+<!--                        <t t-if="not is_html_empty(object.user.company_id.partner_id.signature)">-->
+<!--                            <br/>-->
+<!--                            <br/>-->
+<!--                            <t t-out="object.user.company_id.partner_id.signature or ''">-->
+<!--                            </t>-->
+<!--                        </t>-->
+<!--                    </p>-->
+                </div>
+
+            </field>
+        </record>
+        <!--Thermofisher  Request Email Template -->
+        <record id="email_template_thermofisher_request" model="mail.template">
+            <field name="name">Thermofisher Request Submitted:Email</field>
+            <field name="model_id" ref="ppts_service_request.model_service_request"/>
+            <field name="email_from">{{ (object.company_id.email) }}</field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="subject">Thermofisher Request Submitted</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>
+                        <b>Hi CT users,</b>
+                    </p>
+                    <p>
+                        <b>There is a new ticket received from the web portal. Find the details below:</b>
+                    </p>
+                    <p>
+                        <b>Ticket No:
+                            <t t-out="object.name"/>
+                        </b>
+                    </p>
+                    <p>
+                        <b>Customer Name:
+                            <t t-out="object.user_id.name"/>
+                        </b>
+                    </p>
+                    <p>
+                        <b>Serial No:
+                            <t t-out="object.custom_product_serial"/>
+                        </b>
+                    </p>
+
+
+                    <div style="margin: 16px 0px 16px 0px; text-align: left;">
+                        <a t-att-href="ctx.get('rec_url')"
+                           style="display: inline-block; padding: 10px; text-decoration: none; font-size: 12px; background-color: #875A7B; color: #fff; border-radius: 5px;">
+                            <strong>View Ticket</strong>
+                        </a>
+                    </div>
+
+
+                    <!--                    <p>-->
+                    <!--                        <t t-if="not is_html_empty(object.user.company_id.partner_id.signature)">-->
+                    <!--                            <br/>-->
+                    <!--                            <br/>-->
+                    <!--                            <t t-out="object.user.company_id.partner_id.signature or ''">-->
+                    <!--                            </t>-->
+                    <!--                        </t>-->
+                    <!--                    </p>-->
+                </div>
+
+            </field>
+        </record>
+
+        <record id="mail_template_external_stock_check" model="mail.template">
+            <field name="name">Service Ticket : External Stock Check</field>
+            <field name="model_id" ref="ppts_service_request.model_service_request"/>
+            <field name="subject">Ticket: {{ object.name }} | External Stock Check</field>
+            <field name="partner_to">{{ object.partner_id.customer_account_id.id }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi <t t-out="object.partner_id.customer_account_id.name or ''"/>,<br/><br/>
+                        This ticket have External Stock
+                        <t t-out="object.name or ''"></t>
+                        <br/>
+                        CLick on the below link to open the respective record to update stock availability.
+                        <p style="margin: 16px 0px 16px 0px">
+                            <a t-attf-href="{{ ctx.get('rec_url')}}"
+                               style="background-color: #875A7B; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 15px;text-transform:uppercase;">
+                                View Request
+                            </a>
+                        </p>
+                        <br/>
+                        Thank you,
+                        <br/>
+                        % if object.user_id:
+                            ${object.user_id.signature | safe}
+                        % endif
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="email_template_service_request_submit" model="mail.template">
+            <field name="name"> Service Request Submitted:Email</field>
+            <field name="model_id" ref="ppts_service_request.model_service_request"/>
+            <field name="email_from">{{ (object.company_id.email) }}</field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="subject">Service Request Submitted by {{ object.user_id.name }} | {{ object.name }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div>
+                    <p>
+                        <b>Hi Team,</b>
+                    </p>
+                    <p>
+                        <b>There is a new ticket received. Find the details below:</b>
+                    </p>
+                    <p>
+                        <b>Ticket No:
+                            <t t-out="object.name"/>
+                        </b>
+                    </p>
+                    <p>
+                        <b>Customer Name:
+                            <t t-out="object.customer_name"/>
+                        </b>
+                    </p>
+                    <p>
+                        <b>Serial No:
+                            <t t-out="object.custom_product_serial"/>
+                        </b>
+                    </p>
+
+
+                    <div style="margin: 16px 0px 16px 0px; text-align: left;">
+                        <a t-att-href="ctx.get('rec_url')"
+                           style="display: inline-block; padding: 10px; text-decoration: none; font-size: 12px; background-color: #875A7B; color: #fff; border-radius: 5px;">
+                            <strong>View Ticket</strong>
+                        </a>
+                    </div>
+                </div>
+
+            </field>
+        </record>
+
+    </data>
+
+</odoo>

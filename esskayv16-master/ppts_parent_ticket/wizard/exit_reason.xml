@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--    Exit Reason-->
+    <record id="exit_reasons_wizard_form" model="ir.ui.view">
+        <field name="name">reason.reason.wizard.form</field>
+        <field name="model">reason.reason</field>
+        <field name="arch" type="xml">
+            <form string="Cancel Reasons">
+                <group>
+                    <field name="cancel_reason"/>
+                </group>
+                <footer>
+                    <button name="action_cancel_ct" string="Confirm" type="object" class="btn btn-primary"/>
+                    <button string="Cancel" class="btn btn-danger" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="exit_reasons_action" model="ir.actions.act_window">
+        <field name="name">Cancel Reasons</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">reason.reason</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="exit_reasons_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <!--    Exit Reason End-->
+
+    <!--Open State Re-new-->
+    <record id="renew_state_wizard_form" model="ir.ui.view">
+        <field name="name">renew.renew.wizard.form</field>
+        <field name="model">open.renew</field>
+        <field name="arch" type="xml">
+            <form string="Cancel Reasons">
+                <group>
+                    <field name="cancel_renew"/>
+                </group>
+                <footer>
+                    <button name="action_cancel_renew" string="Confirm" type="object" class="btn btn-primary"/>
+                    <button string="Cancel" class="btn btn-danger" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="renew_reasons_action" model="ir.actions.act_window">
+        <field name="name">Cancel Reasons</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">open.renew</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="renew_state_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+    <!--    Open State Re-new End-->
+</odoo>

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="request_search_view" model="ir.ui.view">
+        <field name="name">request.search.view</field>
+        <field name="model">request</field>
+        <field name="arch" type="xml">
+            <search string="Search in Request">
+                <field name="name"/>
+                <field name="parent_ticket_id"/>
+                <field name="child_ticket_id"/>
+                <field name="team_id"/>
+                <field name="user_id"/>
+                <field name="company_id"/>
+                <filter string="My Requests" name="my_requests" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Parent Ticket" name="parent_ticket_id" domain="[]"
+                            context="{'group_by': 'parent_ticket_id'}"/>
+                    <filter string="Child Ticket" name="child_ticket_id" domain="[]"
+                            context="{'group_by': 'child_ticket_id'}"/>
+                    <filter string="Service Request" name="service_request_id" domain="[]"
+                            context="{'group_by': 'service_request_id'}"/>
+                    <filter string="Team" name="team_id" domain="[]" context="{'group_by': 'team_id'}"/>
+                    <filter string="Responsible" name="user_id" domain="[]" context="{'group_by': 'user_id'}"/>
+                    <filter string="Company" name="company_id" domain="[]" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="request_form_view" model="ir.ui.view">
+        <field name="name">request.form.view</field>
+        <field name="model">request</field>
+        <field name="arch" type="xml">
+            <form string="Request Form">
+                <header>
+                    <field name="is_create_invoice" invisible="1"/>
+                    <field name="is_create_quote" invisible="1"/>
+                    <field name="is_spare_request" invisible="1"/>
+                    <field name="is_external" invisible="1"/>
+                    <field name="is_external_service" invisible="1"/>
+                    <field name="spare_count" invisible="1"/>
+
+
+                    <button name="raise_invoice" type="object" string="Create Invoice" icon="fa-file-text-o"
+                            class="btn-primary" attrs="{'invisible': [('is_create_invoice', '=', False)]}"/>
+                    <button name="request_spare_order" type="object" string="Process" icon="fa-file-text-o"
+                            class="btn-primary"
+                            attrs="{'invisible': ['|','|',('is_spare_request', '=', False), ('id', '=', False), ('external_state', '!=', 'new')]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!--                    External Stock OEM Process-->
+                    <button name="acton_confirm" type="object" string="Confirm"
+                            class="btn-primary"
+                            attrs="{'invisible': ['|', ('is_external', '=', False), ('external_state', 'not in', ('available','partial_available'))]}"/>
+                    <button name="acton_process_external_transfer" type="object" string="Issue Spares"
+                            class="btn-primary"
+                            attrs="{'invisible': ['|', ('is_external', '=', False), ('external_state', '!=', 'confirm')]}"/>
+                    <field name="external_state" widget="statusbar" statusbar_visible="draft,available,confirm,issued"
+                           attrs="{'invisible': [('is_external', '=', False)]}"/>
+                    <!--                    <button class="oe_stat_button" type="object"  name="spares_request_tickets" icon="fa-lg fa-save"-->
+                    <!--                            string="Spare Requests" attrs="{'invisible': [('spare_requests_count', '=', 0)]}">-->
+                    <!--                        <field string="Spare Requests" name="spare_requests_count" widget="statinfo"/>-->
+                    <!--                    </button>-->
+
+
+                    <!--                    External Stock OEM Process-->
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="view_spare_request" type="object" class="oe_stat_button" icon="fa-wrench"
+                                string="Spare" attrs="{'invisible': [('spare_count', '=',0)]}">
+                            <field name="spare_count" widget="statinfo" string="Spare"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="spares_request_tickets" icon="fa-lg fa-save"
+                                string="Spare Requests">
+                            <!--                        <field string="Spare Requests" name="spare_requests_count" widget="statinfo"/>-->
+                        </button>
+                    </div>
+                    <div class="alert alert-info alert-dismissible fade show" role="alert"
+                         attrs="{'invisible': [('is_external','=',False)]}">
+                        This Request is External Stock Checking Process
+                        <button data-bs-dismiss="alert" aria-label="Close" class="btn-close" special="cancel"/>
+                    </div>
+                    <div class="alert alert-info alert-dismissible fade show" role="alert"
+                         attrs="{'invisible': [('spare_count', '=',0)]}">
+                        This Request is Internal Stock Checking Process
+                        <button data-bs-dismiss="alert" aria-label="Close" class="btn-close" special="cancel"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="partner_id" invisible="1"/>
+                            <field name="customer_account_id" invisible="1"/>
+                            <field name="parent_ticket_id" readonly="1"
+                                   attrs="{'invisible': [('parent_ticket_id', '=', False)]}"/>
+                            <field name="child_ticket_id" readonly="1"
+                                   attrs="{'invisible': [('child_ticket_id', '=', False)]}"/>
+                            <field name="service_request_id" readonly="1"
+                                   attrs="{'invisible': [('service_request_id', '=', False)]}"/>
+                            <field name="spare_request_id" readonly="1"
+                                   attrs="{'invisible': [('spare_request_id', '=', False)]}"/>
+                            <field name="is_stock_checked" readonly="1" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="team_id" readonly="1"/>
+                            <field name="user_id" readonly="1"/>
+                            <field name="company_id" readonly="1"/>
+
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="assets" string="Spare Parts"
+                              attrs="{'invisible': [('service_request_id', '=', False), ('is_spare_request', '=', False)]}">
+                            <field name="asset_ids">
+                                <tree editable="bottom">
+                                    <field name="product_id" readonly="1" optional="hide"/>
+                                    <field name="description"/>
+                                    <field name="part_number"
+                                           attrs="{'column_invisible': [('parent.service_request_id', '!=', False)]}"/>
+                                    <field name="serial_number"
+                                           attrs="{'column_invisible': [('parent.service_request_id', '!=', False)]}"/>
+                                    <field name="stock_lot_id" readonly="1"
+                                           attrs="{'column_invisible': [('parent.service_request_id', '=', False)]}"/>
+                                    <field name="quantity"
+                                           attrs="{'column_invisible': [('parent.is_spare_request', '=', False)]}"
+                                           width="2"/>
+                                    <field name="available"
+                                           attrs="{'column_invisible': [('parent.is_external', '=', False)], 'readonly': [('parent.external_state', 'not in', ('draft','available','not_available','partial_available'))]}"
+                                           width="2"/>
+                                    <field name="product_uom_id" invisible="1"/>
+                                    <field name="stock_availability" readonly="1"
+                                           decoration-success="stock_availability == 'available'"
+                                           decoration-warning="stock_availability == 'partial'"
+                                           decoration-danger="stock_availability == 'not_available'"/>
+                                    <!--                                    External Spare Request-->
+                                    <button name="action_mark_stock_status" string="Available" type="object"
+                                            groups="ppts_service_request.service_request_group_ct_user"
+                                            class="btn btn-success" context="{'is_available':True}"
+                                            attrs="{'invisible': ['|','|', ('stock_availability', '=', 'available'), ('parent.is_external', '=', False), ('parent.external_state', 'not in', ('draft','available','not_available','partial_available'))]}"/>
+                                    <button name="action_mark_stock_status" string="Partially Available" type="object"
+                                            groups="ppts_service_request.service_request_group_ct_user"
+                                            class="btn btn-warning" context="{'is_partial':True}"
+                                            attrs="{'invisible': ['|','|', ('stock_availability', '=', 'partial'), ('parent.is_external', '=', False), ('parent.external_state', 'not in', ('draft','available','not_available','partial_available'))]}"/>
+                                    <button name="action_mark_stock_status" string="Not Available" type="object"
+                                            groups="ppts_service_request.service_request_group_ct_user"
+                                            class="btn btn-danger" context="{'is_not_available':True}"
+                                            attrs="{'invisible': ['|','|', ('stock_availability', '=', 'not_available'), ('parent.is_external', '=', False), ('parent.external_state', 'not in', ('draft','available','not_available','partial_available'))]}"/>
+                                    <!--                                    External Service Request-->
+                                    <button name="action_mark_stock_status" string="Available" type="object"
+                                            groups="ppts_service_request.service_request_group_ct_user"
+                                            class="btn btn-success" context="{'is_available':True}"
+                                            attrs="{'invisible': ['|',('stock_availability', '=', 'available'), ('parent.is_external_service', '=', False)]}"/>
+                                    <button name="action_mark_stock_status" string="Partially Available" type="object"
+                                            groups="ppts_service_request.service_request_group_ct_user"
+                                            class="btn btn-warning" context="{'is_partial':True}"
+                                            attrs="{'invisible': ['|',('stock_availability', '=', 'partial'), ('parent.is_external_service', '=', False)]}"/>
+                                    <button name="action_mark_stock_status" string="Not Available" type="object"
+                                            groups="ppts_service_request.service_request_group_ct_user"
+                                            class="btn btn-danger" context="{'is_not_available':True}"
+                                            attrs="{'invisible': ['|',('stock_availability', '=', 'not_available'), ('parent.is_external_service', '=', False)]}"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="request_tree_view" model="ir.ui.view">
+        <field name="name">request.tree</field>
+        <field name="model">request</field>
+        <field name="arch" type="xml">
+            <tree default_order="name desc">
+                <field name="create_date"/>
+                <field name="name"/>
+                <field name="parent_ticket_id" optional="hide"/>
+                <field name="child_ticket_id" optional="hide"/>
+                <field name="spare_request_id" optional="hide"/>
+                <field name="service_request_id" optional="hide"/>
+                <field name="team_id"/>
+                <field name="user_id"/>
+                <field name="company_id"/>
+                <field name="external_state"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_request" model="ir.actions.act_window">
+        <field name="name">My Request</field>
+        <field name="res_model">request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="request_search_view"/>
+        <field name="context">{'search_default_my_requests': 1}</field>
+        <field name="view_id" ref="request_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_all_requests" model="ir.actions.act_window">
+        <field name="name">All Request</field>
+        <field name="res_model">request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="request_search_view"/>
+        <field name="view_id" ref="request_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_spare_requests" model="ir.actions.act_window">
+        <field name="name">Spare Request</field>
+        <field name="res_model">request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain" eval="[('is_spare_request', '=', True)]"/>
+        <field name="search_view_id" ref="request_search_view"/>
+        <field name="view_id" ref="request_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_quotation_requests" model="ir.actions.act_window">
+        <field name="name">Quote Request</field>
+        <field name="res_model">request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain" eval="[('is_create_quote', '=', True)]"/>
+        <field name="search_view_id" ref="request_search_view"/>
+        <field name="view_id" ref="request_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+    <record id="action_invoice_requests" model="ir.actions.act_window">
+        <field name="name">Invoice Request</field>
+        <field name="res_model">request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain" eval="[('is_create_invoice', '=', True)]"/>
+        <field name="search_view_id" ref="request_search_view"/>
+        <field name="view_id" ref="request_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+</odoo>

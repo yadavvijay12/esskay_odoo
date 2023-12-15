@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Parent Ticket -->
+
+    <menuitem id="tickets_sub_menu" parent="ppts_service_request.service_request_main_menu" name="Tickets"
+              sequence="2"/>
+
+    <menuitem action="action_parent_ticket" id="parent_ticket_main_menu"
+              parent="tickets_sub_menu" name="Parent Ticket"
+              sequence="1"
+              groups="ppts_service_request.service_request_oem_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+    <menuitem action="action_parent_ticket_my_tickets" id="parent_ticket_my_tickets" parent="parent_ticket_main_menu"
+              name="My tickets" sequence="2"/>
+    <menuitem action="action_parent_ticket_all_tickets" id="parent_ticket_main_menu_all_tickets"
+              parent="parent_ticket_main_menu" name="All tickets" sequence="3"/>
+
+
+    <menuitem action="action_child_ticket" id="child_ticket_main_menu"
+              parent="tickets_sub_menu" name="Child Ticket"
+              sequence="2"/>
+    <menuitem action="action_child_ticket_my_tickets" id="child_ticket_main_menu_my_ticket"
+              parent="child_ticket_main_menu" name="My tickets" sequence="2"/>
+    <menuitem action="action_child_ticket_all_tickets" id="child_ticket_main_menu_all_ticket"
+              parent="child_ticket_main_menu" name="All tickets" sequence="3"/>
+    <!--    Request Menus-->
+    <menuitem action="action_child_ticket" id="request_main_menu"
+              parent="tickets_sub_menu" name="Request"
+              sequence="2"/>
+    <menuitem action="action_request" id="request_user_request"
+              parent="request_main_menu" name="My Request" sequence="2"/>
+    <menuitem action="action_all_requests" id="request_all_request"
+              parent="request_main_menu" name="All Request" sequence="3"/>
+    <menuitem id="menu_spare_requests" name="Request" parent="stock.menu_stock_warehouse_mgmt"
+              action="action_spare_requests" sequence="99"/>
+    <menuitem id="menu_quotation_request" name="Request" parent="sale.sale_order_menu"
+              action="action_quotation_requests"
+              sequence="99"/>
+    <menuitem id="menu_invoice_request" name="Request" parent="account.menu_finance_receivables"
+              action="action_invoice_requests"
+              sequence="99"/>
+    <!--    Request Menus-->
+
+
+</odoo>

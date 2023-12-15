@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    
+    <record id="survey_multi_company_rule" model="ir.rule">
+	    <field name="name">Survey Multi Company Rule</field>
+	    <field name="model_id" ref="survey.model_survey_survey"/>
+		<field name="domain_force"> ['|', ('company_id', '=', False), ('company_id', 'in', company_ids)] </field>
+	</record>
+
+    <record id="survey_paricipants_multi_company_rule" model="ir.rule">
+	    <field name="name">Survey Participants Multi Company Rule</field>
+	    <field name="model_id" ref="survey.model_survey_user_input"/>
+		<field name="domain_force"> ['|', ('company_id', '=', False), ('company_id', 'in', company_ids)] </field>
+	</record>
+    <!-- End Service Request -->
+</odoo>

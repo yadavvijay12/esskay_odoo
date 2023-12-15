@@ -1,0 +1,45 @@
+<odoo>
+    <data>
+        <record id="mail_template_loaner_created" model="mail.template">
+            <field name="name">Loaner : Created</field>
+            <field name="model_id" ref="model_service_request"/>
+            <field name="subject">Loaner Created : {{object.name}}</field>
+            <field name="email_to">akashc@esskay.in,ittechsupport@esskay.in,indark@esskay.in</field>
+            <field name="email_cc">akashc@esskay.in,indark@esskay.in</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        Cat No : <t t-out="object.name or ''"></t>,
+                        <br/>
+<!--                        Product Sr. No : <t t-out="object.product_code_no or ''"></t>,-->
+<!--                        <br/>-->
+                       Loaner Created
+                        <br/>
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.user_id">
+                            <t t-out="object.user_id.name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

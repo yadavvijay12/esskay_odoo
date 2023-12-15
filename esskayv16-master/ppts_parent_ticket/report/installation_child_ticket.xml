@@ -1,0 +1,540 @@
+<odoo>
+    <data>
+        <record id="installation_tsr_field_report_paper_format" model="report.paperformat">
+            <field name="name">Installation Report Paper Format</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">37.75</field>
+            <field name="margin_bottom">28.75</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+                id="report_esskay_config"
+                string="Installation Report"
+                model="child.ticket"
+                report_type="qweb-pdf"
+                paperformat="ppts_parent_ticket.installation_tsr_field_report_paper_format"
+                file="ppts_parent_ticket.installation_tsr_report_document"
+                name="ppts_parent_ticket.installation_tsr_report_document"
+                print_report_name="'Installation Report'"/>
+
+        <template id="installation_tsr_report">
+            <t t-call="web.basic_layout">
+                <t t-set="installation_child_ticket"
+                   t-value="request.env['project.task'].sudo().search([('installation_child_ticket_id', '=', o.id)], limit=1)"/>
+                <t t-set="task_list_id"
+                   t-value="request.env['tasks.master.line'].sudo().search([('child_ticket_id.id', '=', o.id),('is_end_task', '=', True)], limit=1)"/>
+
+                <div class="header">
+                    <style>table{ border-collapse:collapse; width:100%; border:1px; border:1px solid #dcdcdc; }
+                        tr,th,td{ border:1px solid #dcdcdc; padding:2px; } h5{ font-size:18px; }
+                    </style>
+                    <div class="row">
+                        <table>
+                            <tr>
+                                <th>
+                                    <center>
+                                        <span style="font-size:40px">Stryker</span>
+                                        <br/>
+                                        <span>
+                                            <b style="color:#ff8c00;font-size:17px;">SIPL FORM</b>
+                                        </span>
+                                    </center>
+                                </th>
+                                <th>
+                                    <center>
+                                        <h5>
+                                            <b>Installation &amp; Warranty Report</b>
+                                        </h5>
+                                    </center>
+                                </th>
+                                <th style="text-align:left;font-size:16px">
+                                    <span style="padding:5px;">Document No. IQF_CPMS_002_02</span>
+                                    <br/>
+                                    <p style="padding:5px;">VERSION.<span t-field="o.version"/></p>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <center>
+                                        <span>Stryker Ind Pvt. Ltd.</span>
+                                    </center>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <center>
+                                        <span>Service Center</span>
+                                    </center>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <center>
+                                        <span>Installation and Warranty Report</span>
+                                    </center>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <br/>
+                <br></br><br></br>
+                <div class="page">
+                    <style>table{ border-collapse:collapse; width:100%; border:1px; border:1px solid #dcdcdc; }
+                        tr,th,td{ border:1px solid #dcdcdc; padding:2px; } li{ padding:5px; }
+                    </style>
+                    <table border="1">
+                        <tbody>
+                            <tr>
+                                <td style="width:25%">
+                                    <b>Customer Name:</b>
+                                </td>
+                                <td style="width:25%">
+                                    <span t-esc="o.partner_id.name"/>
+                                </td>
+                                <td style="width:25%">
+                                    <b>Installed BY:</b>
+                                </td>
+                                <td style="width:25%">
+                                    <t t-if="o.child_assign_engineer_ids">
+                                        <span t-esc="o.child_assign_engineer_ids[0].name"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Address 1:</b>
+                                </td>
+                                <td>
+                                    <span t-field="o.partner_id.street"/>
+                                </td>
+                                <td>
+                                    <b>Installed On:</b>
+                                </td>
+                                <td>
+                                    <t t-if="o.sudo().installation_id.warranty_start_date">
+                                        <span t-esc="o.sudo().installation_id.warranty_start_date.strftime('%d-%b-%Y %H:%M %p')"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Address 2:</b>
+                                </td>
+                                <td>
+                                    <span t-field="o.partner_id.street2"/>
+                                </td>
+                                <td>
+                                    <b>Invoice No:</b>
+                                </td>
+                                <td>
+                                    <span t-esc="o.sudo().installation_id.installation_invoice_number"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Address 3:</b>
+                                </td>
+                                <td>
+                                    <p>
+                                        <span t-field="o.partner_id.zip"/>
+                                        <span t-field="o.partner_id.city"/>
+                                        <span t-field="o.partner_id.state_id"/>
+                                    </p>
+                                </td>
+                                <td>
+                                    <b>Invoice Date:</b>
+                                </td>
+                                <td>
+                                    <t t-if="o.sudo().installation_id.installation_invoice_date">
+                                        <span t-esc="o.sudo().installation_id.installation_invoice_date.strftime('%d-%b-%Y %H:%M %p')"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Tel:</b>
+                                </td>
+                                <td>
+                                    <span t-field="o.partner_id.phone"/>
+                                </td>
+                                <td>
+                                    <b>Cust. PO No:</b>
+                                </td>
+                                <td>
+                                    <span t-esc="o.sudo().installation_id.installation_customer_po_number"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>E-mail:</b>
+                                </td>
+                                <td>
+                                    <span t-field="o.partner_id.email"/>
+                                </td>
+                                <td>
+                                    <b>P.O. Date:</b>
+                                </td>
+                                <td>
+                                    <t t-if="o.sudo().installation_id.installation_customer_po_date">
+                                    <span t-esc="o.sudo().installation_id.installation_customer_po_date.strftime('%d-%b-%Y %H:%M %p')"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Department:</b>
+                                </td>
+                                <td>
+                                    <span t-field="o.sudo().installation_id.department"/>
+                                </td>
+
+                                <td colspan="3"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <hr/>
+                    <br/>
+                    <table border="1">
+                        <tbody>
+                            <tr>
+                                <td style="width:100%">
+                                    <center>
+                                        <b>Equipment Installed -As Per Annuexure -A</b>
+                                    </center>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>
+                                        Attach additional sheet is necessary:
+                                        <ul>
+                                            <li>Received the items in proper working condition as per our purchase
+                                                order
+                                            </li>
+                                            <li>Product demonstrated to our satisfaction</li>
+                                            <li>Proper care and maintanance instructions provided</li>
+                                        </ul>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Warranty on the above items expires on</b>
+                                    <t t-if="o.sudo().installation_id.warranty_end_date">
+                                    <span style="font-weight:bold"
+                                          t-esc="o.sudo().installation_id.warranty_end_date.strftime('%d-%b-%Y')"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>
+                                        <ul>
+                                            <li>Warranty is provided against manufacturing defects only.</li>
+                                            <li>It does not cover damages/losses arising out of breakage,
+                                                mishandling/misuse of items or damages arising out of
+                                                natural calamities/otherwise.
+                                            </li>
+                                            <li>Warranty is limited only to repairs/replacement of the above items at
+                                                discretion of the Company. The company is
+                                                not responsible for damages incurred by the patient.
+                                            </li>
+                                            <li>This warranty does not cover consumables</li>
+                                            <li>Preventive Maintenance Schedule.</li>
+                                            <t t-if="installation_child_ticket.description">
+                                                <li>
+                                                    <span t-field="installation_child_ticket.description"/>
+                                                </li>
+                                            </t>
+
+
+                                        </ul>
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <hr/>
+                    <h5>
+                        <b>Customer Feedback:</b>
+                    </h5>
+                    <div class="page">
+                        <table border="1">
+                            <tbody>
+                                <tr style="background-color:LightGray;text-align:left">
+                                    <th>
+                                        <span>S.No.</span>
+                                    </th>
+                                    <th>
+                                        <sapn>Feedback(Excellent 5,V Good 4,Good 3,Average 2,Poor 1)</sapn>
+                                    </th>
+                                    <th>
+                                        <span>Ratings</span>
+                                    </th>
+                                </tr>
+
+
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Call Registration / Co-ordination process</td>
+                                        <td t-esc="task_list_id.feed_back_end_task_1"/>
+
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Response to Service Request</td>
+                                        <td t-esc="task_list_id.feed_back_end_task_2"/>
+
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Engineer Was equipped for solving the problem</td>
+                                        <td t-esc="task_list_id.feed_back_end_task_3"/>
+
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>Analysis / explanation by Service Engineer</td>
+                                        <td t-esc="task_list_id.feed_back_end_task_4"/>
+
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td>Overall satisfaction about Stryker products and Service</td>
+                                        <td t-esc="task_list_id.feed_back_end_task_5"/>
+
+                                    </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr/>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <table border="1">
+                        <tbody>
+                            <tr>
+                                <td style="width:50%">
+                                    <center>
+                                        <span>
+                                            <b>For Stryker(I) Pvt. Ltd..</b>
+                                        </span>
+                                    </center>
+                                </td>
+                                <td style="width:50%">
+                                    <center>
+                                        <p>
+                                            <b>Customer.</b>
+                                            <!--                                                 <b>Biomedical/OT Staff.</b>-->
+
+                                        </p>
+                                    </center>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td/>
+                                <td style="vertical-align:middle;">
+                                    <center>
+                                        <p>
+                                            <b>Biomedical/OT Staff.</b>
+                                        </p>
+                                    </center>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    <br/>
+                                    <t t-if="o.child_assign_engineer_ids">
+                                        <span t-esc="o.child_assign_engineer_ids[0].name"/>
+                                    </t>
+
+
+                                    <br/>
+                                </td>
+                                <td class="text-center">
+                                    <br/>
+                                    <span t-esc="o.partner_id.name"/>
+                                    <br/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <center>
+                                        <p>
+                                            <b>Name,Signature &amp; Stamp</b>
+                                        </p>
+                                    </center>
+                                </td>
+                                <td>
+                                    <center>
+                                        <b>Name,Signature &amp; Stamp</b>
+                                    </center>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <div class="page">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td style="width:100%;" colspan="2">
+                                        <p>No request for warranty claims shall be entertained unless original
+                                            installation and warranty report is deposited at the national service
+                                            center.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <center>
+                                            <b style="font-weight:bold;text-align:center;">(All dispute subject to New
+                                                Delhi jurisdiction only)
+                                            </b>
+                                        </center>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:25%;border-right:1px solid white;border-bottom:1px solid white">
+                                        <strong>National Service Centre:</strong>
+                                    </td>
+                                    <td style="border-left:1px solid white;border-bottom:1px solid white">
+                                        <p>Khewat No. 122, Khata no. 157, Mustaki No.98, Killa no.6,7,8/1,13/1, Village
+                                            Bhondsi, Tehsil Sohna, Gurgaon 122101
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-right:1px solid white;border-bottom:1px solid white">
+                                        <strong>North:</strong>
+                                    </td>
+                                    <td style="border-left:1px solid white;border-bottom:1px solid white">
+                                        <p>C-5, SDA Commercial Complex, New Delhi-110016</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-right:1px solid white;border-bottom:1px solid white">
+                                        <strong>East:</strong>
+                                    </td>
+                                    <td style="border-left:1px solid white;border-bottom:1px solid white">
+                                        <p>Neelam Apartment, 61-B, Flat # 4B, Park Street, Kolkata-700016</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-right:1px solid white;border-bottom:1px solid white">
+                                        <strong>West:</strong>
+                                    </td>
+                                    <td style="border-left:1px solid white;border-bottom:1px solid white">
+                                        <p>Office no. 1204, 12th Floor,DamjiShamji Buisness Galleria,LBS Marg, Next to
+                                            TOYO House, Kanjur Marg West Mumbai - 400078
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-right:1px solid white;">
+                                        <strong>South:</strong>
+                                    </td>
+                                    <td style="border-left:1px solid white;">
+                                        <p>New # 46, (Old # 13), 1st Floor, Malony Road, Opp. Hindi Prachar Sabha, T.
+                                            Nagar, Chennai-600017
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr/>
+                    <div class="page">
+                        <table border="1" style="height:70px;">
+                            <tbody>
+                                <tr>
+                                    <th colspan="2">
+                                        <p>Toll Free NO. 1800 103 8030</p>
+                                    </th>
+                                    <th colspan="2">
+                                        <p>Call/Whatsapp-9319173332</p>
+                                    </th>
+                                    <th colspan="2">
+                                        <p>E-mail:service.india@stryker.com</p>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td colspan="6" style="border-bottom:0px">
+                                        <center>
+                                            <b>Annexure-A</b>
+                                        </center>
+                                    </td>
+                                </tr>
+                                <tr style="background-color:LightGray;border-top:0px">
+                                    <th style="width:16%">S.No.</th>
+                                    <th style="width:16%">Catalogue No.</th>
+                                    <th style="width:16%">Serial/Lot No.</th>
+                                    <th style="width:16%">Product Description</th>
+                                    <th style="width:16%">Quantity</th>
+                                    <th>Remarks/Sign.</th>
+                                </tr>
+                                <t t-set="serial_number" t-value="0"></t>
+                                <tr>
+                                    <t t-set="serial_number" t-value="serial_number+1"/>
+                                    <td class="text-center">
+                                        <t t-esc="serial_number"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="o.product_id.product_part"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="installation_child_ticket.installation_product_serial"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.product_id.name"/>
+                                    </td>
+                                    <td class="text-center">1</td>
+                                    <td class="text-center">
+                                        <t t-if="o.child_assign_engineer_ids">
+                                            <span t-esc="o.child_assign_engineer_ids[0].name"/>
+                                        </t>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="footer">
+                    <center>
+                        <b>
+                            Page No:
+                            <span class="page"/>
+                            <span>of</span>
+                            <span class="topage"/>
+                        </b>
+                    </center>
+                </div>
+                <p style="page-break-after: always;"/>
+            </t>
+        </template>
+        <template id="installation_tsr_report_document">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="ppts_parent_ticket.installation_tsr_report"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="service_request_sr_loaner_search_view" model="ir.ui.view">
+        <field name="name">service.request.sr.loaner.search.view</field>
+        <field name="model">service.request</field>
+        <field name="arch" type="xml">
+            <search string="Search in SR- Loaner requests">
+                <field name="name"/>
+                <field name="service_request_id_alias"/>
+                <filter string="My Tickets" name="my_sr_loaner" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="New" name="draft" domain="[('state','in',('draft', 'new'))]"/>
+                <filter string="In Review" name="in_review" domain="[('state','=','in_review')]"/>
+                <filter string="Converted To Ticket" name="converted_to_ticket" domain="[('state','=','converted_to_ticket')]"/>
+                <filter string="Closed" name="closed" domain="[('state','=','closed')]"/>
+                <separator/>
+                <filter string="Service Request Date" name="filter_service_request_date" date="service_request_date"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Service Type" name="service_type_id" domain="[]"
+                            context="{'group_by': 'service_type_id'}"/>
+                    <filter string="Service Category" name="service_category_id" domain="[]"
+                            context="{'group_by': 'service_category_id'}"/>
+                    <filter string="Approval Type" name="request_type_id" domain="[]"
+                            context="{'group_by': 'request_type_id'}"/>
+                    <filter string="Team" name="team_id" domain="[]"
+                            context="{'group_by': 'team_id'}"/>
+                    <filter string="Milestone" name="state" domain="[]"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Customer" name="partner_id" domain="[]"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter string="Responsible" name="user_id" domain="[]"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter string="Company" name="company_id" domain="[]"
+                            context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="service_request_tree_sr_loaner_view" model="ir.ui.view">
+        <field name="name">service.request.sr.loaner.tree</field>
+        <field name="model">service.request</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="state == 'rejected'" default_order="name desc">
+                <field name="name"/>
+                <field name="service_request_date"/>
+                <field name="request_type_id"/>
+                <field name="customer_name" invisible="1"/>
+                <field name="state"/>
+                <field name="company_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="service_request_sr_loaner_form_view" model="ir.ui.view">
+        <field name="name">service.request.sr.loaner.form</field>
+        <field name="model">service.request</field>
+        <field name="arch" type="xml">
+            <form string="Service Request Form SR Loaner">
+                <header>
+                    <field name="is_child_ticket_created" invisible="1"/>
+                    <field name="is_parent_ticket_created" invisible="1"/>
+                    <field name="is_required_approval" invisible="1"/>
+                    <field name="is_check_available" invisible="1"/>
+                    <field name="is_auto_approval" invisible="1"/>
+                    <button string="Submit" name="action_submit" type="object"
+                            attrs="{'invisible': [('state','!=','draft')]}"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
+                            class="oe_highlight"/>
+                    <button string="In Review" name="action_for_review" type="object"
+                            attrs="{'invisible': [('state','!=','available')]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
+                            class="oe_highlight"/>
+                    <button string="Send for Approval" name="action_for_approval" type="object"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=',False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head" class="oe_highlight"/>
+<!--                    <button string="Approve" name="action_approved" type="object"-->
+<!--                            attrs="{'invisible': ['|',('state','!=','waiting_for_approval'),('is_required_approval', '=',False)]}"-->
+<!--                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head" class="oe_highlight"/>-->
+<!--                    <button string="Reject" name="action_rejected" type="object"-->
+<!--                            attrs="{'invisible': ['|',('state','!=','waiting_for_approval'),('is_required_approval', '=',False)]}"-->
+<!--                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head" class="oe_highlight"/>-->
+<!--                    <button string="Hold" name="action_hold" type="object"-->
+<!--                            attrs="{'invisible': ['|',('state','!=','waiting_for_approval'),('is_required_approval', '=',False)]}"-->
+<!--                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head" class="oe_highlight"/>-->
+                    <button string="Close" name="action_ticket_close" type="object"
+                            attrs="{'invisible': [('state','not in',['approved','resumed'])]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head" class="oe_highlight"/>
+                    <button string="SEND BY MAIL" name="action_send_mail" type="object"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!--check availability request-->
+                    <button string="Check Available Request" name="check_availability_request" type="object"
+                            class="oe_highlight" groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
+                            attrs="{'invisible':[('state','!=','new')]}"/>
+                    <button string="Reopen Ticket" name="service_request_reopen"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
+                            attrs="{'invisible':[('state','not in',['cancelled','closed'])]}" type="object"/>
+                    <button string="Resume" name="service_request_resume"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
+                            attrs="{'invisible':[('state','not in',['hold'])]}" type="object"/>
+
+                    <!--Without Approval-->
+<!--                    <button name="create_parent_ticket" string="Convert to PT" type="object" class="oe_highlight"-->
+<!--                            invisible="1"/>-->
+<!--                    &lt;!&ndash;With Approval&ndash;&gt;-->
+<!--                    <button name="create_child_ticket" string="Convert to CT" type="object" class="oe_highlight"-->
+<!--                            invisible="1"/>-->
+                    <!--Without Approval-->
+<!--                    <button string="Convert to PT" name="action_view_parent_tickets" type="object" class="oe_highlight"-->
+<!--                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"-->
+<!--                            help="Convert to Parent Ticket Without Approval"-->
+<!--                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>-->
+<!--                    &lt;!&ndash;Without Approval&ndash;&gt;-->
+<!--                    <button string="Convert to CT" name="action_view_child_tickets" type="object" class="oe_highlight"-->
+<!--                            attrs="{'invisible': ['|','|','|',('is_parent_ticket_created', '=', False),('is_child_ticket_created', '=', True),('state','!=','converted_to_ticket'),('is_required_approval', '=', True)]}"-->
+<!--                            help="Convert to Child Ticket Without Approval"-->
+<!--                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>-->
+                    <!--Without Approval-->
+                    <button string="Close" name="action_ticket_close" type="object"
+                            attrs="{'invisible': ['|', ('state','not in',('converted_to_ticket', 'in_review')),('is_required_approval','=',False)]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head" class="oe_highlight"/>
+                    <button string="Hold" name="action_request_hold" type="object"
+                           attrs="{'invisible':[('state','not in',['approved'])]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head" class="oe_highlight"/>
+                    <button string="Cancel" name="action_request_cancel" type="object"
+                            attrs="{'invisible':[('state','in',['cancelled','new'])]}"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+
+                </header>
+                <header style=" color: #FFFFFF; background-color: #d4d2d9; border-color: #71639e; ">
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="new,in_review,converted_to_ticket,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <field name="request_count" invisible="1"/>
+                        <button name="action_view_requests" type="object" class="oe_stat_button" icon="fa-list"
+                                attrs="{'invisible': [('request_count', '=', 0)]}">
+                            <field name="request_count" widget="statinfo" string="Requests"/>
+                        </button>
+
+                        <button name="action_view_parent_tickets" type="object" class="oe_stat_button"
+                                icon="fa-pencil-square-o" attrs="{'invisible': [('parent_count', '=', 0)]}">
+                            <field name="parent_count" widget="statinfo" string="Parent Ticket"/>
+                        </button>
+                        <button name="action_view_child_tickets" type="object" class="oe_stat_button"
+                                icon="fa-pencil-square-o" attrs="{'invisible': [('child_count', '=', 0)]}">
+                            <field name="child_count" widget="statinfo" string="Child Ticket"/>
+                        </button>
+                        <button name="action_view_service_request_approval" type="object" class="oe_stat_button"
+                                icon="fa-pencil-square-o" attrs="{'invisible': [('service_ticket_count', '=', 0)]}">
+                            <field name="service_ticket_count" widget="statinfo" string="Approvals" />
+                        </button>
+                    </div>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert" attrs="{'invisible': ['|',('state','!=','approved'),('is_auto_approval','=',False)]}">
+                        Automatic Approval has enabled to this SR-Loaner
+                        <button data-bs-dismiss="alert" aria-label="Close" class="btn-close" special="cancel"/>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="service_request_information" style="color:black"
+                               string="Service Request Information">
+                            <field name="service_request_id_alias"
+                                   attrs="{'readonly': [('state','not in',('draft','new', 'in_review'))]}"
+                                   groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                            <field name="service_request_date"
+                                   attrs="{'readonly': [('state','not in',('draft','new', 'in_review'))]}"/>
+                            <field name="approver_id"
+                                   attrs="{'readonly': [('state','not in',('draft','new', 'in_review'))],'invisible': [('is_required_approval','=',False)], 'required': [('state', '=','in_review'),('is_required_approval', '=', True)]}" groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                        </group>
+
+<!--                        <group name="customer_information" style="color:black" string="Customer information">-->
+<!--                            <label for="customer_name"/>-->
+<!--                            <div class="o_row">-->
+<!--                                <field name="customer_name"-->
+<!--                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>-->
+<!--                                <button name="customer_selection" invisible="1" type="object"-->
+<!--                                        string="Customer Selection" class="oe_highlight"-->
+<!--                                        groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>-->
+<!--                            </div>-->
+<!--                            <field name="customer_email" attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>-->
+<!--                            <span class="o_form_label o_td_label" name="address_name"-->
+<!--                                  attrs="{'readonly': [('state','not in',('new','in_review'))]}">-->
+<!--                                Customer Address-->
+<!--                            </span>-->
+<!--                            <div class="o_address_format">-->
+<!--                                <field name="customer_street" placeholder="Street..." class="o_address_street"-->
+<!--                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>-->
+<!--                                <field name="customer_street2" placeholder="Street 2..." class="o_address_street"-->
+<!--                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>-->
+<!--                                <field name="customer_state_id" class="o_address_state" placeholder="State"-->
+<!--                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>-->
+<!--                                <field name="customer_zip" placeholder="ZIP" class="o_address_zip"-->
+<!--                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>-->
+<!--                                <field name="customer_country_id" placeholder="Country" class="o_address_country"-->
+<!--                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>-->
+<!--                                <field name="customer_country_code" invisible="1"-->
+<!--                                       attrs="{'readonly': [('state','not in',('new','in_review'))]}"/>-->
+<!--                            </div>-->
+<!--                            <field name="dealer_distributor_name"-->
+<!--                                   attrs="{'readonly': [('state','not in',('new','in_review'))]}"-->
+<!--                                   groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>-->
+<!--                        </group>-->
+                        <group name="call_details" style="color:black" string="Call details">
+                            <field name="call_source_id" attrs="{'readonly': [('state','!=','draft')]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="service_type_id" attrs="{'readonly': [('state','!=','draft')]}" domain="[('ticket_type','=', 'sr_loaner')]"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="service_category_id"
+                                   attrs="{'readonly': [('state','!=','draft')]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="request_type_id" attrs="{'readonly': [('state','!=','draft')]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                             <field name="reason" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="problem_reported"
+                                   attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
+                            <field name="requested_by_name"
+                                   attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="requested_by_contact_number"
+                                   attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
+                            <field name="requested_by_email"
+                                   attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="requested_by_title"
+                                   attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="call_received_id"
+                                   attrs="{'readonly': [('state','!=','draft')]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                            <field name="user_team_ids" invisible="1"/>
+                            <field name="team_id" attrs="{'readonly': [('state','!=','draft')]}"
+                                   options='{"no_open": True, "no_create": True}'/>
+                        </group>
+                        <group name="asset_details" style="color:black" string="Asset details">
+                            <field name="product_name" attrs="{'readonly': [('state','!=','draft')]}"
+                                   invisible="1"/>
+                            <field name="custom_product_serial"
+                                   attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
+
+<!--                            <field name="oem_warranty_status_id"-->
+<!--                                   attrs="{'readonly': [('state','!=','draft')]}"-->
+<!--                                   options='{"no_open": True, "no_create": True}'/>-->
+<!--                            <field name="repair_warranty_status_id"-->
+<!--                                   attrs="{'readonly': [('state','!=','draft')]}"-->
+<!--                                   options='{"no_open": True, "no_create": True}'/>-->
+                            <field name="oem_warranty_status" readonly="1" force_save="1"/>
+                            <field name="oem_repair_status" readonly="1" force_save="1"/>
+                        </group>
+                        <group name="other_information" style="color:black" string="Other information">
+                            <field name="remarks" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="survey_id" attrs="{'readonly': [('state','not in',('draft','new','in_review'))]}"
+                                   groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+
+                            <field name="company_id" readonly="1" invisible="1"/>
+                            <field name="user_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group name="properties_group" style="color:black" string="Properties" groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head">
+                    </group>
+                    <field name="service_properties" nolabel="1" columns="2" hideKanbanOption="1" groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <notebook>
+                        <page string="Customer Selection" name="customer_selection"
+                              groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head">
+                            <div class="oe_title">
+                                <label for="partner_id"/>
+                                <h1>
+                                    <field name="partner_id"
+                                           attrs="{'readonly': [('state','not in',('new','in_review'))], 'required': [('state','=', 'in_review')]}"/>
+                                </h1>
+                            </div>
+                            <group>
+                                <group>
+                                    <span class="o_form_label o_td_label" name="address_name"
+                                          attrs="{'readonly': [('state','not in',('draft', 'new'))]}">
+                                        <b>Address</b>
+                                    </span>
+                                    <div class="o_address_format">
+                                        <field name="street" placeholder="Street..." class="o_address_street"
+                                               attrs="{'readonly': [('state','not in',('draft', 'new'))]}"/>
+                                        <field name="street2" placeholder="Street 2..." class="o_address_street"
+                                               attrs="{'readonly': [('state','not in',('draft', 'new'))]}"/>
+                                        <field name="state_id" class="o_address_state" placeholder="State"
+                                               attrs="{'readonly': [('state','not in',('draft', 'new'))]}"/>
+                                        <field name="zip" placeholder="ZIP" class="o_address_zip"
+                                               attrs="{'readonly': [('state','not in',('draft', 'new'))]}"/>
+                                        <field name="country_id" placeholder="Country" class="o_address_country"
+                                               attrs="{'readonly': [('state','not in',('draft', 'new'))]}"/>
+                                        <field name="country_code" invisible="1"
+                                               attrs="{'readonly': [('state','not in',('draft', 'new'))]}"/>
+                                    </div>
+                                </group>
+                                <group>
+                                    <field name="phone" widget="phone"
+                                           attrs="{'readonly': [('state','not in',('draft', 'new'))]}"/>
+                                    <field name="mobile" widget="phone"
+                                           attrs="{'readonly': [('state','not in',('draft', 'new'))]}"/>
+                                    <field name="email" widget="email"
+                                           attrs="{'readonly': [('state','not in',('draft', 'new'))]}"/>
+                                    <field name="dealer_distributor_id"
+                                           attrs="{'readonly': [('state','not in',('draft', 'new'))]}"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Loaner" groups="ppts_service_request.service_request_group_user">
+                        </page>
+                        <page string="Contract" groups="ppts_service_request.service_request_group_user">
+                        </page>
+                        <page string="Parts" groups="ppts_service_request.service_request_group_user">
+                        </page>
+                        <page string="Description" name="description"
+                              groups="ppts_service_request.service_request_group_user">
+                            <field name="description" placeholder="Description" nolabel="1"
+                                   attrs="{'readonly': [('state','!=','draft')]}"/>
+                        </page>
+                        <page name="attachment_page" string="Attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+<!--                        <page string="Approvals" groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head">-->
+<!--                            <field name="approver_ids" readonly="1">-->
+<!--                                <tree string="Approvals" create="false" delete="false" edit="false">-->
+<!--                                    <field name="sequence" invisible="1"/>-->
+<!--                                    <field name="user_id"/>-->
+<!--                                    <field name="require_opt"/>-->
+<!--                                    <field name="state"/>-->
+<!--                                    <field name="approved_on"/>-->
+<!--                                    <field name="reject_reason"/>-->
+<!--                                    <field name="rejected_on"/>-->
+<!--                                    <field name="hold_reason"/>-->
+<!--                                    <field name="hold_on"/>-->
+<!--                                </tree>-->
+<!--                                <form string="Approvals" name="approvals">-->
+<!--                                    <group>-->
+<!--                                        <group>-->
+<!--                                            <field name="user_id"/>-->
+<!--                                            <field name="require_opt"/>-->
+<!--                                            <field name="state"/>-->
+<!--                                        </group>-->
+<!--                                        <group>-->
+<!--                                            <field name="approved_on"/>-->
+<!--                                            <field name="reject_reason"/>-->
+<!--                                            <field name="rejected_on"/>-->
+<!--                                            <field name="hold_reason"/>-->
+<!--                                            <field name="hold_on"/>-->
+<!--                                        </group>-->
+<!--                                    </group>-->
+<!--                                </form>-->
+<!--                            </field>-->
+<!--                        </page>-->
+                        <page name="assigned_page" string="Assigned">
+                        </page>
+                        <page name="hold_reason" string="Hold Reason"
+                              attrs="{'invisible':[('state', '!=', 'hold')]}">
+                            <field name="request_hold_reason" readonly="1"/>
+                        </page>
+                        <page name="close_reason" string="Close Reason"
+                              attrs="{'invisible':[('state', '!=', 'closed')]}">
+                            <field name="close_reason" readonly="1"/>
+                        </page>
+
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_service_request_sr_loaner" model="ir.actions.act_window">
+        <field name="name">SR-Loaner</field>
+        <field name="res_model">service.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="service_request_sr_loaner_search_view"/>
+        <field name="domain">[('request_type_id.ticket_type','=','sr_loaner')]</field>
+        <field name="context">{
+           'request_type':'loaner',
+            'search_default_my_sr_loaner':1
+            }
+        </field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_act_request_sr_loaner_tree_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="service_request_tree_sr_loaner_view"/>
+        <field name="act_window_id" ref="action_service_request_sr_loaner"/>
+    </record>
+    <record id="action_act_request_sr_loaner_form_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="service_request_sr_loaner_form_view"/>
+        <field name="act_window_id" ref="action_service_request_sr_loaner"/>
+    </record>
+
+    <!--service request Menus-->
+    <menuitem action="action_service_request_sr_loaner" id="service_request_sr_loaner_menu"
+              parent="service_request_sub_menu"
+              name="SR-Loaner" sequence="3"/>
+    <!--End Menus-->
+
+</odoo>

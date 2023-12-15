@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record id="outbound_call_list_form" model="ir.ui.view">
+        <field name="name">outbound.call.list.form</field>
+        <field name="model">outbound.call.list</field>
+        <field name="arch" type="xml">
+            <form string="Outbound Call History" create="0" edit="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" invisible="1"/>
+                            <field name="survey_create_date" readonly="1"/>
+                            <field name="survey_id" readonly="1"/>
+                            <field name="customer_id" readonly="1"/>
+                            <field name="customer_account_id" readonly="1"/>
+                            <field name="survey_user_input_id" invisible="1"/>
+                            <field name="disposition" />
+                        </group>
+                        <group>
+                            <field name="service_category_id" readonly="1"/>
+                            <field name="service_type_id" readonly="1"/>
+                            <field name="call_history_id" invisible="1"/>
+                            <field name="ticket_ref" readonly="1"/>
+                            <label for="phone"/>
+                            <div class="o_row" name="phone">
+                                <field name="phone"/>
+                                <span>
+                                    <button name="action_call_phone" type="object" icon="fa-phone"/>
+                                </span>
+                            </div>
+                            <label for="mobile"/>
+                            <div class="o_row" name="mobile">
+                                <field name="mobile"/>
+                                <span>
+                                    <button name="action_call_mobile" type="object" icon="fa-phone"/>
+                                </span>
+                            </div>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="outbound_call_list_tree" model="ir.ui.view">
+        <field name="name">outbound.call.list.tree</field>
+        <field name="model">outbound.call.list</field>
+        <field name="arch" type="xml">
+            <tree string="Outbound Call History" create="0" edit="0">
+                <field name="survey_create_date" string="Survey Sent Date"/>
+                <field name="survey_id"/>
+                <field name="customer_id"/>
+                <field name="customer_account_id"/>
+                <field name="ticket_ref"/>
+                <field name="phone"/>
+                <button name="action_call_phone" type="object" icon="fa-phone"/>
+                <field name="mobile"/>
+                <button name="action_call_mobile" type="object" icon="fa-phone"/>
+                <field name="disposition" decoration-warning="disposition == 'RNR1'" decoration-primary="disposition == 'RNR2'" decoration-danger="disposition == 'RNR3'"/>
+                <button name="view_survey" type="object" class="btn btn-info" string="Fill Survey"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'" decoration-warning="state == 'new'" decoration-info="state == 'in_progress'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_outbound_call_filter" model="ir.ui.view">
+        <field name="name">outbound.call.list.list.select</field>
+        <field name="model">outbound.call.list</field>
+        <field name="priority" eval="15"/>
+        <field name="arch" type="xml">
+            <search string="Search Outbound Call History">
+                <field name="customer_id"/>
+                <field name="service_category_id"/>
+                <field name="service_type_id"/>
+
+
+                <separator/>
+                <filter string="Not Submitted" name="not_submitted" domain="[('state', '=', 'new')]"/>
+                <separator/>
+                <filter string="Not Submitted &amp; Not Answered" name="not_answered" domain="[('state', '=', 'no_answer')]"/>
+                <separator/>
+
+
+                <group expand="0" string="Group By">
+                    <filter string="Disposition" name="disposition" domain="[]" context="{'group_by': 'disposition'}"/>
+                    <filter name="customer_id" string="Customer" domain="[]" context="{'group_by': 'customer_id'}"/>
+                    <filter name="state" string="Status" domain="[]" context="{'group_by': 'state'}"/>
+                    <!-- <filter name="uui" string="UUI" domain="[]" context="{'group_by': 'uui'}"/> -->
+                    <filter string="Date" name="survey_create_date" domain="[]" context="{'group_by': 'survey_create_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action View -->
+    <record id="action_outbound_call_list" model="ir.actions.act_window">
+        <field name="name">Outbound Call History</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">outbound.call.list</field>
+        <field name="view_id" ref="outbound_call_list_tree"/>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.server" id="action_bulk_campaign_calls">
+        <field name="name">Bulk Campaign call data</field>
+        <field name="model_id" ref="cti_integration.model_outbound_call_list"/>
+        <field name="binding_model_id" ref="cti_integration.model_outbound_call_list"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            action = records._bulk_campaign_calls()
+        </field>
+    </record>
+
+    <!-- Menu Details -->
+
+    <menuitem name="Outbound Call List" id="outbound_call_list_menu" parent="cti_integration.menu_root_cti_integration" sequence="151"/>
+
+    <menuitem id="outbound_call_list_history_menu" name="Outbound Call History" parent="outbound_call_list_menu" sequence="2" action="action_outbound_call_list" />
+
+
+
+
+</odoo>

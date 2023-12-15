@@ -1,0 +1,764 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+		<!--  Call Source Master List -->
+        <record id="service_request_call_source_form_view" model="ir.ui.view">
+            <field name="name">call.source.form.view</field>
+            <field name="model">call.source</field>
+            <field name="arch" type="xml">
+                <form string="Call Source">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="service_request_call_source_tree_view" model="ir.ui.view">
+            <field name="name">call.source.tree.view</field>
+            <field name="model">call.source</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_service_request_call_source" model="ir.actions.act_window">
+            <field name="name">Call Source</field>
+            <field name="res_model">call.source</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="service_request_call_source_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End Call Source Master List -->
+        
+        <!--  Service Category Master List -->
+        <record id="service_request_service_category_form_view" model="ir.ui.view">
+            <field name="name">service.category.form.view</field>
+            <field name="model">service.category</field>
+            <field name="arch" type="xml">
+                <form string="Service Category">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                            <group>
+                            	<field name="category_type"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="service_request_service_category_tree_view" model="ir.ui.view">
+            <field name="name">service.category.tree.view</field>
+            <field name="model">service.category</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_service_request_service_category" model="ir.actions.act_window">
+            <field name="name">Service Category</field>
+            <field name="res_model">service.category</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="service_request_service_category_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End Service Category Master List -->
+        
+        
+        <!--  Service Type Master List -->
+        <record id="service_request_service_type_form_view" model="ir.ui.view">
+            <field name="name">service.type.form.view</field>
+            <field name="model">service.type</field>
+            <field name="arch" type="xml">
+                <form string="Service Type">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="code"/>
+                                <field name="company_id" invisible="1"/>
+                                <field name="ticket_type"/>
+                                <field name="service_category_ids"/>
+                            </group>
+                            <group>
+                                <field name="name"/>
+                                <field name="request_type_ids"/>
+
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="service_request_service_type_tree_view" model="ir.ui.view">
+            <field name="name">service.type.tree.view</field>
+            <field name="model">service.type</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_service_request_service_type" model="ir.actions.act_window">
+            <field name="name">Service Type</field>
+            <field name="res_model">service.type</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="service_request_service_type_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End Service Type Master List -->
+        
+         <!--  Request Type Master List -->
+        <record id="service_request_type_form_view" model="ir.ui.view">
+            <field name="name">request.type.form.view</field>
+            <field name="model">request.type</field>
+            <field name="arch" type="xml">
+                <form string="Request Type">
+                    <sheet>
+                        <field name="image_icon" nolabel="1" widget="image" class="oe_avatar"/>
+                        <group>
+                            <group string="Basic Information" name="basic_info">
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="ticket_type"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                            <group string="Other Information" name="other_info">
+                                <field name="team_id" options="{'no_create_edit': True, 'no_quick_create': True}"/>
+                                <field name="is_required_approval" attrs="{'invisible': [('ticket_type','=', 'so_call')]}"/>
+                                <field name="is_auto_approval" attrs="{'invisible': [('is_required_approval','=',False)]}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="mobile_groupby_image" string="Others">
+                                <field name="ticket_type_image" widget="image" class="oe_avatar"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="service_request_type_tree_view" model="ir.ui.view">
+            <field name="name">request.type.tree.view</field>
+            <field name="model">request.type</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="is_required_approval"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+     <!--    Overview Kanban view-->
+
+        <record id="overview_service_request_view_kanban" model="ir.ui.view">
+            <field name="name">request.type.kanban</field>
+            <field name="model">request.type</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_small_column" create="false" delete="false">
+                    <!--                    <field name="id"/>-->
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="container o_kanban_card_content">
+
+                                    <div>
+                                        <strong class="o_kanban_record_title">
+
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <div class="text-muted o_kanban_record_subtitle">
+                                        <field name="code"/>
+                                        <br/>
+                                        <field name="is_required_approval"/>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-6 o_kanban_primary_left">
+                                            <!--                                        name="get_action_picking_tree_ready" type="object"-->
+                                            <button class="btn btn-primary">
+                                                <span>
+
+                                                    To Process
+                                                </span>
+
+                                            </button>
+                                        </div>
+                                        <div class="col-6 o_kanban_primary_right">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="oe_clear"/>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <record id="overview_action_service_request_type" model="ir.actions.act_window">
+            <field name="name">Overview</field>
+            <field name="res_model">request.type</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_id" ref="overview_service_request_view_kanban"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_service_request_type" model="ir.actions.act_window">
+            <field name="name">Approval Types</field>
+            <field name="res_model">request.type</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="service_request_type_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End Request Type Master List -->
+        
+        
+        <!--  Call Received Master List -->
+        <record id="service_request_call_received_form_view" model="ir.ui.view">
+            <field name="name">call.received.form.view</field>
+            <field name="model">call.received</field>
+            <field name="arch" type="xml">
+                <form string="Call Received">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="service_request_call_received_tree_view" model="ir.ui.view">
+            <field name="name">call.received.tree.view</field>
+            <field name="model">call.received</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_service_request_call_received" model="ir.actions.act_window">
+            <field name="name">Call Received</field>
+            <field name="res_model">call.received</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="service_request_call_received_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End Call Received Master List -->
+        
+        
+         <!--  Bio Medical Engineer Master List -->
+        <record id="service_request_bio_medical_engineer_form_view" model="ir.ui.view">
+            <field name="name">bio.medical.engineer.form.view</field>
+            <field name="model">bio.medical.engineer</field>
+            <field name="arch" type="xml">
+                <form string="Bio Medical Engineer">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="service_request_bio_medical_engineer_tree_view" model="ir.ui.view">
+            <field name="name">bio.medical.engineer.tree.view</field>
+            <field name="model">bio.medical.engineer</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_service_request_bio_medical_engineer" model="ir.actions.act_window">
+            <field name="name">Bio Medical Engineer</field>
+            <field name="res_model">bio.medical.engineer</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="service_request_bio_medical_engineer_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  Bio Medical Engineer Master List -->
+        
+        
+        <!--  Service Request Status Master List -->
+        <record id="service_request_status_form_view" model="ir.ui.view">
+            <field name="name">service.request.status.form.view</field>
+            <field name="model">service.request.status</field>
+            <field name="arch" type="xml">
+                <form string="Service Request Status">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="service_request_status_tree_view" model="ir.ui.view">
+            <field name="name">service.request.status.tree.view</field>
+            <field name="model">service.request.status</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_service_request_status" model="ir.actions.act_window">
+            <field name="name">Service Request Status</field>
+            <field name="res_model">service.request.status</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="service_request_status_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  Service Request Status Master List -->
+        
+        
+        <!--  Dispatch location Master List -->
+        <record id="service_request_dispatch_location_form_view" model="ir.ui.view">
+            <field name="name">dispatch.location.form.view</field>
+            <field name="model">dispatch.location</field>
+            <field name="arch" type="xml">
+                <form string="Dispatch location">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="service_request_dispatch_location_tree_view" model="ir.ui.view">
+            <field name="name">dispatch.location.tree.view</field>
+            <field name="model">dispatch.location</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_service_request_dispatch_location" model="ir.actions.act_window">
+            <field name="name">Dispatch Location</field>
+            <field name="res_model">dispatch.location</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="service_request_dispatch_location_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End Dispatch Location Master List -->
+        
+        <!--  OEM Warranty Status Master List -->
+        <record id="service_request_oem_warranty_status_form_view" model="ir.ui.view">
+            <field name="name">oem.warranty.status.form.view</field>
+            <field name="model">oem.warranty.status</field>
+            <field name="arch" type="xml">
+                <form string="OEM Warranty Status">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="service_request_oem_warranty_status_tree_view" model="ir.ui.view">
+            <field name="name">oem.warranty.status.tree.view</field>
+            <field name="model">oem.warranty.status</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_service_request_oem_warranty_status" model="ir.actions.act_window">
+            <field name="name">OEM Warranty Status</field>
+            <field name="res_model">oem.warranty.status</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="service_request_oem_warranty_status_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End OEM Warranty Status Master List -->
+        
+       	<!--  Repair Warranty Status Master List -->
+        <record id="service_request_repair_warranty_status_form_view" model="ir.ui.view">
+            <field name="name">repair.warranty.status.form.view</field>
+            <field name="model">repair.warranty.status</field>
+            <field name="arch" type="xml">
+                <form string="Repair Warranty Status">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="service_request_repair_warranty_status_tree_view" model="ir.ui.view">
+            <field name="name">repair.warranty.status.tree.view</field>
+            <field name="model">repair.warranty.status</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_service_request_repair_warranty_status" model="ir.actions.act_window">
+            <field name="name">Repair Warranty Status</field>
+            <field name="res_model">repair.warranty.status</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="service_request_repair_warranty_status_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End Repair Warranty Status Master List -->
+        
+        <!--  Repair Center Location Master List -->
+        <record id="repair_center_location_form_view" model="ir.ui.view">
+            <field name="name">repair.center.location.form.view</field>
+            <field name="model">repair.center.location</field>
+            <field name="arch" type="xml">
+                <form string="Repair Center Location">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="repair_center_location_tree_view" model="ir.ui.view">
+            <field name="name">repair.center.location.tree.view</field>
+            <field name="model">repair.center.location</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_repair_center_location" model="ir.actions.act_window">
+            <field name="name">Repair Center Location</field>
+            <field name="res_model">repair.center.location</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="repair_center_location_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End Repair Center Location Master List -->
+        
+        <!--  Case Completed Successfully Master List -->
+        <record id="case_completed_successfully_form_view" model="ir.ui.view">
+            <field name="name">case.completed.successfully.form.view</field>
+            <field name="model">case.completed.successfully</field>
+            <field name="arch" type="xml">
+                <form string="Case Completed Successfully">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="case_completed_successfully_tree_view" model="ir.ui.view">
+            <field name="name">case.completed.successfully.tree.view</field>
+            <field name="model">case.completed.successfully</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_case_completed_successfully" model="ir.actions.act_window">
+            <field name="name">Was the case completed successfully</field>
+            <field name="res_model">case.completed.successfully</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="case_completed_successfully_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End Case Completed Successfully Master List -->
+        
+        <!--  Medical Intervention Master List -->
+        <record id="medical_intervention_form_view" model="ir.ui.view">
+            <field name="name">medical.intervention.form.view</field>
+            <field name="model">medical.intervention</field>
+            <field name="arch" type="xml">
+                <form string="Medical Intervention">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="medical_intervention_tree_view" model="ir.ui.view">
+            <field name="name">medical.intervention.tree.view</field>
+            <field name="model">medical.intervention</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_medical_intervention" model="ir.actions.act_window">
+            <field name="name">Was medical intervention needed</field>
+            <field name="res_model">medical.intervention</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="medical_intervention_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End Medical Intervention Master List -->
+        
+         <!--  Patient Involved Master List -->
+        <record id="patient_involved_form_view" model="ir.ui.view">
+            <field name="name">patient.involved.form.view</field>
+            <field name="model">patient.involved</field>
+            <field name="arch" type="xml">
+                <form string="Patient Involved">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="patient_involved_tree_view" model="ir.ui.view">
+            <field name="name">patient.involved.tree.view</field>
+            <field name="model">patient.involved</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_patient_involved" model="ir.actions.act_window">
+            <field name="name">Was a patient involved</field>
+            <field name="res_model">patient.involved</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="patient_involved_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End Patient Involved Master List -->
+        
+         <!--  Surgical Delay Master List -->
+        <record id="surgical_delay_form_view" model="ir.ui.view">
+            <field name="name">surgical.delay.form.view</field>
+            <field name="model">surgical.delay</field>
+            <field name="arch" type="xml">
+                <form string="Surgical Delay">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="surgical_delay_tree_view" model="ir.ui.view">
+            <field name="name">surgical.delay.tree.view</field>
+            <field name="model">surgical.delay</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_surgical_delay" model="ir.actions.act_window">
+            <field name="name">Was there a surgical delay</field>
+            <field name="res_model">surgical.delay</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="surgical_delay_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End Surgical Delay Master List -->
+        
+        <!--  Child Ticket Type Master List -->
+        <record id="child_ticket_type_form_view" model="ir.ui.view">
+            <field name="name">child.ticket.type.form.view</field>
+            <field name="model">child.ticket.type</field>
+            <field name="arch" type="xml">
+                <form string="Child Ticket Type">
+                    <sheet>
+                        <group>
+                            <group>
+                            	<field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="child_ticket_type_tree_view" model="ir.ui.view">
+            <field name="name">child.ticket.type.tree.view</field>
+            <field name="model">child.ticket.type</field>
+            <field name="arch" type="xml">
+                <tree>
+                	<field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_child_ticket_type" model="ir.actions.act_window">
+            <field name="name">Child Ticket Type</field>
+            <field name="res_model">child.ticket.type</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="child_ticket_type_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to Create a New Record.
+                </p>
+            </field>
+        </record>
+        <!--  End Child Ticket Type Master List -->
+        
+</odoo>

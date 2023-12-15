@@ -1,0 +1,426 @@
+<odoo>
+    <data>
+        <record id="service_request_inhouse_paper_format" model="report.paperformat">
+            <field name="name">Services Request Inhouse Reports Paper Format</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">37.75</field>
+            <field name="margin_bottom">28.75</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+                id="service_request_inhouse_report_config"
+                string="Service Inhouse Report - Job Closed"
+                model="child.ticket"
+                report_type="qweb-pdf"
+                paperformat="ppts_parent_ticket.service_request_inhouse_paper_format"
+                file="ppts_parent_ticket.service_request_inhouse_reports_config"
+                name="ppts_parent_ticket.service_request_inhouse_reports_config"
+                print_report_name="'Services Request Inhouse'"/>
+
+        <template id="service_request_inhouse">
+            <t t-call="web.basic_layout">
+                <div class="page">
+                    <div class="container">
+                        <style>table{ width:100% border-collapse:collapse; font-size:15px; } tr,th,td{ border:1px solid
+                            lightGrey; padding:3px; font-size:15px; }
+                        </style>
+                        <t t-set="task_list_id"
+                           t-value="request.env['tasks.master.line'].sudo().search([('child_ticket_id', '=', doc.id),('is_end_task', '=', True)], limit=1)"/>
+                        <t t-set="work_id"
+                           t-value="request.env['tasks.master.line'].sudo().search([('child_ticket_id', '=', doc.id),('is_work_end', '=', True)], limit=1)"/>
+
+                        <div class="header">
+                            <div class="row">
+                                <table style="border:1px solid #dcdcdc; width:100%;">
+                                    <tr>
+                                        <th>
+                                            <h3 style="color:#ff8c00;text-align:left;padding:5px;">
+                                                <strong>SIPL FORM</strong>
+                                            </h3>
+                                        </th>
+                                        <th>
+                                            <h2 style="text-align:right;padding:5px;">
+                                                <strong>Stryker</strong>
+                                            </h2>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p>
+                                                <strong style="padding:8px;">Title:</strong>
+                                                Service Report_Inhouse
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p>
+                                                <strong style="padding:8px;">Document Number:</strong>
+                                                IQF-CPMS-005-06
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong style="padding:8px;">JDE Call No:</strong>
+                                            <span style="font-size:15px;" t-field="doc.child_ticket_id_alias"/>
+                                        </td>
+                                        <td>
+                                            <strong style="padding:8px;">Version:</strong>
+                                            <span style="font-size:15px;" t-field="doc.version"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <table style="height:250px;width:100%">
+                            <tbody>
+                                <tr>
+                                    <td style="width:25%">
+                                        <strong>PI.No/Exp No</strong>
+                                    </td>
+                                    <td style="width:25%">
+                                        <span t-field="doc.product_id.product_part"/>
+                                    </td>
+                                    <td style="width:25%">
+                                        <strong>Call ID Date</strong>
+                                    </td>
+                                    <td style="width:25%">
+                                        <t t-if="doc.call_date">
+                                            <span t-esc="doc.call_date.strftime('%d-%b-%Y %H:%M %p')or ''"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Customer Name</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.partner_id.name"/>
+                                    </td>
+                                    <td>
+                                        <strong>Cat NO</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.product_id.product_part"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Address 1</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.partner_id.street"/>
+                                    </td>
+                                    <td>
+                                        <strong>Description</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.product_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Address 2</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.partner_id.street2"/>
+                                    </td>
+                                    <td>
+                                        <strong>Product Sr.NO</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.stock_lot_id"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Pincode</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.partner_id.zip"/>
+                                    </td>
+                                    <td>
+                                        <strong>Entitlement</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.service_category_id"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Email ID</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.partner_id.email"/>
+                                    </td>
+                                    <t t-if="doc.service_category_id.name != 'Others'">
+                                        <td/>
+                                        <td/>
+                                    </t>
+                                    <t t-else="">
+                                        <td>
+                                            <strong>Remarks if Entitlement is Other</strong>
+                                        </td>
+                                        <td>
+                                            <!--                                            <span t-field="doc.reason"/>-->
+                                        </td>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Region</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.partner_id.customer_region"/>
+                                    </td>
+                                    <td>
+                                        <strong>Service Type</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.service_type_id"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>State</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.partner_id.state_id"/>
+                                    </td>
+                                    <t t-if="doc.service_category_id.name != 'Others'">
+                                        <td/>
+                                        <td/>
+                                    </t>
+                                    <t t-else="">
+                                        <td>
+                                            <strong>Remarks if Entitlement is Other</strong>
+                                        </td>
+                                        <td>
+                                        </td>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>City</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.partner_id.city"/>
+                                    </td>
+                                    <td>
+                                        <strong>Contact Person</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.requested_by_name_child"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Telephone Number</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.partner_id.phone"/>
+                                    </td>
+                                    <td>
+                                        <strong>Mobile No</strong>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.requested_by_contact_number"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr/>
+                        <t t-set="engineer_visits" t-value="doc.field_service_report_values()"/>
+                        <table style="width:100%">
+
+                            <tbody class="first_class">
+                                <tr>
+                                    <td width="25%" >
+                                        <strong>Job Start Time</strong>
+                                    </td>
+                                    <td width="25%">
+                                        <t t-if="engineer_visits['job_started']">
+                                            <span t-esc="engineer_visits['job_started']"/>
+                                        </t>
+                                    </td>
+                                    <td width="25%">
+                                        <strong>Job End Time</strong>
+                                    </td>
+                                    <td width="25%">
+                                        <t t-if="engineer_visits['job_end']">
+                                            <span t-esc="engineer_visits['job_end']"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr/>
+                        <table style="height:100px;width:100%;">
+                            <tbody>
+                                <tr>
+                                    <td width="25%">
+                                        <strong>Problem Description(Symptom)</strong>
+                                    </td>
+                                    <td width="75%">
+                                        <span t-esc="work_id.maintenance_problem_description"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="25%">
+                                        <strong>Action taken at site(Diagnosis)</strong>
+                                    </td>
+                                    <td width="75%">
+                                        <span t-esc="work_id.action_taken"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="25%">
+                                        <strong>Final Report</strong>
+                                    </td>
+                                    <td width="75%">
+                                        <span t-esc="work_id.final_report_comments"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="25%">
+                                        <strong>Job Completed</strong>
+                                    </td>
+                                    <td width="75%">Yes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <span style="font-weight:bold;width:100%">Material Consumed/Required/Returned/Inspected</span>
+                        <table style="width:100%">
+                            <tr style="background-color:lightGrey;">
+                                <th>S.No</th>
+                                <th>Part.No</th>
+                                <th>Part.Serial.No</th>
+                                <th>Material Description</th>
+                                <th>Part Qty</th>
+                            </tr>
+                            <tbody>
+                                <t t-set="external_spare"
+                                   t-value="request.env['request'].sudo().search([('is_external', '=', True),('child_ticket_id', '=', doc.id)], limit=1)"/>
+                                <t t-set="count" t-value="0"/>
+                                <t t-if="not external_spare">
+                                    <tr t-foreach="doc.spare_request_ids" t-as="s">
+                                        <tr t-foreach="s.spare_request_line" t-as="k">
+                                            <t t-set="count" t-value="count + 1"/>
+                                            <td>
+                                                <t t-esc="count"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="s.sequence_id"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="k.description"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="k.product_id.name"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="k.product_uom_qty"/>
+                                            </td>
+                                        </tr>
+                                    </tr>
+                                </t>
+                                <t t-else="">
+                                    <tr t-foreach="external_spare.asset_ids" t-as="line">
+                                        <t t-set="count" t-value="count + 1"/>
+                                        <td>
+                                            <t t-esc="count"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.part_number"/>
+                                        </td>
+                                        <td>
+                                            <!--                                        <t t-esc="s.name"/>-->
+                                            <t t-esc="line.serial_number"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.description"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.quantity"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <hr/>
+                        <p style="font-weight:bold;">
+                            Note:
+                            <span style="font-weight:normal;">You can also give your feedback on
+                                service.india@stryker.com along with call reference number.
+                            </span>
+                        </p>
+                        <hr/>
+                        <div class="row">
+                            <table border="1">
+                                <tr style="height:35px;">
+                                    <td style="width:50%">
+                                        <p>
+                                            <b>Customer Name:</b>
+                                        </p>
+                                        <span t-field="doc.partner_id.name"/>
+                                    </td>
+                                    <td style="width:50%">
+                                        <p>
+                                            <b>For stryker India Private Limited</b>
+                                        </p>
+                                        <p>
+                                            <b>Engineer Name:</b>
+                                        </p>
+                                        <span t-field="doc.user_id.name"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="footer" style="font-size: 11px;">
+                        <p>
+                            <strong>Toll Free:</strong>
+                            1800 103 8030
+                        </p>
+                        <p>
+                            <strong>Service Center:</strong>
+                            KHEWAT NO.122,KHATA NO.157,MUSTAKIL NO,98,KILLA NO.6,7,8/1,13/1 SITUATED AT
+                            VILLAGE BHONDSI,TEHSIL,SOHNA,GURGAON,HR-122102
+                        </p>
+                        <center>
+                            <b>TEMPLATE IQF-CSUP-001-03,Rev 01 | This is a Computer Generated Report</b>
+                        </center>
+                        <center>
+                            <b>
+                                Page No:
+                                <span class="page"/>
+                                <span>of</span>
+                                <span class="topage"/>
+                            </b>
+                        </center>
+                    </div>
+                    <p style="page-break-before:always;"/>
+                </div>
+            </t>
+        </template>
+        <template id="service_request_inhouse_reports_config">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ppts_parent_ticket.service_request_inhouse"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

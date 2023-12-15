@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="outbound_wizard_form_view" model="ir.ui.view">
+        <field name="name">outbound.wizard</field>
+        <field name="model">outbound.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Outbound Wizard">
+            <group>
+                <group>
+                    <field name="date_from" required="1"/>
+                    <field name="state" />
+                </group>
+                <group>
+                    <field name="date_to" required="1"/>
+                </group>
+            </group>
+                <footer>
+                    <button name="action_outbound_call_list" string="Confirm" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_outbound_wizard" model="ir.actions.act_window">
+        <field name="name">Outbound Wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">outbound.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="outbound_wizard_form_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem name="Outbound Wizard"
+        id="outbound_call_list_menu_wizard"
+        parent="outbound_call_list_menu"
+        action="action_outbound_wizard"
+        sequence="1"/>
+
+</odoo>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="parent_ticket_inherit_warranty_replacement" model="ir.ui.view">
+        <field name="name">parent_ticket_inherit.view.form</field>
+        <field name="model">parent.ticket</field>
+        <field name="inherit_id" ref="ppts_parent_ticket.parent_ticket_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="is_create_wr_order" invisible="1"/>
+                <field name="replacement_order_count" invisible="1"/>
+                <button name="action_create_warranty_replacement" string="Request Replacement" type="object"
+                        groups="ppts_service_request.service_request_group_ct_user"
+                        class="btn btn-warning"
+                        attrs="{'invisible': ['|',('replacement_order_count','&gt;',0),('is_create_wr_order','=', False)]}"/>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_replacement_order" type="object" class="oe_stat_button" icon="fa-wrench"
+                        string="Replacement Order" attrs="{'invisible': [('replacement_order_count','=',0)]}">
+                    <field name="replacement_order_count" widget="statinfo" string="Replacement"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//page[@name='warranty_replacement']" position="inside">
+                <field name="replacement_order_ids">
+                    <tree string="Warranty Replacement" editable="top" create="false" delete="false">
+                        <field name="name" readonly="1"/>
+                        <field name="create_date" readonly="1"/>
+                        <field name="partner_id" readonly="1"/>
+                        <field name="team_id" readonly="1"/>
+                        <field name="wr_state"/>
+                    </tree>
+                </field>
+            </xpath>
+
+            <xpath expr="//page[@name='inventory']" position="inside">
+                <field name="replacement_picking_ids" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="child_ticket_inherit_warranty_replacement" model="ir.ui.view">
+        <field name="name">child.ticket.form_inherit.view.form</field>
+        <field name="model">child.ticket</field>
+        <field name="inherit_id" ref="ppts_parent_ticket.child_ticket_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//page[@name='inventory']" position="inside">
+                <field name="replacement_picking_ids" readonly="1"/>
+            </xpath>
+
+            <xpath expr="//header" position="inside">
+                <field name="is_create_wr_order" invisible="1"/>
+                <field name="replacement_order_count" invisible="1"/>
+                <button name="action_create_warranty_replacement" string="Request Replacement" type="object"
+                        groups="ppts_service_request.service_request_group_user"
+                        class="btn btn-warning"
+                        attrs="{'invisible': ['|','|',('replacement_order_count','&gt;',0),('is_create_wr_order','=', False),('request_type','!=', 'sr_wr')]}"/>
+            </xpath>
+
+            <xpath expr="//page[@name='warranty_replacement']" position="inside">
+                <field name="replacement_order_ids">
+                    <tree string="Warranty Replacement" editable="top" create="false" delete="false">
+                        <field name="name" readonly="1"/>
+                        <field name="create_date" readonly="1"/>
+                        <field name="partner_id" readonly="1"/>
+                        <field name="team_id" readonly="1"/>
+                        <field name="wr_state"/>
+                    </tree>
+                </field>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']/button[@name='action_view_send_for_approvals']" position="after">
+                <button name="action_view_replacement_order" type="object" class="oe_stat_button" icon="fa-wrench"
+                        string="Replacement Order" attrs="{'invisible': [('replacement_order_count','=',0)]}">
+                    <field name="replacement_order_count" widget="statinfo" string="Replacement"/>
+                </button>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

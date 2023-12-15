@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="survey_survey_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.form</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_archive']" position="after">
+                <button name="fill_survey_ct" string="Fill Survey" type="object"/>
+            </xpath>
+            <xpath expr="//group[@name='participants']" position="after">
+                <group name="configuration_suvey" string="Survey Configurations">
+                    <field name="survey_start_url" invisible="1"/>
+                    <field name="to_expire"/>
+                    <label for="survey_expiry" attrs="{'invisible': [('to_expire', '=', True)]}"/>
+                    <div attrs="{'invisible': [('to_expire', '=', True)]}">
+                        <field name="survey_expiry" class="oe_inline" attrs="{'required': [('to_expire', '=', False)]}"/>
+                        <field name="unit" class="oe_inline" attrs="{'required': [('to_expire', '=', False)]}"/>
+                    </div>
+                     <field name="enable_follow"/>
+                      <label for="followup_type" string="Take follow-up" attrs="{'invisible':[('enable_follow','=',False)]}"/>
+                      <div attrs="{'invisible':[('enable_follow','=',False)]}">
+                          <field name="followup_type" class="oe_inline" style="margin-right:10px;"/>
+                          <label for="followup_after" string=" after" class="oe_inline"/>
+                          <field name="followup_after" class="oe_inline"/>
+                          <field name="followup" class="oe_inline" style="margin-right:10px;"/>
+                          <label for="followup_limit" string="Limit" attrs="{'invisible':[('followup_type','=','once')]}" class="oe_inline"/>
+                          <field name="followup_limit" attrs="{'invisible':[('followup_type','=','once')]}" class="oe_inline"/>
+                      </div>
+                      <field name="followup_via" attrs="{'invisible':[('enable_follow','=',False)] , 'required':[('enable_follow','=', True)]}"/>
+                      <field name="email_tmpl_id" attrs="{'invisible':['|',('followup_via','=','whatsapp'),('enable_follow','=',False)], 'required':[('followup_via','in',['email','email_whatsp']), ('enable_follow','=',True)]}"/>
+                      <field name="whatsapp_template_id" attrs="{'invisible':['|',('followup_via','=','email'), ('enable_follow','=',False)], 'required':[('followup_via','in',['whatsapp','email_whatsp']), ('enable_follow','=',True)]}"/>
+                </group>
+            </xpath>
+            <xpath expr="//div[@class='oe_button_box']" position="inside">
+                <button name="action_survey_followup" type="object" class="oe_stat_button" icon="fa-calendar" attrs="{'invisible':[('enable_follow','=',False)]}">
+                    <field string="Followup History" name="followup_count" widget="statinfo"/>
+                </button>
+            </xpath>
+            <field name="user_id" position="after">
+                <field name="company_id" readonly="1"/>
+            </field>
+            <xpath expr="//notebook" position="before">
+                <field name="survey_properties" nolabel="1" columns="2" hideKanbanOption="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="survey_user_input_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.user_input.view.form_inherit</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='access_token']" position="after">
+                <field name="customer_id" readonly="1"/>
+                <field name="customer_account_id" />
+                <field name="child_ticket_id" readonly="1" />
+                <field name="parent_ticket_id" readonly="1"/>
+                <field name="service_request_id" invisible="1"/>
+                <field name="sr_status" string="S.R Status"/>
+                <field name="escalated_rsm" invisible="1"/>
+                <field name="result" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='create_date']" position="after">
+                <field name="service_category_id" readonly="1"/>
+                <field name="service_type_id" readonly="1" />
+                <field name="attempt_no" invisible="1"/>
+                <field name="filled_by" readonly="1"/>
+                <field name="company_id" />
+            </xpath>
+            <xpath expr="//button[@name='action_print_answers']" position="after">
+                <button name="action_create_sr" type="object" class="oe_highlight" string="Create Service Request" attrs="{'invisible': [('escalated_rsm', '=', True)]}" />
+            </xpath>
+            <xpath expr="//page[1]" position="after">
+                <page name="note" string="Notes">
+                    <group>
+                        <group >
+                            <field name="notes" nolabel="1" colspan="2"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//button[@name='action_redirect_to_attempts']" position="after">
+                <button name="view_assets" type="object" class="oe_stat_button" icon="fa-list" string="Asset"/>
+                <button name="view_products" type="object" class="oe_stat_button" icon="fa-list" string="Product"/>
+                <button name="view_child_ticket" type="object" class="oe_stat_button" attrs="{'invisible': [('child_ticket_id', '=', False)]}" icon="fa-book" string="Child Ticket"/>
+                <button name="view_parent_ticket" type="object" class="oe_stat_button" attrs="{'invisible': [('parent_ticket_id', '=', False)]}" icon="fa-book" string="Parent Ticket"/>
+                <button name="view_service_request" type="object" class="oe_stat_button" attrs="{'invisible': [('service_request_id', '=', False)]}" icon="fa-book" string="Service Request"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="survey_user_input_view_tree_inherit" model="ir.ui.view">
+        <field name="name">survey.user_input.view_tree</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="replace">
+                <field name="customer_id" />
+            </xpath>
+            <xpath expr="//field[@name='email']" position="replace">
+                <field name="customer_account_id" />
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- <record id="question_wise_report_view_tree" model="ir.ui.view">
+        <field name="name">question.wise.report.view.tree</field>
+        <field name="model">survey.user_input.line</field>
+        <field name="arch" type="xml">
+            <tree string="Question Wise Report" create="false">
+                <field name="question_id"/>
+                <field name="create_date"/>
+                <field name="customer_account_id" optional="hide"/>
+                <field name="service_type_id" optional="hide"/>
+                <field name="service_category_id" optional="hide"/>
+                <field name="skipped"/>
+                <field name="answer_score"/>
+            </tree>
+        </field>
+    </record> -->
+
+</odoo>

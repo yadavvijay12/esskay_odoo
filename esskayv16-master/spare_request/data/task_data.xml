@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--        Spare Request-->
+        <record id="task_data_spare_action" model="tasks.master">
+            <field name="name">Spares</field>
+            <field name="category">action</field>
+            <field name="python_code">spare_request</field>
+            <field name="description">Spare</field>
+        </record>
+
+        <record id="task_data_spare_request" model="tasks.master">
+            <field name="name">Spare Requested</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spare Requested</field>
+        </record>
+        <record id="task_data_spare_available" model="tasks.master">
+            <field name="name">Spares Available</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares Available</field>
+        </record>
+        <record id="task_data_spare_not_available" model="tasks.master">
+            <field name="name">Spares Not Available</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares Not Available</field>
+        </record>
+        <record id="task_data_spare_partially_available" model="tasks.master">
+            <field name="name">Spares Partially Available</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares Partially Available</field>
+        </record>
+        <record id="task_data_spare_delivery_requested" model="tasks.master">
+            <field name="name">Spares delivery Request</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares delivery Request</field>
+        </record>
+        <record id="task_data_spare_delivery_approved" model="tasks.master">
+            <field name="name">Spares delivery Approved</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares delivery Approved</field>
+        </record>
+        <record id="task_data_spare_delivery_rejected" model="tasks.master">
+            <field name="name">Spares delivery Rejected</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares delivery Rejected</field>
+        </record>
+
+        <record id="task_data_spare_delivery_waiting" model="tasks.master">
+            <field name="name">Spares delivery Waiting Availability</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares delivery Waiting Availability</field>
+        </record>
+        <record id="task_data_spare_delivery_ready" model="tasks.master">
+            <field name="name">Spares delivery Ready</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares delivery Ready</field>
+        </record>
+        <record id="task_data_spare_delivery_done" model="tasks.master">
+            <field name="name">Spares delivery Done</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares delivery Done</field>
+        </record>
+
+        <record id="task_data_spare_parts_received" model="tasks.master">
+            <field name="name">Spare parts received</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spare parts received</field>
+        </record>
+
+        <record id="task_data_spare_return_requested" model="tasks.master">
+            <field name="name">Spares Return delivery Request</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares Return delivery Request</field>
+        </record>
+        <record id="task_data_spare_return_waiting" model="tasks.master">
+            <field name="name">Spares Return delivery Waiting Availability</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares Return delivery Waiting Availability</field>
+        </record>
+        <record id="task_data_spare_return_available" model="tasks.master">
+            <field name="name">Spares Return Available</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares Return Available</field>
+        </record>
+        <record id="task_data_spare_return_not_available" model="tasks.master">
+            <field name="name">Spares Return Not Available</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares Return Not Available</field>
+        </record>
+        <record id="task_data_spare_return_available_partially" model="tasks.master">
+            <field name="name">Spares Return Partially Available</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares Return Partially Available</field>
+        </record>
+        <record id="task_data_spare_return_ready" model="tasks.master">
+            <field name="name">Spares Return delivery Ready</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares Return delivery Ready</field>
+        </record>
+        <record id="task_data_spare_return_done" model="tasks.master">
+            <field name="name">Spares Return delivery Done</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spares Return delivery Done</field>
+        </record>
+
+        <record id="task_data_spare_parts_returned" model="tasks.master">
+            <field name="name">Spare parts returned</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Spare parts returned</field>
+        </record>
+
+    </data>
+</odoo>

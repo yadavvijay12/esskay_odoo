@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="blast_survey_history_view_form" model="ir.ui.view">
+        <field name="name">blast_survey_history.view.form</field>
+        <field name="model">survey.blast.history</field>
+        <field name="arch" type="xml">
+            <form string="Blast Survey History" create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <field name="sent_date" />
+                        <field name="name" />
+                        <field name="partner_id" />
+                        <field name="customer_account_id" />
+                        <field name="survey_id" />
+                        <field name="service_type_id" />
+                        <field name="service_category_id" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="blast_survey_view_tree_history" model="ir.ui.view">
+        <field name="name">blast_survey.history.view.tree</field>
+        <field name="model">survey.blast.history</field>
+        <field name="arch" type="xml">
+            <tree string="Blast Survey history" create="0" delete="0">
+                <field name="sent_date" />
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="customer_account_id" />
+                <field name="survey_id" />
+                <field name="service_type_id" />
+                <field name="service_category_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="blast_survey_history_action" model="ir.actions.act_window">
+        <field name="name">Blast Survey History</field>
+        <field name="res_model">survey.blast.history</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem name="Blast Survey History" id="menu_survey_blast_history" action="blast_survey_history_action" parent="survey_blast_menu" sequence="3"/>
+
+
+</odoo>
+<!-- blast_survey form view -->

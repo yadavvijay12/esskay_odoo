@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="blast_survey_popup_view_form" model="ir.ui.view">
+        <field name="name">blast_survey_popup.view.form</field>
+        <field name="model">blast.survey.popup</field>
+        <field name="arch" type="xml">
+            <form string="Survey Blast Popup">
+            <group>
+                <group>
+                    <field name="date_from" />
+                    <!-- <field name="survey_ids" required="1"/> -->
+                    <field name="rating" />
+                    <field name="service_category_id" />
+                </group>
+                <group>
+                    <field name="date_to" />
+                    <field name="customer_account_id" />
+                    <field name="service_type_id"/>
+                </group>
+            </group>
+                <footer>
+                    <button name="action_survey_blast" string="Confirm" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="blast_survey_wizard_action_wizard" model="ir.actions.act_window">
+        <field name="name">Survey Blast Popup</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">blast.survey.popup</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="blast_survey_popup_view_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem name="Survey Blast Popup"
+        id="survey_blast_popup"
+        parent="survey_blast_menu"
+        action="blast_survey_wizard_action_wizard"
+        sequence="1"/>
+
+</odoo>

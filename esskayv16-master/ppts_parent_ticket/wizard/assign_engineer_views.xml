@@ -1,0 +1,150 @@
+<odoo>
+
+    <!-- Parent Assign Engineer-->
+    <record id="view_assign_engineer_wiz" model="ir.ui.view">
+        <field name="name">Assign/Re-assign User</field>
+        <field name="model">assign.engineer</field>
+        <field name="arch" type="xml">
+            <form string="Assign/Re-assign User">
+                <group>
+                    <group>
+                        <field name="assign_engineer_ids" widget='many2many_tags' invisible="1"/>
+                        <field name="assign_engineer_id" options='{"no_open": True, "no_create": True}'/>
+                        <field name="is_assign_to_user" invisible="1"/>
+                        <field name="is_request_reassign" invisible="1"/>
+                    </group>
+                    <group>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_assign_engineer" string="Assign User" type="object" class="btn-primary"
+                            attrs="{'invisible': [('is_assign_to_user','=', True)]}"/>
+                    <button name="action_reassign_engineer" string="Re-Assign User" type="object" class="btn-primary"
+                            attrs="{'invisible': [('is_assign_to_user','=', False)]}"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_assign_engineer_wiz" model="ir.actions.act_window">
+        <field name="name">Assign/Re-assign User</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">assign.engineer</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_assign_engineer_wiz"/>
+    </record>
+    <!--End Parent Assign Engineer-->
+
+    <!-- Child Assign Engineer-->
+    <record id="view_child_assign_engineer_wiz" model="ir.ui.view">
+        <field name="name">Assign/Re-assign Engineer</field>
+        <field name="model">child.assign.engineer</field>
+        <field name="arch" type="xml">
+            <form string="Assign/Re-assign Engineer">
+                <group>
+                    <group>
+                        <field name="assign_engineer_ids" widget='many2many_tags' invisible="1"/>
+                        <field name="assign_engineer_id" options='{"no_open": True, "no_create": True}'/>
+                        <field name="is_assign_to_user" invisible="1"/>
+                        <field name="is_request_reassign" invisible="1"/>
+                    </group>
+                    <group>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_child_assign_engineer" string="Assign Engineer" type="object"
+                            class="btn-primary" attrs="{'invisible': [('is_assign_to_user','=', True)]}"/>
+                    <button name="action_child_reassign_engineer" string="Re-Assign Engineer" type="object"
+                            class="btn-primary" attrs="{'invisible': [('is_assign_to_user','=', False)]}"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_child_assign_engineer_wiz" model="ir.actions.act_window">
+        <field name="name">Assign/Re-assign Engineer</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">child.assign.engineer</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_child_assign_engineer_wiz"/>
+    </record>
+    <!-- End Child Assign Engineer-->
+
+
+    <record id="check_availability_engineer_wizard_form" model="ir.ui.view">
+        <field name="name">check.availability.wizard.form</field>
+        <field name="model">check.availability.engineer</field>
+        <field name="arch" type="xml">
+            <form string="Check Engineer Availability" create="false" edit="false" delete="false">
+                <field name="name" nolabel="1"/>
+                <separator string="Available Engineers"/>
+                <field name="check_engineer_ids">
+                    <tree string="Engineer" create="false" edit="false" delete="false" editable="bottom">
+                        <field name="user_assign_id"/>
+                        <field name="engineer_tickets_count"/>
+                        <button name="action_to_assign_engineer" type="object" string="Assign Engineer"
+                                class="oe_highlight"
+                                help="While click on this button this engineer will have an access to this ticket"
+                                groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    </tree>
+                    <form string="Tickets">
+                        <field name="child_tickets_ids">
+                            <!--                            <tree string="Tickets" create="false" edit="false" delete="false" editable="bottom">-->
+                            <!--                                <field name="name"/>-->
+                            <!--                                <field name="request_type_id"/>-->
+                            <!--                                <field name="service_type_id"/>-->
+                            <!--                                <field name="service_category_id"/>-->
+                            <!--                                <field name="stock_lot_id"/>-->
+                            <!--                                <field name="state"/>-->
+                            <!--                                <field name="parent_ticket_id"/>-->
+                            <!--                            </tree>-->
+                        </field>
+                    </form>
+                </field>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_check_availability_engineer_wizard" model="ir.actions.act_window">
+        <field name="name">Check Engineer Availability</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">check.availability.engineer</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="check_availability_engineer_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+
+    <!-- Asset warranty -->
+    <record id="view_warranty_tickets_wiz" model="ir.ui.view">
+        <field name="name">View Warranty Tickets</field>
+        <field name="model">view.warranty.tickets</field>
+        <field name="arch" type="xml">
+            <form string="Tickets">
+                <field name="child_tickets_ids">
+                    <tree string="Tickets" create="false" edit="false" delete="false">
+                    </tree>
+                </field>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_view_warranty_tickets_wiz" model="ir.actions.act_window">
+        <field name="name">View Warranty Tickets</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">view.warranty.tickets</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_warranty_tickets_wiz"/>
+    </record>
+    <!-- Asset warranty end -->
+
+
+</odoo>

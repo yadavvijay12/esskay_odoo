@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Service Request -->
+    <record id="service_request_group" model="ir.module.category">
+        <field name="name">Service Support</field>
+        <field name="sequence">5</field>
+    </record>
+
+    <record id="service_request_oem_user" model="res.groups">
+        <field name="name">View Only</field>
+        <field name="category_id" ref="service_request_group"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="service_request_group_user" model="res.groups">
+        <field name="name">User Level2</field>
+        <field name="category_id" ref="service_request_group"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="service_request_group_ct_user" model="res.groups">
+        <field name="name">User Level1</field>
+        <field name="implied_ids" eval="[(4, ref('service_request_group_user')), (4, ref('service_request_oem_user'))]"/>
+        <field name="category_id" ref="service_request_group"/>
+        <field name="users" eval="[(4, ref('base.user_admin')), (4, ref('base.user_root'))]"/>
+    </record>
+
+    <record id="service_request_group_manager" model="res.groups">
+        <field name="name">Super User</field>
+        <field name="implied_ids" eval="[(4, ref('service_request_group_user')), (4, ref('service_request_oem_user')), (4, ref('service_request_group_ct_user'))]"/>
+        <field name="category_id" ref="service_request_group"/>
+        <field name="users" eval="[(4, ref('base.user_admin')), (4, ref('base.user_root'))]"/>
+    </record>
+
+    <record id="service_request_national_head" model="res.groups">
+        <field name="name">Administrator </field>
+        <field name="implied_ids" eval="[(4, ref('service_request_group_user')), (4, ref('service_request_oem_user')), (4, ref('service_request_group_ct_user')), (4, ref('service_request_group_manager'))]"/>
+        <field name="category_id" ref="service_request_group"/>
+        <field name="users" eval="[(4, ref('base.user_admin')), (4, ref('base.user_root'))]"/>
+    </record>
+    <record id="service_request_administrator" model="res.groups">
+        <field name="name">Super Administrator</field>
+        <field name="implied_ids" eval="[(4, ref('service_request_group_user')), (4, ref('service_request_oem_user')), (4, ref('service_request_group_ct_user')), (4, ref('service_request_group_manager')), (4, ref('service_request_national_head'))]"/>
+        <field name="category_id" ref="service_request_group"/>
+        <field name="users" eval="[(4, ref('base.user_admin')), (4, ref('base.user_root'))]"/>
+    </record>
+
+    <record id="service_request_multi_company_rule" model="ir.rule">
+        <field name="name">Service Request Multi Company Rule</field>
+        <field name="model_id" ref="model_service_request"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <!-- End Service Request -->
+
+<!--    Record Rule Based for Engineer, CT User, Manager, Head-->
+<!--Service Request-->
+
+    <record id="service_request_user_wise_service_engineer" model="ir.rule">
+        <field name="name">Show Service Request - Service Engineer</field>
+        <field name="model_id" ref="model_service_request"/>
+        <field name="domain_force">['|', ('user_id','=',user.id), ('assign_engineer_ids','=',user.id)]</field>
+        <field name="groups" eval="[(4, ref('service_request_group_user'))]"/>
+    </record>
+
+    <record id="service_request_user_wise_oem" model="ir.rule">
+        <field name="name">Show Service Request - OEM User</field>
+        <field name="model_id" ref="model_service_request"/>
+        <field name="domain_force">['|', ('user_id','=',user.id), ('team_id', 'in', user.team_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('service_request_oem_user'))]"/>
+    </record>
+
+    <record id="service_request_team_wise_ct_user" model="ir.rule">
+        <field name="name">Show records team wise - CT User</field>
+        <field name="model_id" ref="model_service_request"/>
+        <field name="domain_force">['|', ('user_id','=',user.id), ('team_id', 'in', user.team_ids.ids)]</field>
+        <field name="groups" eval="[(4,ref('service_request_group_ct_user'))]"/>
+    </record>
+
+    <record id="service_request_team_wise_manager" model="ir.rule">
+        <field name="name">Show records team wise - Manager(CT/ Repair Manager, Service Manager(RSM))</field>
+        <field name="model_id" ref="model_service_request"/>
+        <field name="domain_force">['|', ('user_id','=',user.id), ('team_id', 'in', user.team_ids.ids)]</field>
+        <field name="groups" eval="[(4,ref('service_request_group_manager'))]"/>
+    </record>
+
+    <record id="service_request_team_wise_national_head" model="ir.rule">
+        <field name="name">Show records team wise - National Head</field>
+        <field name="model_id" ref="model_service_request"/>
+        <field name="domain_force">['|', ('user_id','=',user.id), ('team_id', 'in', user.team_ids.ids)]</field>
+        <field name="groups" eval="[(4,ref('service_request_national_head'))]"/>
+    </record>
+
+    <record id="service_request_all_administrator" model="ir.rule">
+        <field name="name">Show records - Administrator</field>
+        <field name="model_id" ref="model_service_request"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4,ref('service_request_administrator'))]"/>
+    </record>
+<!--Service Request-->
+    <!--    Record Rule Based for Engineer, CT User, Manager, Head-->
+
+    <record id="show_users_team_service_engineer" model="ir.rule">
+        <field name="name">Show Users team - Service Engineer</field>
+        <field name="model_id" ref="model_crm_team"/>
+        <field name="domain_force">[('id', 'in', user.team_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('service_request_group_user'))]"/>
+    </record>
+    <record id="show_users_team_ct_user" model="ir.rule">
+        <field name="name">Show Users team - CT User</field>
+        <field name="model_id" ref="model_crm_team"/>
+        <field name="domain_force">[('id', 'in', user.team_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('service_request_group_ct_user'))]"/>
+    </record>
+    <record id="show_users_team_service_manager" model="ir.rule">
+        <field name="name">Show Users team - Manager</field>
+        <field name="model_id" ref="model_crm_team"/>
+        <field name="domain_force">[('id', 'in', user.team_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('service_request_group_manager'))]"/>
+    </record>
+    <record id="show_users_team_service_head" model="ir.rule">
+        <field name="name">Show Users team - NSM</field>
+        <field name="model_id" ref="model_crm_team"/>
+        <field name="domain_force">[('id', 'in', user.team_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('service_request_national_head'))]"/>
+    </record>
+    <record id="show_users_team_service_manager" model="ir.rule">
+        <field name="name">Show Users team - Administrator</field>
+        <field name="model_id" ref="model_crm_team"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('service_request_administrator'))]"/>
+    </record>
+
+
+</odoo>

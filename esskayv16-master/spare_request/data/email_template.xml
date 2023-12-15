@@ -1,0 +1,191 @@
+<odoo>
+    <data>
+        <record id="mail_template_spare_request_created" model="mail.template">
+            <field name="name">Spare Request : Created</field>
+            <field name="model_id" ref="model_spare_request"/>
+            <field name="subject">Spare Request : {{object.name}}</field>
+            <field name="email_to">akashc@esskay.in,ittechsupport@esskay.in,indark@esskay.in</field>
+            <field name="email_cc">akashc@esskay.in,indark@esskay.in</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        Cat No : <t t-out="object.name or ''"></t>,
+                        <br/>
+<!--                        Product Sr. No : <t t-out="object.product_code_no or ''"></t>,-->
+<!--                        <br/>-->
+                      Spare Request Created
+                        <br/>
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.prepared_user_id">
+                            <t t-out="object.prepared_user_id.name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_spare_released" model="mail.template">
+            <field name="name">Spare Released</field>
+            <field name="model_id" ref="model_spare_request"/>
+            <field name="subject">{{object.parent_ticket_id.partner_id.customer_region.name}} SE Spares Indent  {{object.parent_ticket_id.parent_ticket_id_alias}} | {{object.parent_ticket_id.service_type_id.name}} | {{object.parent_ticket_id.partner_id.name}}</field>
+            <field name="email_to">akashc@esskay.in,ittechsupport@esskay.in,indark@esskay.in</field>
+            <field name="email_cc">akashc@esskay.in,indark@esskay.in</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi,
+                        <br/>
+                        <br/>
+                        Cat No : <t t-out="ctx['product_part'] or ''"></t>
+                        <br/>
+                        Product Sr. No : <t t-out="object.parent_ticket_id.stock_lot_id.name or ''"></t>
+                        <br/>
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.prepared_user_id">
+                            <t t-out="object.prepared_user_id.name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_dispatched_date_user" model="mail.template">
+            <field name="name">Dispatched Date for User</field>
+            <field name="model_id" ref="model_spare_request"/>
+            <field name="subject">Loaner Form  {{object.parent_ticket_id.parent_ticket_id_alias}} | {{object.parent_ticket_id.partner_id.name}}</field>
+            <field name="email_to">akashc@esskay.in,ittechsupport@esskay.in,indark@esskay.in</field>
+            <field name="email_cc">akashc@esskay.in,indark@esskay.in</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi,
+                        <br/>
+                        <br/>
+                        Cat No : <t t-out="ctx['product_part'] or ''"></t>
+                        <br/>
+                        Product Sr. No : <t t-out="object.parent_ticket_id.stock_lot_id.name or ''"></t>
+                        <br/>
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Stryker Support Team.
+                        <br/>
+
+                        <t t-if="object.prepared_user_id">
+                            <t t-out="object.prepared_user_id.name or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <br/>
+                        <br/>
+                        <span>
+                            *** This is an automatically generated email, Please do not reply. ***
+                        </span>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_external_stock_check_spare" model="mail.template">
+            <field name="name">Spare : Stock Process</field>
+            <field name="model_id" ref="ppts_parent_ticket.model_request"/>
+            <field name="subject">{{ object.name }} | {{ ctx.get('subject') }} Stock Process</field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi ,<br/><br/>
+                        <t t-out="object.name or ''"></t> Created
+                        <br/>
+                        Click on the below link to open the respective request to process.
+                        <p style="margin: 16px 0px 16px 0px">
+                            <a t-attf-href="{{ ctx.get('rec_url')}}"
+                               style="background-color: #875A7B; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 15px;text-transform:uppercase;">
+                                View Request
+                            </a>
+                        </p>
+                        <br/>
+                        Thank you,
+                        <br/>
+                        <t t-if="object.user_id">
+                            <t t-out="object.user_id.signature or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                    </p>
+                </div>
+            </field>
+        </record>
+        <record id="spare_mail_template_notify_approvers" model="mail.template">
+            <field name="name">Child Ticket : Approval Request</field>
+            <field name="model_id" ref="multi_level_approval.model_multi_approval"/>
+            <field name="email_from">{{ object.company_id.email }}</field>
+            <field name="email_to">{{ ctx.get('email_to')}}</field>
+            <field name="subject">Ref {{ object.name }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Dear Team,
+                        <br/>
+                        This request
+                        <t t-out="ctx['request_name'] or ''"></t>
+                        is waiting for an approval.
+                        <br/>
+                        <br/>
+                        Click on the below link to open the respective record to approve.
+                        <p style="margin: 16px 0px 16px 0px">
+                            <a t-attf-href="{{ ctx.get('rec_url')}}"
+                               style="background-color: #875A7B; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 15px;text-transform:uppercase;">
+                                View Approval Request
+                            </a>
+                        </p>
+                        <br/>
+                        Thank you,
+                        <br/>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

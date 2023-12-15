@@ -1,0 +1,31 @@
+<odoo>
+    <!--Child Ticket Approval-->
+    <record id="view_child_ticket_approval_wiz" model="ir.ui.view">
+        <field name="name">Send for Approval</field>
+        <field name="model">child.ticket.approval</field>
+        <field name="arch" type="xml">
+            <form string="Send for Approval">
+                <group>
+                    <field name="type_id"/>
+                </group>
+                <footer>
+                    <button name="action_send_for_approval" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_child_ticket_approval_wiz" model="ir.actions.act_window">
+        <field name="name">Send for Approval</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">child.ticket.approval</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_child_ticket_approval_wiz"/>
+    </record>
+    <!--    Child Ticket Approval End-->
+
+
+</odoo>

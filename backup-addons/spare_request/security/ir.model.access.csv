@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+spare_department_stock_manager,spare_department,model_spare_department,stock.group_stock_manager,1,1,1,1
+spare_request_stock_manager.oem,spare_request.oem,model_spare_request,ppts_service_request.service_request_oem_user,1,0,0,0
+spare_request_stock_manager,spare_request,model_spare_request,stock.group_stock_manager,1,1,1,1
+spare_request_lines_stock_manager,spare_request_lines,model_spare_request_lines,stock.group_stock_manager,1,1,1,1
+spare_approval_stock_manager,spare_approval,model_spare_approval,stock.group_stock_manager,1,1,1,1

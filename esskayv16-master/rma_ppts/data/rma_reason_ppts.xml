@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+
+    <record id="rma_ppts_refund" model="rma.reason.ppts">
+        <field name="name">Refund</field>
+        <field name="action">refund</field>
+    </record>
+
+    <record id="rma_ppts_replace_with_same_product" model="rma.reason.ppts">
+        <field name="name">Replace With Same Product</field>
+        <field name="action">replace_same_product</field>
+    </record>
+
+    <record id="rma_ppts_replace_with_other_product" model="rma.reason.ppts">
+        <field name="name">Replace With Other Product</field>
+        <field name="action">replace_other_product</field>
+    </record>
+
+    <record id="rma_ppts_repair" model="rma.reason.ppts">
+        <field name="name">Repair</field>
+        <field name="action">repair</field>
+    </record>
+
+    <record id="task_data_perform_repair" model="tasks.master">
+        <field name="name">Perform Repair</field>
+        <field name="category">action</field>
+        <field name="python_code">perform_repair</field>
+        <field name="description">Perform Repair for the Respective Ticket</field>
+    </record>
+    <record id="task_data_repairable" model="tasks.master">
+        <field name="name">Repairable</field>
+        <field name="category">status</field>
+        <field name="description">Repairable</field>
+    </record>
+    <record id="task_data_non_repairable" model="tasks.master">
+        <field name="name">Non Repairable</field>
+        <field name="category">status</field>
+        <field name="description">Non Repairable</field>
+    </record>
+    <record id="task_data_repaired" model="tasks.master">
+        <field name="name">Repaired</field>
+        <field name="category">status</field>
+        <field name="description">Repaired</field>
+    </record>
+
+
+</odoo>

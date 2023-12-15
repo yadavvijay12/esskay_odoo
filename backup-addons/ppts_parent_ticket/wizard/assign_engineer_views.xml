@@ -1,0 +1,75 @@
+<odoo>
+       
+       <!-- Parent Assign Engineer-->
+       <record id="view_assign_engineer_wiz" model="ir.ui.view">
+            <field name="name">Assign/Re-assign User</field>
+            <field name="model">assign.engineer</field>
+            <field name="arch" type="xml">
+                <form string="Assign/Re-assign User">
+                    <group>
+                    	<group>
+                    		<field name="assign_engineer_ids" widget='many2many_tags' invisible="1"/>
+                    		<field name="assign_engineer_id" options='{"no_open": True, "no_create": True}'/>
+                    		<field name="is_assign_to_user" invisible="1"/>
+                    		<field name="is_request_reassign" invisible="1"/>
+                    	</group>
+                    	<group>
+                    	</group>
+                    </group>
+                    <footer>
+						<button name="action_assign_engineer" string="Assign User" type="object" class="btn-primary" attrs="{'invisible': [('is_assign_to_user','=', True)]}"/>
+						<button name="action_reassign_engineer" string="Re-Assign User" type="object" class="btn-primary" attrs="{'invisible': [('is_assign_to_user','=', False)]}"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+      <record id="action_assign_engineer_wiz" model="ir.actions.act_window">
+            <field name="name">Assign/Re-assign User</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">assign.engineer</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_assign_engineer_wiz"/>
+      </record>
+      <!--End Parent Assign Engineer-->
+      
+      <!-- Child Assign Engineer-->
+      <record id="view_child_assign_engineer_wiz" model="ir.ui.view">
+            <field name="name">Assign/Re-assign Engineer</field>
+            <field name="model">child.assign.engineer</field>
+            <field name="arch" type="xml">
+                <form string="Assign/Re-assign Engineer">
+                    <group>
+                    	<group>
+                    		<field name="assign_engineer_ids" widget='many2many_tags' invisible="1"/>
+                    		<field name="assign_engineer_id" options='{"no_open": True, "no_create": True}'/>
+                    		<field name="is_assign_to_user" invisible="1"/>
+                    		<field name="is_request_reassign" invisible="1"/>
+                    	</group>
+                    	<group>
+                    	</group>
+                    </group>
+                    <footer>
+                        <button name="action_child_assign_engineer" string="Assign Engineer" type="object" class="btn-primary" attrs="{'invisible': [('is_assign_to_user','=', True)]}"/>
+                        <button name="action_child_reassign_engineer" string="Re-Assign Engineer" type="object" class="btn-primary" attrs="{'invisible': [('is_assign_to_user','=', False)]}"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+      <record id="action_child_assign_engineer_wiz" model="ir.actions.act_window">
+            <field name="name">Assign/Re-assign Engineer</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">child.assign.engineer</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_child_assign_engineer_wiz"/>
+      </record>
+      <!-- End Child Assign Engineer-->
+      
+</odoo>

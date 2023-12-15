@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_crm_claim_read_ppts,model_crm_claim_ppts,model_crm_claim_ppts,,1,0,0,0
+access_crm_claim_line_read_ppts,model_claim_line_ppts,model_claim_line_ppts,,1,0,0,0
+access_crm_claim_ppts,model_crm_claim_ppts,model_crm_claim_ppts,rma_ppts.group_rma_user_ppts,1,1,1,1
+access_claim_line_ppts,model_claim_line_ppts,model_claim_line_ppts,rma_ppts.group_rma_user_ppts,1,1,1,1
+access_claim_reject_message,model_claim_reject_message,model_claim_reject_message,,1,1,1,1
+access_rma_reason_ppts_manager,model_rma_reason_ppts,model_rma_reason_ppts,rma_ppts.group_rma_manager_ppts,1,1,1,1
+access_rma_reason_ppts_user,model_rma_reason_ppts,model_rma_reason_ppts,rma_ppts.group_rma_user_ppts,1,0,0,0
+access_portal_crm_claim_ppts,model_portal_crm_claim_ppts,model_crm_claim_ppts,base.group_portal,1,1,1,0
+access_portal_claim_line_ppts,model_portal_claim_line_ppts,model_claim_line_ppts,base.group_portal,1,1,1,0
+access_claim_process_wizard,access_claim_process_wizard,model_claim_process_wizard,,1,1,1,1
+access_create_partner_delivery_address_ppts,access_create_partner_delivery_address_ppts,model_create_partner_delivery_address_ppts,,1,1,1,1

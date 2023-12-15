@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_picking_form_inherit_approval_process" model="ir.ui.view">
+            <field name="name">stock.picking.form.approval.process</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <field name="origin" position="after">
+                    <field name="approvals_count" invisible="1"/>
+                    <field name="is_send_for_approvals" invisible="1"/>
+                    <field name="is_approval" invisible="1"/>
+                </field>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="action_view_approvals" type="object" class="oe_stat_button" string="Approvals"
+                            icon="fa-users">
+                        <field name="approvals_count" widget="statinfo" string="Approvals"/>
+                    </button>
+                </xpath>
+                <xpath expr="/form/header/button[last()]" position="after">
+                    <button name="action_request_approval" string="Send for Approval" type="object" class="btn-primary" attrs="{'invisible':['|', ('approvals_count',  '>',0), ('state', '!=', 'waiting_for_approval')]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

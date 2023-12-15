@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Task Master Form View -->
+    <record id="task_master_form_view" model="ir.ui.view">
+        <field name="name">tasks.master.form.view</field>
+        <field name="model">tasks.master</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title mb24">
+                        <h1>
+                            <field class="text-break" name="name" default_focus="1" placeholder="e.g. Create Task"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="worksheet_id"/>
+                            <field name="category"/>
+                            <field name="python_code"
+                                   attrs="{'invisible': [('category', '!=', 'action')], 'required': [('category', '=', 'action')]}"/>
+                            <field name="service_request_type_id" invisible="1"/>
+
+
+                        </group>
+                        <group>
+                            <field name="description" placeholder="Please enter your description..!"/>
+                            <field name="child_ticket_type_id" invisible="1"/>
+                            <field name="is_notify" invisible="1"/>
+                            <field name="team_id" invisible="1"/>
+                            <field name="quality_inspection_id"/>
+
+                        </group>
+                        <group>
+                            <field name="is_file_attachment"/>
+                            <field name="is_sign_required"/>
+                            <field name="is_end_task"/>
+                            <field name="is_pi_required"/>
+
+                            <field name="is_camera_attachment" invisible="1"/>
+                            <field name="is_geo_location"/>
+                            <field name="is_hold_service"/>
+
+                            <field name="is_resume_service" invisible="1"/>
+                            <field name="is_request_to_send_quotation"/>
+                            <field name="is_request_approval"/>
+
+                            <field name="is_ressign_engineer"/>
+                            <field name="is_send_email"/>
+                            <field name="is_maintenance_completed" invisible="1"/>
+
+                            <field name="is_perform_repair"/>
+
+                            <field name="is_perform_testing"/>
+                            <field name="is_perform_quality"/>
+                            <field name="is_work_order"/>
+                            <field name="is_work_end"/>
+
+
+                        </group>
+                        <group>
+                            <field name="is_create_ticket" invisible="1"/>
+                            <field name="is_create_service_request" invisible="1"/>
+                            <field name="is_enable_child_ticket" invisible="1"/>
+
+                            <field name="is_request_spares"/>
+                            <field name="is_request_raise_invoice"/>
+
+                            <field name="is_allow_edit_after_submit"/>
+                            <field name="is_perform_diagnosis"/>
+
+
+                            <field name="is_disable_status_update"/>
+                            <field name="is_enable_status_update" invisible="1"/>
+                            <field name="is_schedule"/>
+                            <field name="is_check_oem_warranty"/>
+                            <field name="is_check_oem_repair_status"/>
+                            <field name="check_extended_warranty_status"/>
+                            <field name="is_repair_required"/>
+
+                            <field name="active" invisible="1"/>
+
+                        </group>
+                    </group>
+
+                    <field name="workflow_properties" nolabel="1" columns="2" hideKanbanOption="1"/>
+
+                    <group name="inventory_config">
+                        <separator string="Inventory Configuration"
+                                   style="line-height: 20px; background-color: #9681da8f"/>
+                        <group>
+                            <field name="is_inventory"/>
+                            <field name="operation_type_id"
+                                   attrs="{'invisible': [('is_inventory', '=', False)], 'required': [('is_inventory', '=', True)]}"/>
+                        </group>
+                        <group>
+                            <field name="source_location_id"
+                                   attrs="{'invisible': [('operation_type_id', '=', False), ('is_inventory', '=', False)], 'required': [('operation_type_id', '!=', False)]}"/>
+                            <field name="destination_location_id"
+                                   attrs="{'invisible': [('operation_type_id', '=', False), ('is_inventory', '=', False)], 'required': [('operation_type_id', '!=', False)]}"/>
+                        </group>
+                    </group>
+                    <group name="notification_config">
+                        <separator string="Notification Configuration"
+                                   style="line-height: 20px; background-color: #9681da8f"/>
+                        <group>
+                            <field name="is_notify"/>
+                        </group>
+                        <group></group>
+                        <group>
+                            <field name="job_ids" widget="many2many_tags"
+                                   attrs="{'required': [('is_notify', '=', True)]}"/>
+                        </group>
+                        <group>
+                            <field name="job_cc_ids" widget="many2many_tags"
+                                   attrs="{'required': [('is_notify', '=', True)]}"/>
+                        </group>
+                    </group>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Task Master Tree View -->
+    <record id="task_master_tree_view" model="ir.ui.view">
+        <field name="name">tasks.master.tree.view</field>
+        <field name="model">tasks.master</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="worksheet_id"/>
+                <field name="category"/>
+                <field name="description"/>
+                <field name="child_ticket_type_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_custom_workflow_filter" model="ir.ui.view">
+        <field name="name">tasks.master.list.select</field>
+        <field name="model">tasks.master</field>
+        <field name="priority" eval="15"/>
+        <field name="arch" type="xml">
+            <search string="Search Workflow">
+                <field name="name"/>
+                <field name="worksheet_id"/>
+                <field name="category"/>
+                <field name="description"/>
+                <field name="child_ticket_type_id"/>
+                <separator/>
+                <filter string="Category" name="category" domain="[]" context="{'group_by': 'category'}"/>
+                <separator/>
+                <filter string="Action" name="category_action" domain="[('category','=','action')]"/>
+                <separator/>
+                <filter string="Status" name="category_status" domain="[('category','=','status')]"/>
+                <separator/>
+                <filter string="Date" name="create_date" date="create_date"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="task_master_line_tree_view" model="ir.ui.view">
+        <field name="name">tasks.master.line.tree.view</field>
+        <field name="model">tasks.master.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence"/>
+                <field name="task_id"/>
+                <field name="description"/>
+                <field name="category"/>
+                <field name="worksheet_id"/>
+                <field name="is_end_task"/>
+                <field name="is_file_attachment"/>
+                <field name="next_task_ids"/>
+                <field name="status"/>
+                <field name="is_repair_required"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_task_master" model="ir.actions.act_window">
+        <field name="name">Tasks</field>
+        <field name="res_model">tasks.master</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="task_master_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+</odoo>

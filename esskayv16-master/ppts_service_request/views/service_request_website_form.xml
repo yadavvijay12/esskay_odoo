@@ -1,0 +1,1046 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="menu_stryker_request_website" model="website.menu">
+        <field name="name">Stryker Request</field>
+        <field name="url">/stryker_request</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">55</field>
+    </record>
+
+    <record id="menu_thermofisher_request_website" model="website.menu">
+        <field name="name">Thermofisher Request</field>
+        <field name="url">/thermofisher_request</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">56</field>
+    </record>
+
+    <!-- Stryker Request-->
+    <template id="create_stryker_request" name="Stryker Request" customize_show="True">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure"/>
+                <div class="container">
+
+                    <!-- Header Ticket Type -->
+                    <div class="row">
+                        <h4 class="col-12 stryker_company_details mt32">
+                            <strong>Company / Hospital Details :</strong>
+                        </h4>
+                        <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-6">
+                            <label class="control-label" for="name">
+                                <strong>Ticket Type :</strong>
+                            </label>
+                            <select class="form-control" name="ticket_type_id" id="ticket_type" required="1">
+                                <option value="select">Select</option>
+                                <option value="stryker_fsm" selected="selected">SR-FSM</option>
+                                <option value="stryker_installation">SR-Installation</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Header End Ticket Type -->
+
+                    <!-- Stryker-FSM -->
+                    <form role="form" id="stryker_fsm_form" action="/create/strykerrequest/fsm" method="post"
+                          enctype="multipart/form-data">
+                        <input type="hidden" class="form-control col-lg-4 mt16" name="current_url" t-att-value="current_url"/>
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="row">
+                            <h4 class="col-7 stryker_fsm_header_details mt32">
+                                <strong>SERVICE CALL BOOKING REQUEST</strong>
+                            </h4>
+                            <h4 class="col-5 stryker_fsm_email_details mt32"
+                                style="color:#3c8dbc;font-size:15px;text-align:right">
+                                <strong>Email : service.india@stryker.com <![CDATA[&nbsp;]]> Tollfree No : 1800 103
+                                    8030
+                                </strong>
+                            </h4>
+                        </div>
+                        <!-- Default FSM Value -->
+                        <div class="row">
+                            <input type="hidden" class="form-control col-lg-4 mt16" name="ticket_type"
+                                   value="stryker_fsm"/>
+                        </div>
+                        <div class="row">
+                            <input type="hidden" class="form-control col-lg-4 mt16" name="ticket_type"
+                                   value="stryker_fsm"/>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Name of the Company / Hospital:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="hospital_name" required="True"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Contact Name:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="customer_name" required="True"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Contact Number:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="number" class="form-control" pattern="[1-9]{1}[0-9]{9}"
+                                       name="requested_by_contact_number" required="True"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h4 class="col-12 stryker_fsm_address_details mt32">
+                                <strong>Address:</strong>
+                            </h4>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Email Address:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="customer_email" required="True"/>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_region">
+                                <label class="control-label" for="customer_region_id">Region:</label>
+                                <select id="customer_region_id" name="customer_region_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_region_ids or []" t-as="region">
+                                        <option t-att-value="region.id">
+                                            <t t-esc="region.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Street:</label>
+                                <input type="text" class="form-control" name="customer_street"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Street 2:</label>
+                                <input type="text" class="form-control" name="customer_street2"/>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_city">
+                                <label class="control-label" for="customer_city_id">City:</label>
+                                <select id="customer_city_id" name="customer_city_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_city_ids or []" t-as="city">
+                                        <option t-att-value="city.id">
+                                            <t t-esc="city.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_state">
+                                <label class="control-label" for="customer_state_id">State:</label>
+                                <select id="customer_state_id" name="customer_state_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_state_ids or []" t-as="state">
+                                        <option t-att-value="state.id">
+                                            <t t-esc="state.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Pincode:</label>
+                                <input type="text" class="form-control" name="customer_zip"/>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_country">
+                                <label class="control-label" for="customer_country_id">Country:</label>
+                                <select id="customer_country_id" name="customer_country_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_country_ids or []" t-as="country">
+                                        <option t-att-value="country.id" t-att-selected="country.id == def_country.id">
+                                            <t t-esc="country.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="service_category">
+                                <label class="control-label" for="service_category_id">Contract Type:</label>
+                                <select id="service_category_id" name="service_category_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="service_category_ids or []" t-as="service_category">
+                                        <option t-att-value="service_category.id">
+                                            <t t-esc="service_category.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h4 class="col-12 stryker_fsm_equipment_details mt32">
+                                <strong>Equipment Details :</strong>
+                            </h4>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Model</label>
+                                <input type="text" class="form-control" name="product_part_code"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Unit Serial No
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="custom_product_serial" required="True"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-12 mt16">
+                                <label class="control-label" for="name">Issue faced in the equipment:-</label>
+                                <textarea class="form-control" rows="3" name="description"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Event Date:</label>
+                                <input type="date" class="form-control" name="event_date"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">How was the issue noticed :</label>
+                                <textarea class="form-control" rows="2" name="issue_noticed"></textarea>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="case_completed">
+                                <label class="control-label" for="case_completed_id">Was the case completed successfully
+                                    :
+                                </label>
+                                <select id="case_completed_id" name="case_completed_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="case_completed_successfully_ids or []" t-as="case_completed">
+                                        <option t-att-value="case_completed.id">
+                                            <t t-esc="case_completed.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="medical_intervention">
+                                <label class="control-label" for="medical_intervention_id">Was medical intervention
+                                    needed :
+                                </label>
+                                <select id="medical_intervention_id" name="medical_intervention_id"
+                                        class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="medical_intervention_ids or []" t-as="medical_intervention">
+                                        <option t-att-value="medical_intervention.id">
+                                            <t t-esc="medical_intervention.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="patient_involved">
+                                <label class="control-label" for="patient_involved_id">Was a patient involved :</label>
+                                <select id="patient_involved_id" name="patient_involved_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="patient_involved_ids or []" t-as="patient_involved">
+                                        <option t-att-value="patient_involved.id">
+                                            <t t-esc="patient_involved.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="surgical_delay">
+                                <label class="control-label" for="surgical_delay_id">Was there a surgical delay :
+                                </label>
+                                <select id="surgical_delay_id" name="surgical_delay_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="surgical_delay_ids or []" t-as="surgical_delay">
+                                        <option t-att-value="surgical_delay.id">
+                                            <t t-esc="surgical_delay.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Were there adverse consequences ? :
+                                </label>
+                                <select name="adverse_consequences" id="adverse_consequences" class="form-control">
+                                    <option value="complainant_not_aware">Complainant Not Aware</option>
+                                    <option value="no">No</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="not_reported">Not Reported</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div t-attf-class="o_website_form_custom_attchments col-lg-6 mt16">
+                            <label class="control-label" for="Attachments">Attach Files</label>
+                            <input type="file" class="form-control o_website_form_input" name="attachment"
+                                   multiple='multiple'/>
+                            <div>
+                                <label style="color:grey; font-size:12px;">Multiple files can be attached</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group form-field o_website_form_required_custom">
+                            <div class="row">
+                                <div class="col-lg-4"></div>
+                                <div class="col-lg-4">
+                                    <script src='https://www.google.com/recaptcha/api.js'></script>
+                                    <div id="captcha" class="imageContainer">
+                                        <div class="g-recaptcha" data-sitekey="6Le5nMQUAAAAALpK02mtPPGnpjVlnq6orhz4Zj0u"
+                                             data-callback="verifyRecaptchaCallback"
+                                             data-expired-callback="expiredRecaptchaCallback"></div>
+                                        <input class="form-control d-none" data-recaptcha="true"/>
+                                        <div class="help-block with-errors" id="err" style='color: red'
+                                             required="required"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4"></div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="text-align:center">
+                            <div t-attf-class="col-lg-16 mt32">
+                                <button type="submit"
+                                        class="btn btn-default btn-primary mb32">
+                                    Submit
+                                    <span class="fa fa-long-arrow-right"/>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END Stryker-FSM -->
+
+                    <!-- Stryker-Installation -->
+                    <form role="form" id="stryker_installation_form" action="/create/strykerrequest/installation" method="post"
+                          enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="row">
+                            <h4 class="col-7 stryker_installation_head_details mt32">
+                                <strong>SERVICE CALL BOOKING REQUEST</strong>
+                            </h4>
+                            <h4 class="col-5 stryker_installation_email_details mt32"
+                                style="color:#3c8dbc;font-size:15px;text-align:right">
+                                <strong>Email : service.india@stryker.com <![CDATA[&nbsp;]]> Tollfree No : 1800 103
+                                    8030
+                                </strong>
+                            </h4>
+                        </div>
+                        <!-- Default SR-Installation -->
+                        <div class="row">
+                            <input type="hidden" class="form-control col-lg-4 mt16" name="current_url" t-att-value="current_url"/>
+                            <input type="hidden" class="form-control col-lg-4 mt16" name="ticket_type"
+                                   value="stryker_installation"/>
+                        </div>
+                        <div class="row">
+                            <input type="hidden" class="form-control col-lg-4 mt16" name="ticket_type"
+                                   value="stryker_fsm"/>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Name of the Company / Hospital:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="hospital_name" required="True"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Contact Name:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="customer_name" required="True"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Contact Number:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="number" class="form-control" pattern="[1-9]{1}[0-9]{9}"
+                                       name="requested_by_contact_number" required="True"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h4 class="col-12 stryker_installation_address_details mt32">
+                                <strong>Address:</strong>
+                            </h4>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Email Address:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="customer_email" required="True"/>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_region">
+                                <label class="control-label" for="customer_region_id">Region:</label>
+                                <select id="customer_region_id" name="customer_region_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_region_ids or []" t-as="region">
+                                        <option t-att-value="region.id">
+                                            <t t-esc="region.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Street:</label>
+                                <input type="text" class="form-control" name="customer_street"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Street 2:</label>
+                                <input type="text" class="form-control" name="customer_street2"/>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_city">
+                                <label class="control-label" for="customer_city_id">City:</label>
+                                <select id="customer_city_id" name="customer_city_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_city_ids or []" t-as="city">
+                                        <option t-att-value="city.id">
+                                            <t t-esc="city.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_state">
+                                <label class="control-label" for="sr_inst_state_id">State:</label>
+                                <select id="sr_inst_state_id" name="sr_inst_state_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_state_ids or []" t-as="state">
+                                        <option t-att-value="state.id">
+                                            <t t-esc="state.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Pincode:</label>
+                                <input type="text" class="form-control" name="customer_zip"/>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_country">
+                                <label class="control-label" for="customer_country_id">Country:</label>
+                                <select id="sr_inst_country_id" name="sr_inst_country_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_country_ids or []" t-as="country">
+                                        <option t-att-value="country.id" t-att-selected="country.id == def_country.id">
+                                            <t t-esc="country.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Installation Location:</label>
+                                <input type="text" class="form-control" name="installation_location"/>
+                            </div>
+
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Location Contact Person:</label>
+                                <input type="text" class="form-control" name="location_contact_person"/>
+                            </div>
+
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Installation Date:</label>
+                                <input type="date" class="form-control" name="installation_date"/>
+                            </div>
+
+                            <div t-attf-class="col-lg-4 mt16" id="service_type">
+                                <label class="control-label" for="service_type_id">Service Type:</label>
+                                <select id="service_type_id" name="service_type_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="service_type_ids or []" t-as="service_type">
+                                        <option t-att-value="service_type.id">
+                                            <t t-esc="service_type.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="service_category">
+                                <label class="control-label" for="service_category_id">Service Category:</label>
+                                <select id="service_category_id" name="service_category_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="service_category_ids or []" t-as="service_category">
+                                        <option t-att-value="service_category.id">
+                                            <t t-esc="service_category.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_type">
+                                <label class="control-label" for="customer_type_id">Customer Type:</label>
+                                <select id="customer_type_id" name="customer_type_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_type_ids or []" t-as="customer_type">
+                                        <option t-att-value="customer_type.id">
+                                            <t t-esc="customer_type.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <h4 class="col-12 stryker_installation_equipment_details mt32">
+                                <strong>Equipment Details :</strong>
+                            </h4>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Model</label>
+                                <input type="text" class="form-control" name="product_part_code"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Customer PO No:</label>
+                                <input type="text" class="form-control" name="customer_po_no"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Customer PO Date:</label>
+                                <input type="date" class="form-control" name="customer_po_date"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Invoice No:</label>
+                                <input type="text" class="form-control" name="invoice_no"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Invoice Date:</label>
+                                <input type="date" class="form-control" name="invoice_date"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Tender Reference No:</label>
+                                <input type="text" class="form-control" name="tender_reference_no"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Extended Warranty Invoice No:</label>
+                                <input type="text" class="form-control" name="extended_warranty_invoice_no"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Extended Warranty Invoice Date:</label>
+                                <input type="date" class="form-control" name="extended_warranty_invoice_date"/>
+                            </div>
+                        </div>
+                        <div t-attf-class="o_website_form_custom_attchments col-lg-6 mt16">
+                            <label class="control-label" for="Attachments">Attach Files</label>
+                            <input type="file" class="form-control o_website_form_input" name="attachment"
+                                   multiple='multiple'/>
+                            <div>
+                                <label style="color:grey; font-size:12px;">Multiple files can be attached</label>
+                            </div>
+                        </div>
+                        <div class="form-group form-field o_website_form_required_custom">
+                            <div class="row">
+                                <div class="col-lg-4"></div>
+                                <div class="col-lg-4">
+                                    <script src='https://www.google.com/recaptcha/api.js'></script>
+                                    <div id="captcha" class="imageContainer">
+                                        <div class="g-recaptcha" data-sitekey="6Le5nMQUAAAAALpK02mtPPGnpjVlnq6orhz4Zj0u"
+                                             data-callback="verifyRecaptchaCallback"
+                                             data-expired-callback="expiredRecaptchaCallback"></div>
+                                        <input class="form-control d-none" data-recaptcha="true"/>
+                                        <div class="help-block with-errors" id="err" style='color: red'
+                                             required="required"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4"></div>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:center">
+                            <div t-attf-class="col-lg-16 mt32">
+                                <button type="submit"
+                                        class="btn btn-default btn-primary mb32 ">
+                                    Submit
+                                    <span class="fa fa-long-arrow-right"/>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- End Stryker-Installation -->
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="stryker_request_thanks" name="Thanks">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure"/>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="alert alert-success">
+                                <h5>Hello
+                                    <br/>
+                                    <br/>
+                                    Your request
+                                    <t t-esc="stryker_records.name"/>
+                                    has been processed successfully.
+                                    <br/>
+                                    <br/>
+                                    Thank You
+                                </h5>
+                            </div>
+                            <a class="btn btn-primary pull-left mb32" href="/stryker_request">
+                                <span class="hidden-xs">Go Back</span>
+                                <span class="fa fa-long-arrow-left"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure"/>
+            </div>
+        </t>
+    </template>
+    <!-- End Stryker Request-->
+
+    <!-- Thermofisher Request-->
+    <template id="create_thermofisher_request" name="Thermofisher Request" customize_show="True">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure"/>
+                <div class="container">
+
+                    <!-- Header Ticket Type -->
+                    <div class="row">
+                        <h4 class="col-12 theromfisher_company_details mt32">
+                            <strong>Company / Hospital Details :</strong>
+                        </h4>
+                        <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-6">
+                            <label class="control-label" for="name">
+                                <strong>Ticket Type :</strong>
+                            </label>
+                            <select class="form-control" name="ticket_type_id" id="ticket_type" required="1">
+                                <option value="select">Select</option>
+                                <option value="thermofisher_fsm" selected="selected">SR-FSM</option>
+                                <option value="thermofisher_installation">SR-Installation</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Header End Ticket Type -->
+
+                    <!-- thermofisher-FSM -->
+                    <form role="form" id="thermofisher_fsm_form" action="/create/thermofisherrequest/fsm" method="post"
+                          enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="row">
+                            <h4 class="col-7 theromfisher_fsm_head_details mt32">
+                                <strong>SERVICE CALL BOOKING REQUEST</strong>
+                            </h4>
+                            <h4 class="col-5 theromfisher_fsm_email_details mt32"
+                                style="color:#3c8dbc;font-size:15px;text-align:right">
+                                <strong>Email : nitonservices@esskay.in <![CDATA[&nbsp;]]> Tollfree No : 8433840557
+                                </strong>
+                            </h4>
+                        </div>
+                        <!-- Default FSM Value -->
+                        <div class="row">
+                            <input type="hidden" class="form-control col-lg-4 mt16" name="ticket_type"
+                                   value="thermofisher_fsm"/>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Customer Name:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="requested_by_name" required="True"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Contact Name:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="customer_name" required="True"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Contact Number:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="number" class="form-control" pattern="[1-9]{1}[0-9]{9}"
+                                       name="requested_by_contact_number" required="True"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h4 class="col-12 theromfisher_fsm_address_details mt32">
+                                <strong>Address:</strong>
+                            </h4>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Email Address:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="customer_email" required="True"/>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_region">
+                                <label class="control-label" for="customer_region_id">Region:</label>
+                                <select id="customer_region_id" name="customer_region_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_region_ids or []" t-as="region">
+                                        <option t-att-value="region.id">
+                                            <t t-esc="region.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Street:</label>
+                                <input type="text" class="form-control" name="customer_street"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Street 2:</label>
+                                <input type="text" class="form-control" name="customer_street2"/>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_city">
+                                <label class="control-label" for="customer_city_id">Location:</label>
+                                <select id="customer_city_id" name="customer_city_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_city_ids or []" t-as="city">
+                                        <option t-att-value="city.id">
+                                            <t t-esc="city.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_state">
+                                <label class="control-label" for="customer_state_id">State:</label>
+                                <select id="customer_state_id" name="customer_state_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_state_ids or []" t-as="state">
+                                        <option t-att-value="state.id">
+                                            <t t-esc="state.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Pincode:</label>
+                                <input type="text" class="form-control" name="customer_zip"/>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_country">
+                                <label class="control-label" for="customer_country_id">Country:</label>
+                                <select id="customer_country_id" name="customer_country_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_country_ids or []" t-as="country">
+                                        <option t-att-value="country.id">
+                                            <t t-esc="country.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="service_category">
+                                <label class="control-label" for="service_category_id">Contract Type:</label>
+                                <select id="service_category_id" name="service_category_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="service_category_ids or []" t-as="service_category">
+                                        <option t-att-value="service_category.id">
+                                            <t t-esc="service_category.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h4 class="col-12 theromfisher_fsm_equipment_details mt32">
+                                <strong>Equipment Details :</strong>
+                            </h4>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Model</label>
+                                <input type="text" class="form-control" name="product_part_code"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Unit Serial No
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="custom_product_serial" required="True"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-12 mt16">
+                                <label class="control-label" for="name">Issue faced in the equipment:-</label>
+                                <textarea class="form-control" rows="3" name="description"></textarea>
+                            </div>
+                        </div>
+
+                        <div t-attf-class="o_website_form_custom_attchments col-lg-6 mt16">
+                            <label class="control-label" for="Attachments">Attach Files</label>
+                            <input type="file" class="form-control o_website_form_input" name="attachment"
+                                   multiple='multiple'/>
+                            <div>
+                                <label style="color:grey; font-size:12px;">Multiple files can be attached</label>
+                            </div>
+                        </div>
+                        <div class="form-group form-field o_website_form_required_custom">
+                            <div class="row">
+                                <div class="col-lg-4"></div>
+                                <div class="col-lg-4">
+                                    <script src='https://www.google.com/recaptcha/api.js'></script>
+                                    <div id="captcha" class="imageContainer">
+                                        <div class="g-recaptcha" data-sitekey="6Le5nMQUAAAAALpK02mtPPGnpjVlnq6orhz4Zj0u"
+                                             data-callback="verifyRecaptchaCallback"
+                                             data-expired-callback="expiredRecaptchaCallback"></div>
+                                        <input class="form-control d-none" data-recaptcha="true"/>
+                                        <div class="help-block with-errors" id="err" style='color: red'
+                                             required="required"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4"></div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="text-align:center">
+                            <div t-attf-class="col-lg-16 mt32">
+                                <button type="submit"
+                                        class="btn btn-default btn-primary mb32 login-btn-set-captha-thermo">
+                                    Submit
+                                    <span class="fa fa-long-arrow-right"/>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END Thermofisher-FSM -->
+
+                    <!-- Thermofisher-Installation -->
+                    <form role="form" id="thermofisher_installation_form" action="/create/thermofisherrequest/installation"
+                          method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="row">
+                            <h4 class="col-7 theromfisher_installation_head_details mt32">
+                                <strong>SERVICE CALL BOOKING REQUEST</strong>
+                            </h4>
+                            <h4 class="col-5 theromfisher_installation_email_details mt32"
+                                style="color:#3c8dbc;font-size:15px;text-align:right">
+                                <strong>Email : nitonservices@esskay.in <![CDATA[&nbsp;]]> Tollfree No : 8433840557
+                                </strong>
+                            </h4>
+                        </div>
+                        <!-- Default SR-Installation -->
+                        <div class="row">
+                            <input type="hidden" class="form-control col-lg-4 mt16" name="ticket_type"
+                                   value="thermofisher_installation"/>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Customer Name:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="requested_by_name" required="True"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Contact Name:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="customer_name" required="True"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Contact Number:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="number" class="form-control" pattern="[1-9]{1}[0-9]{9}"
+                                       name="requested_by_contact_number" required="True"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h4 class="col-12 theromfisher_installation_address_details mt32">
+                                <strong>Address:</strong>
+                            </h4>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Email Address:
+                                    <span style="color:#f00;">*</span>
+                                </label>
+                                <input type="text" class="form-control" name="customer_email" required="True"/>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_region">
+                                <label class="control-label" for="customer_region_id">Region:</label>
+                                <select id="customer_region_id" name="customer_region_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_region_ids or []" t-as="region">
+                                        <option t-att-value="region.id">
+                                            <t t-esc="region.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Street:</label>
+                                <input type="text" class="form-control" name="customer_street"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Street 2:</label>
+                                <input type="text" class="form-control" name="customer_street2"/>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_city">
+                                <label class="control-label" for="customer_city_id">Location:</label>
+                                <select id="customer_city_id" name="customer_city_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_city_ids or []" t-as="city">
+                                        <option t-att-value="city.id">
+                                            <t t-esc="city.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_state">
+                                <label class="control-label" for="customer_state_id">State:</label>
+                                <select id="customer_state_id" name="customer_state_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_state_ids or []" t-as="state">
+                                        <option t-att-value="state.id">
+                                            <t t-esc="state.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Pincode:</label>
+                                <input type="text" class="form-control" name="customer_zip"/>
+                            </div>
+                            <div t-attf-class="col-lg-4 mt16" id="customer_country">
+                                <label class="control-label" for="customer_country_id">Country:</label>
+                                <select id="customer_country_id" name="customer_country_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="customer_country_ids or []" t-as="country">
+                                        <option t-att-value="country.id">
+                                            <t t-esc="country.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Installation Location:</label>
+                                <input type="text" class="form-control" name="installation_location"/>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Location Contact Person:</label>
+                                <input type="text" class="form-control" name="location_contact_person"/>
+                            </div>
+
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Installation Date:</label>
+                                <input type="date" class="form-control" name="installation_date"/>
+                            </div>
+
+                            <div t-attf-class="col-lg-4 mt16" id="service_category">
+                                <label class="control-label" for="service_category_id">Service Category:</label>
+                                <select id="service_category_id" name="service_category_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <t t-foreach="service_category_ids or []" t-as="service_category">
+                                        <option t-att-value="service_category.id">
+                                            <t t-esc="service_category.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <h4 class="col-12 theromfisher_installation_equipment_details mt32">
+                                <strong>Equipment Details :</strong>
+                            </h4>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Model</label>
+                                <input type="text" class="form-control" name="product_part_code"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Customer PO No:</label>
+                                <input type="text" class="form-control" name="customer_po_no"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Customer PO Date:</label>
+                                <input type="date" class="form-control" name="customer_po_date"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Extended Warranty Invoice No:</label>
+                                <input type="text" class="form-control" name="extended_warranty_invoice_no"/>
+                            </div>
+                            <div t-attf-class="form-group #{error and 'name' in error and 'has-error' or ''} col-lg-4 mt16">
+                                <label class="control-label" for="name">Extended Warranty Invoice Date:</label>
+                                <input type="date" class="form-control" name="extended_warranty_invoice_date"/>
+                            </div>
+                        </div>
+                        <div t-attf-class="o_website_form_custom_attchments col-lg-6 mt16">
+                            <label class="control-label" for="Attachments">Attach Files</label>
+                            <input type="file" class="form-control o_website_form_input" name="attachment"
+                                   multiple='multiple'/>
+                            <div>
+                                <label style="color:grey; font-size:12px;">Multiple files can be attached</label>
+                            </div>
+                        </div>
+                        <div class="form-group form-field o_website_form_required_custom">
+                            <div class="row">
+                                <div class="col-lg-4"></div>
+                                <div class="col-lg-4">
+                                    <script src='https://www.google.com/recaptcha/api.js'></script>
+                                    <div id="captcha" class="imageContainer">
+                                        <div class="g-recaptcha" data-sitekey="6Le5nMQUAAAAALpK02mtPPGnpjVlnq6orhz4Zj0u"
+                                             data-callback="verifyRecaptchaCallback"
+                                             data-expired-callback="expiredRecaptchaCallback"></div>
+                                        <input class="form-control d-none" data-recaptcha="true"/>
+                                        <div class="help-block with-errors" id="err" style='color: red'
+                                             required="required"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4"></div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="text-align:center">
+                            <div t-attf-class="col-lg-16 mt32">
+                                <button type="submit"
+                                        class="btn btn-default btn-primary mb32 login-btn-set-captha-thermo">
+                                    Submit
+                                    <span class="fa fa-long-arrow-right"/>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- End Thermofisher-Installation -->
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="thermofisher_request_thanks" name="Thanks">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure"/>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="alert alert-success">
+                                <h5>Hello
+                                    <br/>
+                                    <br/>
+                                    Your request
+                                    <t t-esc="thermofisher_records.name"/>
+                                    has been processed successfully.
+                                    <br/>
+                                    <br/>
+                                    Thank You
+                                </h5>
+                            </div>
+                            <a class="btn btn-primary pull-left mb32" href="/thermofisher_request">
+                                <span class="hidden-xs">Go Back</span>
+                                <span class="fa fa-long-arrow-left"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- End Thermofisher Request-->
+
+
+</odoo>

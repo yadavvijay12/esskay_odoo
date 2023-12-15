@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="installation_reason__type_wizard_form" model="ir.ui.view">
+            <field name="name">installation.reason.type.wizard</field>
+            <field name="model">installation.reason.type</field>
+            <field name="arch" type="xml">
+                <form name="Installation Reason">
+                    <group>
+                        <group>
+                            <field name="reason"/>
+                        </group>
+                        </group>
+                    <footer>
+                            <button name="on_hold_reason" string="Confirm" type="object" class="btn btn-sm btn-primary"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z" />
+                        </footer>
+                </form>
+            </field>
+     </record>
+    <record id="installation_reason_action" model="ir.actions.act_window">
+            <field name="name">Hold Reason</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">installation.reason.type</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="installation_reason__type_wizard_form"/>
+            <field name="target">new</field>
+    </record>
+</odoo>
