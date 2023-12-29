@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!--        <record id="geo_location_search_view" model="ir.ui.view">-->
+<!--        <field name="name">geo.location.search.view</field>-->
+<!--        <field name="model">geo.location</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <search string="Search in Live Location">-->
+<!--                <field name="name"/>-->
+<!--                <field name="user_id"/>-->
+<!--                <field name="partner_id"/>-->
+<!--                <field name="company_id"/>-->
+<!--                <filter string="My Tickets" name="my_tickets" domain="[('assign_engineer_ids', '=', uid)]"/>-->
+<!--                <separator/>-->
+<!--                <filter string="New" name="new" domain="[('state','=','new')]"/>-->
+<!--                <filter string="Confirm" name="confirm" domain="[('state','=','confirm')]"/>-->
+<!--                <filter string="Approved" name="approved" domain="[('state','=','approved')]"/>-->
+<!--                <filter string="Closed" name="closed" domain="[('state','=','closed')]"/>-->
+<!--                <separator/>-->
+<!--                <filter string="Call Date" name="filter_call_date" date="call_date"/>-->
+<!--                <separator/>-->
+<!--                <group expand="0" string="Group By">-->
+<!--                    <filter string="Call Source" name="call_source_id" domain="[]"-->
+<!--                            context="{'group_by': 'call_source_id'}"/>-->
+<!--                    <filter string="Configuration" name="parent_configuration_id" domain="[]"-->
+<!--                            context="{'group_by': 'parent_configuration_id'}"/>-->
+<!--                    <filter string="Service Type" name="service_type_id" domain="[]"-->
+<!--                            context="{'group_by': 'service_type_id'}"/>-->
+<!--                    <filter string="Service Category" name="service_category_id" domain="[]"-->
+<!--                            context="{'group_by': 'service_category_id'}"/>-->
+<!--                    <filter string="Approval Type" name="request_type_id" domain="[]"-->
+<!--                            context="{'group_by': 'request_type_id'}"/>-->
+<!--                    <filter string="Team" name="team_id" domain="[]"-->
+<!--                            context="{'group_by': 'team_id'}"/>-->
+<!--                    <filter string="Milestone" name="state" domain="[]"-->
+<!--                            context="{'group_by': 'state'}"/>-->
+<!--                    <filter string="Product" name="product_id" domain="[]"-->
+<!--                            context="{'group_by': 'product_id'}"/>-->
+<!--                    <filter string="Asset" name="stock_lot_id" domain="[]"-->
+<!--                            context="{'group_by': 'stock_lot_id'}"/>-->
+<!--                    <filter string="Customer" name="partner_id" domain="[]"-->
+<!--                            context="{'group_by': 'partner_id'}"/>-->
+<!--                    <filter string="Customer Account" name="customer_account_id" domain="[]"-->
+<!--                            context="{'group_by': 'customer_account_id'}"/>-->
+<!--                    <filter string="Company" name="company_id" domain="[]"-->
+<!--                            context="{'group_by': 'company_id'}"/>-->
+<!--                    <filter string="Region Wise Tickets" name="customer_region_id" domain="[]"-->
+<!--                            context="{'group_by': 'customer_region_id'}"/>-->
+<!--                    <filter string="Status" name="state" domain="[]"-->
+<!--                            context="{'group_by': 'state'}"/>-->
+<!--                </group>-->
+<!--            </search>-->
+<!--        </field>-->
+<!--    </record>-->
+
+
+
+    <record id="geo_location_form_view" model="ir.ui.view">
+        <field name="name">geo.location.form.view</field>
+        <field name="model">geo.location</field>
+        <field name="arch" type="xml">
+            <form string="Live Location">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="user_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Live Location">
+                            <field name="latitude_longitude_ids" widget="one2many">
+                                <tree editable="bottom">
+                                    <field name="latitude"/>
+                                    <field name="longitude"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="geo_location_location_tree_view" model="ir.ui.view">
+        <field name="name">geo.location.tree.view</field>
+        <field name="model">geo.location</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                 <field name="user_id"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_geo_location_dispatch_location" model="ir.actions.act_window">
+        <field name="name">Live Location</field>
+        <field name="res_model">geo.location</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="geo_location_location_tree_view"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to Create a New Record.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="live_location_lat_long" name="Location" sequence="20"
+              parent="ppts_service_request.service_request_configuration"/>
+    <menuitem action="action_geo_location_dispatch_location" id="menu_live_location" parent="live_location_lat_long"
+              name="Live Location"
+              sequence="1"/>
+
+</odoo>

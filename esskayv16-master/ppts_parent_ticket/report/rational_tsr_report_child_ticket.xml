@@ -1,0 +1,709 @@
+<odoo>
+    <data>
+        <record id="rational_tsr_paper_format" model="report.paperformat">
+            <field name="name">Rational TSR Report Reports Paper Format</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">37.75</field>
+            <field name="margin_bottom">28.75</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">30</field>
+            <field name="dpi">90</field>
+        </record>
+        <report
+                id="action_rational_tsr_report_config"
+                string="Rational TSR"
+                model="child.ticket"
+                report_type="qweb-pdf"
+                paperformat="ppts_parent_ticket.rational_tsr_paper_format"
+                file="ppts_parent_ticket.service_request_rational_tsr"
+                name="ppts_parent_ticket.service_request_rational_tsr"
+                print_report_name="'Rational TSR'"/>
+        <template id="rational_tsr_order_report">
+            <t t-call="web.basic_layout">
+                <div class="page">
+                    <div class="container">
+                        <style>table{ width:100% border-collapse:collapse; font-size:15px; } tr,th,td{ border:1px solid
+                            lightGrey; padding:3px; font-size:15px; }
+                        </style>
+                        <t t-set="spare"
+                           t-value="request.env['request'].sudo().search([('child_ticket_id', '=', doc.id)])"/>
+                        <t t-set="fse_comment"
+                           t-value="request.env['tasks.master.line'].sudo().search([('child_ticket_id', '=', doc.id),('is_request_approval', '=', True)], limit=1)"/>
+                        <t t-set="task_list_id"
+                           t-value="request.env['tasks.master.line'].sudo().search([('child_ticket_id', '=', doc.id),('is_end_task', '=', True)], limit=1)"/>
+                        <t t-set="work_id"
+                           t-value="request.env['tasks.master.line'].sudo().search([('child_ticket_id', '=', doc.id),('is_work_end', '=', True)], limit=1)"/>
+
+                        <div class="header">
+
+                            <tr>
+                                <td>
+                                    <div style="font-size:20px; text-align:center">
+                                        <strong>FIELD SERVICE REPORT</strong>
+                                    </div>
+                                </td>
+                            </tr>
+                            <div class="row">
+                                <table style="border:1px solid #dcdcdc; width:100%;">
+                                    <tr>
+                                        <th style="width:50%;">
+<!--                                            <h3 style="text-align:left;">-->
+<!--                                                <strong>-->
+
+<!--                                                    <div style="float:left; word-break:break-all">-->
+                                                        <img src="ppts_parent_ticket/static/description/company.png" style="max-height:55pt;max-width:600%" alt="esskay"/>
+<!--                                                        <img t-if="work_id.cmpy_logo"-->
+<!--                                                             t-att-src="image_data_uri(work_id.cmpy_logo)"-->
+<!--                                                             style="max-height:45pt;max-width:90%" alt="esskay"/>-->
+<!--                                                    </div>-->
+<!--                                                </strong>-->
+<!--                                            </h3>-->
+                                        </th>
+                                         <th style="width:50%;">
+                                            <div>
+                                                <img t-if="doc.company_id.logo"
+                                                     t-att-src="image_data_uri(doc.company_id.logo)"
+                                                    style="max-height:65pt;max-width:670%" alt="esskay"/>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <table style="height:250px;width:100%">
+                            <tbody>
+                                <tr>
+                                    <td colspan="4" style="width:50%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Customer Details</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="4" style="width:50%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Equipment Details</strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Name</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.partner_id.name"/>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Make</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Rational</strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Address</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.partner_id.street"/>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Model</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.product_code_no"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Pincode</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.partner_id.zip"/>
+                                        </div>
+                                    </td>
+
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Unit Sr. No.</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.stock_lot_id"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>City</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.partner_id.city"/>
+                                        </div>
+                                    </td>
+                                    <!--                                    <tr t-if='work_id.unit_type'>-->
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Unit Type</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-esc="work_id.unit_type"/>
+                                        </div>
+                                    </td>
+                                    <!--                                    </tr>-->
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>State</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.partner_id.state_id"/>
+                                        </div>
+                                    </td>
+
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Supply</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-esc="work_id.supply"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Contact Person</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.requested_by_name_child"/>
+                                        </div>
+                                    </td>
+                                    <td colspan="4" style="width:50%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Electrical Parameters</strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Contact Number</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.requested_by_contact_number"/>
+                                        </div>
+                                    </td>
+                                    <!--                                    <tr t-if='work_id.volts'>-->
+                                    <td colspan="1" style="width:15%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Volts</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="width:10%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-esc="work_id.volts"/>
+                                        </div>
+                                    </td>
+                                    <!--                                    </tr>-->
+                                    <!--                                    <tr t-if='work_id.frequency'>-->
+                                    <td colspan="1" style="width:15%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Frequency</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="width:10%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-esc="work_id.frequency"/>
+                                        </div>
+                                    </td>
+                                    <!--                                    </tr>-->
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Email</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.partner_id.email"/>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="width:15%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Current</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="width:10%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-esc="work_id.current"/>
+                                        </div>
+                                    </td>
+
+                                    <td colspan="1" style="width:15%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Watts</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="width:10%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-esc="work_id.watts"/>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br></br>
+                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="customer-details"
+                               style="width:100%">
+                            <tbody>
+                                <tr>
+                                    <!--                                     <tr t-if ='work_id.maintenance_problem_description'>-->
+                                    <td colspan="2" style="width:50%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Problem Description</strong>
+                                        </div>
+                                    </td>
+                                    <!--                                     </tr>-->
+                                    <td colspan="2" style="width:50%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Call Details</strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:50%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>As reported by Customer</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Web ID</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.webdelata_id"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:50%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.partner_id.name"/>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Call Date</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.call_date"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:50%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Problem Observed by
+                                                Engineer Name
+                                            </strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Call Type 1</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.service_category_id"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:50%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.user_id.name"/>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Call Type 2</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-field="doc.service_type_id"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br></br>
+                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="customer-details"
+                               style="width:100%">
+                            <tbody>
+                                <tr>
+                                    <!--                                    <tr t-if='work_id.software_updated'>-->
+                                    <td>
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Software Updated</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-esc="work_id.software_updated"/>
+                                        </div>
+                                    </td>
+                                    <!--                                    </tr>-->
+                                    <!--                                    <tr t-if='work_id.service_data_downloaded'>-->
+                                    <td>
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Service Data Downloaded</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-esc="work_id.service_data_downloaded"/>
+                                        </div>
+                                    </td>
+                                    <!--                                    </tr>-->
+                                    <!--                                    <tr t-if='work_id.haccp_downloaded'>-->
+                                    <td>
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>HACCP Downloaded</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-esc="work_id.haccp_downloaded"/>
+                                        </div>
+                                    </td>
+                                    <!--                                    </tr>-->
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br></br>
+                        <t t-set="engineer_visits" t-value="doc.field_service_report_values()"/>
+                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="customer-details"
+                               style="width:100%">
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Engineer Started for Site</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <t t-if="engineer_visits['started_for_site']">
+                                                <span t-esc="engineer_visits['started_for_site']"/>
+                                            </t>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Engineer Reached Site</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <t t-if="engineer_visits['reached_site']">
+                                                <span t-esc="engineer_visits['reached_site']"/>
+                                            </t>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Job Start Time</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <t t-if="engineer_visits['job_started']">
+                                                <span t-esc="engineer_visits['job_started']"/>
+                                            </t>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Job End Time</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <t t-if="engineer_visits['job_end']">
+                                                <span t-esc="engineer_visits['job_end']"/>
+                                            </t>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Warranty Part Replaced</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-esc="work_id.waranty_part_replaced"/>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Defective Part Collected</strong>
+                                        </div>
+                                    </td>
+                                    <td colspan="2" style="width:25%">
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-esc="work_id.defective_part_collected"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br></br>
+                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="customer-details"
+                               style="width:100%">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Call Status</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="float:left; word-break:break-all">
+                                            <span>Closed</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br></br>
+                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="customer-details"
+                               style="width:100%">
+                            <tbody>
+                                <tr>
+                                    <td style="width:30%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>FE Comment</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="float:left; word-break:break-all">
+                                            <span t-esc="fse_comment.Commants"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:30%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Customer/Engineer Remarks</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="float:left; word-break:break-all">
+                                            <t t-esc="task_list_id.customer_remarks"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br></br>
+
+                        <table border="0" cellpadding="0" cellspacing="0" class="item-details serial"
+                               style="width:100%">
+                            <tbody>
+                                <tr>
+                                    <th>
+                                        <div style="text-align:left; width:50px!important">SR</div>
+                                    </th>
+                                    <th>
+                                        <div style="text-align:left; width:100px!important">Part No.</div>
+                                    </th>
+                                    <th>
+                                        <div style="text-align:left; width:250px!important">Description</div>
+                                    </th>
+                                    <th>
+                                        <div style="text-align:left; width:100px!important">Qty</div>
+                                    </th>
+                                    <th>
+                                        <div style="text-align:left; width:100px!important">Status</div>
+                                    </th>
+                                    <th>
+                                        <div style="text-align:left; width:50px!important">Cost</div>
+                                    </th>
+                                </tr>
+                                <t t-set="serial_number" t-value="0"></t>
+
+                                <tr t-foreach="spare.asset_ids" t-as="line">
+                                    <t t-set="serial_number" t-value="serial_number+1"/>
+                                    <tr>
+                                        <td>
+                                            <t t-esc="serial_number"/>
+                                        </td>
+                                        <td>
+                                            <div style="float:left; width:100px!important; word-break:break-all">
+                                                <t t-esc="line.part_number"/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="float:left; width:250px!important">
+                                                <t t-esc="line.description"/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="float:left; width:100px!important; word-break:break-all">
+                                                <t t-esc="line.quantity"/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="float:left; width:100px!important; word-break:break-all">
+                                                <!--                                                <t t-esc="spare.external_state"/>-->
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="float:left; width:50px!important; word-break:break-all"></div>
+                                        </td>
+                                    </tr>
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+
+                        <br></br>
+
+                        <table border="0" cellpadding="0" cellspacing="0" class="customer-details" style="width:100%">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Customer Name &amp; Signature</strong>
+                                        </div>
+                                    </td>
+                                    <td style="width:50%">
+                                        <div style="float:left; word-break:break-all">
+                                            <strong>Engineer Name &amp; Signature</strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:50%">
+                                        <div style="float:left; word-break:break-all">
+                                            <img t-if="task_list_id.signature"
+                                                 t-att-src="image_data_uri(task_list_id.signature)"
+                                                 style="max-height:45pt;max-width:90%" alt="Signature"/>
+
+                                            <!--                                            <img src="${signature}" style="height:70px; width:110px"/>-->
+                                        </div>
+                                    </td>
+                                    <td style="width:50%">
+                                        <div style="float:left; word-break:break-all">
+                                            <img t-if="doc.user_id.digital_signature"
+                                                    t-att-src="image_data_uri(doc.user_id.digital_signature)"
+                                                    style="max-height:45pt;max-width:90%" alt="Signature"/>
+                                            <img src="${signature}"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:top; vertical-align:top; width:50%">
+                                        <span t-field="doc.partner_id.name"/>
+                                    </td>
+                                    <td style="text-align:top; vertical-align:top; width:50%">
+                                        <span t-field="doc.user_id.name"/>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td style="text-align:top; vertical-align:top; width:50%">
+                                        <span t-field="doc.partner_id.phone"/>
+                                    </td>
+                                    <td style="text-align:top; vertical-align:top; width:50%">
+                                        <span t-field="doc.user_id.phone"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="footer" style="font-size: 13px;">
+                        <table border="0" cellpadding="0" cellspacing="0" class="note-details" style="width:100%">
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center">
+                                        <strong>Contact Details: Email - rationalrsp@esskay.in | Mobile No. - +91
+                                            8104901696/ +91 9870662411
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <p style="page-break-before:always;"/>
+                </div>
+            </t>
+        </template>
+
+
+        <template id="service_request_rational_tsr">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="ppts_parent_ticket.rational_tsr_order_report"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
