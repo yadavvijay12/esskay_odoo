@@ -315,5 +315,26 @@
             <field name="description">Not available</field>
         </record>
 
+        <record id="loaner_received_date_by_user" model="tasks.master">
+            <field name="name">Received Date By User</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Received Date By User</field>
+        </record>
+
+        <record id="loaner_dispatched_date_by_user" model="tasks.master">
+            <field name="name">Return Dispatched Date By User</field>
+            <field name="category">status</field>
+            <field name="python_code"></field>
+            <field name="description">Return Dispatched Date By User</field>
+        </record>
+
+        <!--         <record id="task_data_maintenance_started" model="tasks.master">-->
+        <!--            <field name="name">Maintenance Started</field>-->
+        <!--            <field name="category">system</field>-->
+        <!--            <field name="python_code"></field>-->
+        <!--            <field name="description">Maintenance Started</field>-->
+        <!--        </record>-->
+
     </data>
 </odoo>

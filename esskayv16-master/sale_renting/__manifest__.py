@@ -14,13 +14,14 @@
     'sequence': 160,
     'version': '1.0',
 
-    'depends': ['sale_temporal','web_gantt','ppts_service_request'],
+    'depends': ['sale_temporal', 'web_gantt', 'ppts_service_request','sale_management'],
 
     'data': [
         'security/ir.model.access.csv',
         'security/ir_rules.xml',
         'data/rental_data.xml',
         'data/email_template.xml',
+        'data/ir_cron.xml',
         'views/product_template_views.xml',
         'views/sale_order_views.xml',
         'views/res_config_settings_views.xml',

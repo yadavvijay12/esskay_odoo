@@ -304,12 +304,12 @@ class ParentTicket(models.Model):
             partner_check = self.env['res.partner'].search(
                 [('name', '=', rec.partner_id.name)])
             if partner_check:
-                rec.dealer_distributor_id = partner_check.dealer_distributer_ids.dealer_id.id
-                rec.customer_region_id = partner_check.customer_region
+                rec.sudo().dealer_distributor_id = partner_check.dealer_distributer_ids.dealer_id.id
+                rec.sudo().customer_region_id = partner_check.customer_region
             else:
                 # If no partner is found, set both fields to False
-                rec.dealer_distributor_id = False
-                rec.customer_region_id = False
+                rec.sudo().dealer_distributor_id = False
+                rec.sudo().customer_region_id = False
 
     @api.onchange('requested_by_contact_number')
     def _onchange_requested_contact_check(self):
@@ -1508,7 +1508,7 @@ class ParentTicket(models.Model):
             'partner_id': self.partner_id.id or False,
             'parent_ticket_id': self.id or False,
             'team_id': self.team_id.id or False,
-            'service_request_id': self.service_type_id.id or False,
+            'service_request_id': self.service_request_id.id or False,
             'order_line': [(0, 0, {
                 'product_id': self.product_id.id,
                 'is_rental': True,
@@ -1988,9 +1988,31 @@ class TasksMasterLine(models.Model):
     repair_location_id = fields.Many2one('stock.warehouse', string="Repair Center Location",
                                          related='child_ticket_id.repair_location_id')
 
-    is_open_feedback_sign = fields.Boolean(string="Show Customer Feedback & Signature" )
-    is_open_feedback_check=fields.Boolean(string='Check feedback')
+    is_open_feedback_sign = fields.Boolean(string="Show Customer Feedback & Signature")
+    is_open_feedback_check = fields.Boolean(string='Check feedback')
+    is_customer_dispatched_date = fields.Boolean(string='Dispatched Date')
+    is_customer_received_date = fields.Boolean(string='Received Date')
+    customer_dispatched_date = fields.Datetime(string='Customer Dispatched Date', default=fields.Datetime.now)
+    customer_received_date = fields.Datetime(string='Customer Received Date', default=fields.Datetime.now)
 
+    unit_type = fields.Char(string='Unit Type')
+    supply = fields.Char(string='Supply')
+    volts = fields.Float('Volts')
+    frequency = fields.Float('Frequency')
+    current = fields.Float('Current')
+    watts = fields.Float('Watts')
+    software_updated = fields.Char(string='Software Updated')
+    service_data_downloaded = fields.Char(string='Service Data Downloaded')
+    haccp_downloaded = fields.Char(string='HACCP Downloaded')
+    is_company_work_end = fields.Boolean(string='Company fields',related="company_id.is_word_end_fields_shown")
+    waranty_part_replaced=fields.Datetime(string='Warranty Part Replaced')
+    defective_part_collected = fields.Datetime(string='Defective Part Collected')
+
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        required=True,
+        default=lambda self: self.env.company.id)
 
     @api.onchange('attachment_ids')
     def onchange_attachment_ids(self):
@@ -2112,14 +2134,19 @@ class TasksMasterLine(models.Model):
             self.start_from = self.child_ticket_id.stock_lot_id.warranty_start_date
             self.end_to = self.child_ticket_id.stock_lot_id.warranty_end_date
         if self.task_id:
-            if self.task_id.name=='Job Closed':
-                self.is_open_feedback_check=True
+            if self.task_id.name == 'Job Closed':
+                self.is_open_feedback_check = True
+            elif self.task_id.name == 'Received Date By User':
+                self.is_customer_received_date = True
+            elif self.task_id.name == 'Return Dispatched Date By User':
+                self.is_customer_dispatched_date = True
             else:
-                self.is_open_feedback_check=False
+                self.is_open_feedback_check = False
+                self.is_customer_received_date = False
+                self.is_customer_dispatched_date = False
+
         # feedback_signature = self.task_list_ids.filtered(lambda r: r.task_id.name == 'Job Closed')
         # rec.is_open_feedback_check = True
-
-
 
     @api.onchange('task_id', 'is_end_task')
     def action_populate_feedback(self):

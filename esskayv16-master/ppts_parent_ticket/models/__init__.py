@@ -19,3 +19,4 @@ from . import assets_historical_data
 from . import asset_lot_serial
 from . import res_partner
 from . import inherits
+from . import live_location

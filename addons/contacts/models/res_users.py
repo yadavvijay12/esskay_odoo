@@ -6,7 +6,7 @@ from odoo import api, models, modules
 
 class Users(models.Model):
     _name = 'res.users'
-    _inherit = ['res.users']
+    _inherit  = ['res.users']
 
     @api.model
     def systray_get_activities(self):

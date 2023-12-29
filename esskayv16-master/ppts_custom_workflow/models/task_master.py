@@ -172,11 +172,3 @@ class TasksMasterLine(models.Model):
     Commants = fields.Html("Comments")
     descriptions = fields.Text(string='Task Description', related='task_id.description')
     repair_location_id = fields.Many2one('stock.warehouse', string="Repair Center Location")
-
-
-
-
-
-
-
-

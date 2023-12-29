@@ -20,3 +20,4 @@ from . import get_maintenance
 from . import get_installation
 from . import get_warranty_replacement_orders
 from . import forget_password
+from . import live_location

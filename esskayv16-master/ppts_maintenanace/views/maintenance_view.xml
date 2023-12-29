@@ -114,18 +114,18 @@
                     <!--                    <button string="On-Hold" name="action_on_hold" type="object" class="btn btn-warning" attrs="{'invisible': [('maintenance_state', 'not in', ['waiting_for_approval'])]}"/>-->
                     <!--                    <button string="Reject" name="action_reject" type="object" class="btn btn-danger" attrs="{'invisible': [('maintenance_state', 'not in', ['waiting_for_approval'])]}"/>-->
                     <button string="Send Mail" name="reset_equipment_request" type="object"
-                            attrs="{'invisible': [('maintenance_state', 'not in', ['started','in_progress'])]}"
+                            attrs="{'invisible': [('maintenance_state', 'not in', ['started','in_progress'])]}" class="btn btn-info"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!--                    <button string="Spare Request" name="action_request_spares" type="object" attrs="{'invisible': [('maintenance_state', 'not in', ['started','in_progress'])]}" groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>-->
                     <button string="Return Spares Request" name="action_return_spares" type="object"
-                            attrs="{'invisible': [('maintenance_state', 'not in', ['started','in_progress'])]}"
+                            attrs="{'invisible': [('maintenance_state', 'not in', ['started','in_progress'])]}" class="btn btn-info"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button string="Reschedule" name="action_reset_maintenance" type="object" class="btn btn-info"
                             attrs="{'invisible': [('maintenance_state', 'not in', ['cancelled','completed'])]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!--                    <button string="Generate Report" name="action_generate_report" type="object" groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>-->
                     <button string="Create Service Request" name="action_service_request_maintenance" type="object"
-                            attrs="{'invisible': [('maintenance_state', 'not in', ['completed'])]}"
+                            attrs="{'invisible': [('maintenance_state', 'not in', ['completed'])]}" class="btn btn-info"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!--                    CUSTOMIZE-->
                 </header>
@@ -197,6 +197,9 @@
                             <field name="action_taken_site" readonly="1"/>
                             <field name="is_amc" invisible="1"/>
                             <field name="is_cmc" invisible="1"/>
+                            <field name="maintenance_start_date" invisible="1"/>
+                            <field name="maintenance_end_date" invisible="1"/>
+
 
                         </group>
                         <group name="product_group" string="Product Details">

@@ -9,8 +9,8 @@
                     <field name="type_id"/>
                 </group>
                 <footer>
-                    <button name="action_send_for_approval" string="Confirm" type="object" class="btn-primary"/>
-                    <button string="Cancel" class="btn-default" special="cancel"/>
+                    <button name="action_send_for_approval" string="Confirm" type="object" class="btn btn-warning"/>
+                    <button string="Cancel" class="btn btn-danger" special="cancel"/>
                 </footer>
             </form>
         </field>

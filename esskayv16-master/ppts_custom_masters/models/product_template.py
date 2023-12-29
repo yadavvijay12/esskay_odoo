@@ -30,6 +30,12 @@ class ProductCustomcategory(models.Model):
 class ProductCustomField(models.Model):
     _inherit = 'product.template'
 
+    @api.model
+    def default_get(self, default_fields):
+        values = super().default_get(default_fields)
+        values['company_id'] = self.env.company.id
+        return values
+
     detailed_type = fields.Selection([
         ('consu', 'Consumable'),
         ('service', 'Service'), ('product', 'Storable Product')], string='Product Type', default='product',
@@ -55,9 +61,8 @@ class ProductCustomField(models.Model):
                                            definition='categ_id.product_properties_definition',
                                            copy=True)
     product_extra_description = fields.Html('Description')
-    company_id = fields.Many2one(
-        'res.company', 'Company', index=True, help='Inherit / Manual selection/Remove',
-        default=lambda self: self.env.user.company_id)
+    # company_id = fields.Many2one('res.company', 'Company', index=True, help='Inherit / Manual selection/Remove',default=lambda self: self.env.user.company_id)
+    company_id = fields.Many2one('res.company', 'Company', index=True, help='Inherit / Manual selection/Remove',default=lambda self: self.env.user.company_id)
     product_eol = fields.Date("Product End of Life")
     product_eosl = fields.Date("Product End of Service Support")
     service_support_commitment = fields.Char(string="Service Support Commitment")

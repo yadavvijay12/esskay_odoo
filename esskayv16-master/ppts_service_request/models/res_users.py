@@ -44,3 +44,8 @@ class ResCompany(models.Model):
     website_menu_id = fields.Many2one("website.menu", tring="Web Form",
                                       help="The request will submitted to company based on this webform field",
                                       domain="[('is_web_form', '=', True)]")
+    is_word_end_fields_shown = fields.Boolean(string="Work End")
+    is_word_end_report = fields.Boolean(string="Work End Report")
+
+
+

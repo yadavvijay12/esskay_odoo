@@ -59,7 +59,8 @@
                                 <span>Document No: IQF_CPMS_006_01</span>
                                 <br/>
                                 <br/>
-                                <span>Rev No:01</span>
+                                <span>Rev No:</span>
+                                 <span style="font-size:15px;" t-field="doc.version"/>
                             </th>
                         </tr>
                     </table>
@@ -81,46 +82,51 @@
                     <table style="height:70px" border="1">
                         <tbody>
                             <tr>
-                                <td style="width:16%">
+                                <td style="width:25%">
                                     <strong>Date</strong>
                                 </td>
-                                <td style="width:16%">
-<!--                                    <span t-esc="parent_ticket_date.date_order"/>-->
-                                    <span t-esc="parent_ticket_date.date_order.strftime('%d-%b-%Y %H:%M %p')"/>
+                                <td style="width:25%">
+                                    <!--                                    <span t-esc="parent_ticket_date.date_order"/>-->
+                                    <span t-esc="doc.create_date.strftime('%d-%b-%Y %H:%M %p')"/>
                                 </td>
 
-                                <td style="width:16%">
+                                <td style="width:25%">
                                     <strong>Customer Name</strong>
                                 </td>
-                                <td style="width:16%">
+                                <td style="width:25%">
                                     <span t-field="doc.partner_id.name"/>
                                 </td>
-                                <td style="width:16%"/>
-                                <td style="width:16%"/>
                             </tr>
                             <tr>
-                                <td>
+                                <td style="width:25%">
                                     <strong>Region</strong>
                                 </td>
-                                <td>
+                                <td style="width:25%">
                                     <span t-field="doc.partner_id.customer_region"/>
 
                                 </td>
-                                <td>
+                                <td style="width:25%">
                                     <strong>City</strong>
                                 </td>
-                                <td>
+                                <td style="width:25%">
                                     <span t-field="doc.partner_id.city"/>
                                 </td>
-                                <td>
+                            </tr>
+
+                            <tr>
+                                 <td >
                                     <strong>Ph.No</strong>
                                 </td>
-                                <td>
+                                 <td align="left" colspan="3">
                                     <span t-field="doc.partner_id.phone"/>
                                 </td>
+
+
                             </tr>
                         </tbody>
                     </table>
+
+
                     <hr/>
                     <table style="height:80px" border="1">
                         <tr style="background-color:lightGrey;">
@@ -129,36 +135,36 @@
                                 <th>Item Code</th>
                                 <th>Serial No</th>
                                 <th>Product Description</th>
-                                <th>Qty</th>
                                 <th>Warranty/Contact(Y/N)</th>
+                                <th>Qty</th>
                             </center>
                         </tr>
                         <t t-set="serial_number" t-value="0"></t>
                         <t t-set="parent_ticket"
                            t-value="request.env['sale.order'].search([('parent_ticket_id', '=', doc.parent_ticket_id.id)], limit=1)"/>
-
-
                         <tr t-foreach="parent_ticket.order_line" t-as="d">
                             <t t-set="serial_number" t-value="serial_number+1"/>
                             <td>
                                 <t t-esc="serial_number"/>
                             </td>
                             <td>
-                                <t t-esc="d.asset_id.name"/>
+                                <t t-esc="d.product_template_id.default_code"/>
 
                             </td>
                             <td>
-                                <t t-esc="d.product_template_id.default_code"/>
+                                <t t-esc="d.asset_id.name"/>
+
                             </td>
                             <td>
                                 <span t-field="d.name"/>
 
                             </td>
                             <td>
-                                <span t-field="d.product_uom_qty"/>
+                                <span t-field="d.warranty_select"/>
+
                             </td>
                             <td>
-                                <span t-field="d.warranty_select"/>
+                                <span t-field="d.product_uom_qty"/>
                             </td>
                         </tr>
                     </table>

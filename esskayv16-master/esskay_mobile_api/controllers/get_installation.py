@@ -20,7 +20,7 @@ class APIController(http.Controller):
         search_value = post.get('search_value')
         installation_ids = post.get('ids')
         state_filter = post.get('state_filter')
-        user = request.env.user.browse(int(post.get('uid')))
+        user = request.env.user
         user_tz = user.tz or 'UTC'
         local_tz = pytz.timezone(user_tz)
         uid = request.session.uid

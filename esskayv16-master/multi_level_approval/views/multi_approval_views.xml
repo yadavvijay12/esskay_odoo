@@ -59,7 +59,7 @@
                             string="Approve"
                             attrs="{'invisible': ['|', ('is_pic', '=', False), ('state', '!=', 'Submitted')]}"
                             class="btn btn-warning"/>
-                    <button name="%(multi_level_approval.refused_reason_action)d" type="action"
+                    <button name="%(multi_level_approval.refused_reason_action)d" type="action" class="btn btn-info"
                             attrs="{'invisible': ['|', ('is_pic', '=', False), ('state', '!=', 'Submitted')]}"
                             string="Refuse"/>
                     <widget name="attach_document" string="Attach Document" action="message_post"
@@ -67,7 +67,7 @@
                     <widget name="attach_document" string="Attach Document" action="message_post"
                             highlight="1"
                             attrs="{'invisible': ['|',('attachment_number', '&gt;=', 1), ('id','=',False)]}"/>
-                    <button name="action_cancel" type="object"
+                    <button name="action_cancel" type="object" class="btn btn-danger"
                             string="Cancel" states="Draft"/>
                     <field name="state" widget="statusbar" statusbar_visible="Draft,Submitted,Approved,Cancel"/>
                 </header>

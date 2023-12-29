@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button name="action_create_maintenance" string="Maintenance Request" type="object"
-                        class="btn btn-info"
+                        class="btn btn-warning"
                         attrs="{'invisible': ['|',('is_create_maintenance','=', False),('is_maintenance_created','=', True)]}"/>
             </xpath>
              <xpath expr="/form/sheet/div[@name='button_box']/button[@name='action_view_send_for_approvals']"

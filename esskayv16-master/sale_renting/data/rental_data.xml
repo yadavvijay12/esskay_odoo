@@ -38,39 +38,39 @@
         <field name="company_id" eval="False"/>
     </record>
 
-        <record id="mt_loaner_draf" model="mail.message.subtype">
-            <field name="name">Loaner Draf</field>
-            <field name="res_model">sale.order</field>
-            <field name="default" eval="False"/>
-            <field name="description">Loaner Drft</field>
-        </record>
+    <record id="mt_loaner_draf" model="mail.message.subtype">
+        <field name="name">Loaner Draf</field>
+        <field name="res_model">sale.order</field>
+        <field name="default" eval="False"/>
+        <field name="description">Loaner Drft</field>
+    </record>
 
-        <record id="mt_loaner_order_confirmed" model="mail.message.subtype">
-            <field name="name">Loaner Order Confirmed</field>
-            <field name="res_model">sale.order</field>
-            <field name="default" eval="False"/>
-            <field name="description">Loaner Confirmed</field>
-        </record>
+    <record id="mt_loaner_order_confirmed" model="mail.message.subtype">
+        <field name="name">Loaner Order Confirmed</field>
+        <field name="res_model">sale.order</field>
+        <field name="default" eval="False"/>
+        <field name="description">Loaner Confirmed</field>
+    </record>
 
-        <record id="mt_loaner_order_picked_up" model="mail.message.subtype">
-            <field name="name">Loaner Order picked-up</field>
-            <field name="res_model">sale.order</field>
-            <field name="default" eval="False"/>
-            <field name="description">Loaner Order Picked-Up</field>
-        </record>
+    <record id="mt_loaner_order_picked_up" model="mail.message.subtype">
+        <field name="name">Loaner Order picked-up</field>
+        <field name="res_model">sale.order</field>
+        <field name="default" eval="False"/>
+        <field name="description">Loaner Order Picked-Up</field>
+    </record>
 
-        <record id="mt_loaner_order_returned" model="mail.message.subtype">
-            <field name="name">Loaner Order Returned</field>
-            <field name="res_model">sale.order</field>
-            <field name="default" eval="False"/>
-            <field name="description">Loaner Order Returned</field>
-        </record>
+    <record id="mt_loaner_order_returned" model="mail.message.subtype">
+        <field name="name">Loaner Order Returned</field>
+        <field name="res_model">sale.order</field>
+        <field name="default" eval="False"/>
+        <field name="description">Loaner Order Returned</field>
+    </record>
 
-        <record id="mt_loaner_order_cancel" model="mail.message.subtype">
-            <field name="name">Loaner Order cancel</field>
-            <field name="res_model">sale.order</field>
-            <field name="default" eval="False"/>
-            <field name="description">Loaner Cancelled</field>
-        </record>
+    <record id="mt_loaner_order_cancel" model="mail.message.subtype">
+        <field name="name">Loaner Order cancel</field>
+        <field name="res_model">sale.order</field>
+        <field name="default" eval="False"/>
+        <field name="description">Loaner Cancelled</field>
+    </record>
 
 </odoo>

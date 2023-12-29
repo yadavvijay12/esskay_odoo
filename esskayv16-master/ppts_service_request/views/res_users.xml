@@ -22,7 +22,7 @@
                     </page>
 
                 </xpath>
-                 <xpath expr="//field[@name='company_id']" position="after">
+                <xpath expr="//field[@name='company_id']" position="after">
                     <field name="customer_account_ids" widget="many2many_tags"/>
                 </xpath>
 
@@ -49,6 +49,8 @@
                 <xpath expr="//group[@name='social_media']" position="after">
                     <group string="Website">
                         <field name="website_menu_id"/>
+                        <field name="is_word_end_fields_shown"/>
+                        <field name="is_word_end_report"/>
                     </group>
                 </xpath>
             </field>

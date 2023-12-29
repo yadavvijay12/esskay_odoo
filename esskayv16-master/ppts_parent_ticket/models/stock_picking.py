@@ -30,6 +30,12 @@ class StockPicking(models.Model):
     is_send_for_approvals = fields.Boolean(string="Is Send for Approvals", copy=False, compute='_get_approval')
     is_approval = fields.Boolean(string="Is Approval", copy=False, compute='approval_status')
     approvals_count = fields.Integer(string='Approval Count', compute='_compute_approvals_count')
+    customer_dispatched_date = fields.Datetime(string='Customer Dispatched Date')
+    customer_received_date = fields.Datetime(string='Customer Received Date')
+
+    
+
+
 
     @api.depends('move_type', 'immediate_transfer', 'move_ids.state', 'move_ids.picking_id')
     def _compute_state(self):
@@ -55,12 +61,12 @@ class StockPicking(models.Model):
                 'all_cancel': picking_moves_state_map[picking_id.id].get('all_cancel', True) and move_state == 'cancel',
                 'all_cancel_done': picking_moves_state_map[picking_id.id].get('all_cancel_done',
                                                                               True) and move_state in (
-                                   'cancel', 'done'),
+                                       'cancel', 'done'),
                 'all_done_are_scrapped': picking_moves_state_map[picking_id.id].get('all_done_are_scrapped', True) and (
                     move.scrapped if move_state == 'done' else True),
                 'any_cancel_and_not_scrapped': picking_moves_state_map[picking_id.id].get('any_cancel_and_not_scrapped',
                                                                                           False) or (
-                                                           move_state == 'cancel' and not move.scrapped),
+                                                       move_state == 'cancel' and not move.scrapped),
             })
             picking_move_lines[picking_id.id].add(move.id)
         for picking in self:
@@ -265,7 +271,8 @@ class StockPicking(models.Model):
         if team_alert_template_id and send:
             teams = self.env['hr.employee'].search(
                 [(
-                 'job_id', 'in', self.parent_ticket_id.parent_configuration_id.receipts_approval_team_ids.ids)]).mapped(
+                    'job_id', 'in',
+                    self.parent_ticket_id.parent_configuration_id.receipts_approval_team_ids.ids)]).mapped(
                 'work_email')
             email += ', '.join(teams)
             team_alert_template_id.with_context(email_to=email).sudo().send_mail(self.parent_ticket_id.id,
@@ -291,7 +298,8 @@ class StockPicking(models.Model):
         if team_alert_template_id and send:
             teams = self.env['hr.employee'].search(
                 [(
-                 'job_id', 'in', self.parent_ticket_id.parent_configuration_id.delivery_approval_team_ids.ids)]).mapped(
+                    'job_id', 'in',
+                    self.parent_ticket_id.parent_configuration_id.delivery_approval_team_ids.ids)]).mapped(
                 'work_email')
             email += ', '.join(teams)
             team_alert_template_id.with_context(email_to=email).sudo().send_mail(self.parent_ticket_id.id,
@@ -317,7 +325,8 @@ class StockPicking(models.Model):
         if team_alert_template_id and send:
             teams = self.env['hr.employee'].search(
                 [(
-                 'job_id', 'in', self.parent_ticket_id.parent_configuration_id.transfer_approval_team_ids.ids)]).mapped(
+                    'job_id', 'in',
+                    self.parent_ticket_id.parent_configuration_id.transfer_approval_team_ids.ids)]).mapped(
                 'work_email')
             email += ', '.join(teams)
             team_alert_template_id.with_context(email_to=email).sudo().send_mail(self.parent_ticket_id.id,

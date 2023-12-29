@@ -83,6 +83,22 @@ class SRMaintenanceRequest(models.Model):
     text_engineer_observations = fields.Html(string='Text')
     text_recommend_observations = fields.Html(string='Text')
     maintenance_asset_ids = fields.Many2many('stock.lot', string="Maintenance Assets")
+    maintenance_start_date = fields.Datetime(string="Maintenace start Date")
+    maintenance_end_date = fields.Datetime(string="Maintenace end Date")
+
+    # @api.depends('maintenance_state')
+    # def action_maintenance_state(self):
+    #     for rec in self:
+    #         if rec.maintenance_state == 'started':
+    #             rec.maintenance_start_date = rec.write_date
+    #         else:
+    #             rec.maintenance_start_date = False
+    #         if rec.maintenance_state == 'completed':
+    #             rec.maintenance_end_date = rec.write_date
+    #         else:
+    #             rec.maintenance_end_date = False
+
+
 
 
     @api.depends('service_category_id')
@@ -113,24 +129,21 @@ class SRMaintenanceRequest(models.Model):
                     self.cmc_status = 'in_warranty'
                     self.amc_status = 'out_warranty'
                 if contract:
-                    self.amc_end_date=contract.date_end
-                    self.cmc_end_date=contract.date_end
-                    self.po_number=contract.ccc_ref.name
-                    self.po_date=contract.ccc_ref.date_order
-                    self.invoice_number=contract.ccc_ref.invoice_ids.name
-                    self.invoice_date=contract.ccc_ref.invoice_ids.invoice_date
+                    self.amc_end_date = contract.date_end
+                    self.cmc_end_date = contract.date_end
+                    self.po_number = contract.ccc_ref.name
+                    self.po_date = contract.ccc_ref.date_order
+                    self.invoice_number = contract.ccc_ref.invoice_ids.name
+                    self.invoice_date = contract.ccc_ref.invoice_ids.invoice_date
                 else:
                     self.cmc_status = 'out_warranty'
                     self.amc_status = 'out_warranty'
-                    self.amc_end_date= False
+                    self.amc_end_date = False
                     self.cmc_end_date = False
                     self.po_number = False
-                    self.po_date=False
+                    self.po_date = False
                     self.invoice_number = False
                     self.invoice_date = False
-
-
-
         else:
             self.amc_status = False
             self.cmc_status = False
@@ -282,12 +295,16 @@ class SRMaintenanceRequest(models.Model):
 
     def action_start_process(self):
         self.maintenance_state = 'started'
+        self.maintenance_start_date = self.write_date
+        self.child_ticket_id.maintenance_start_date=self.maintenance_start_date
 
     def action_in_progress(self):
         self.maintenance_state = 'in_progress'
 
     def action_complete(self):
         self.maintenance_state = 'completed'
+        self.maintenance_end_date = self.write_date
+        self.child_ticket_id.maintenance_end_date = self.maintenance_end_date
 
     def action_ready_for_testing(self):
         pass

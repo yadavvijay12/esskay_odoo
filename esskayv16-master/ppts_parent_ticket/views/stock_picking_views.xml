@@ -10,6 +10,10 @@
                     <field name="approvals_count" invisible="1"/>
                     <field name="is_send_for_approvals" invisible="1"/>
                     <field name="is_approval" invisible="1"/>
+                    <field name="customer_dispatched_date"
+                           attrs="{'invisible': [('picking_type_code', '=', 'outgoing')]}"/>
+                    <field name="customer_received_date"
+                           attrs="{'invisible': [('picking_type_code', '=', 'incoming')]}"/>
                 </field>
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button name="action_view_approvals" type="object" class="oe_stat_button" string="Approvals"
@@ -18,7 +22,8 @@
                     </button>
                 </xpath>
                 <xpath expr="/form/header/button[last()]" position="after">
-                    <button name="action_request_approval" string="Send for Approval" type="object" class="btn-primary" attrs="{'invisible':['|', ('approvals_count',  '>',0), ('state', '!=', 'waiting_for_approval')]}"/>
+                    <button name="action_request_approval" string="Send for Approval" type="object" class="btn-primary"
+                            attrs="{'invisible':['|', ('approvals_count',  '>',0), ('state', '!=', 'waiting_for_approval')]}"/>
                 </xpath>
             </field>
         </record>

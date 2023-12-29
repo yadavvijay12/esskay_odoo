@@ -438,8 +438,8 @@
                 </div>
                 <header attrs="{'invisible': [('check_status', '=', False)]}">
                     <!-- Mail -->
-                    <button name="action_send_mail" string="SEND BY EMAIL" type="object"
-                            attrs="{'invisible': [('state','in',('closed'))]}"
+                    <button name="action_send_mail" string="Send By Email" type="object"
+                            attrs="{'invisible': [('state','in',('closed'))]}" class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_send_acknowledgment" string="Send Acknowledgement" type="object"
                             class="btn btn-info"
@@ -534,15 +534,21 @@
                     <!--                            class="btn btn-success"-->
                     <!--                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"-->
                     <!--                            attrs="{'invisible':['|','|',('state', 'in',('new', 'in_review', 'warranty_check', 'repair_warranty_check','paid_repair_approval', 'waiting_for_approval', 'closed')),('request_type', 'in',('sr_installation','sr_fsm','sr_wr')),('is_inventory', '=', False)]}"/>-->
-                    <button string="Close" name="action_parent_ticket_close" type="object"
-                            attrs="{'invisible': [('state','in',('closed'))]}" class="btn btn-danger"
-                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+
 
                     <button name="action_reset_to_new" string="Reset to new" type="object"
                             attrs="{'invisible': [('state', '!=',('confirm'))]}"
                             class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+
+                    <!--                    <div style="background-color: #b02a37; color: white; border: none;text-align: center; display: inline-block;font-size: 16px;margin: 0px 2px 0px 458px;-->
+                    <!--    cursor: pointer;float: right;text-decoration: none;">-->
+                    <button string="Close" name="action_parent_ticket_close" type="object"
+                            attrs="{'invisible': [('state','in',('closed'))]}" class="btn btn-danger"
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
+                    <!--                    </div>-->
                 </header>
+
                 <header attrs="{'invisible': [('check_status', '=', False)]}">
                     <button name="request_raise_invoice" type="object" string="Invoice Request"
                             class="btn btn-info"
@@ -642,7 +648,9 @@
                         </button>
                         <button name="action_view_loaner_order" type="object" class="oe_stat_button"
                                 icon="fa-pencil-square-o"
-                                attrs="{'invisible': ['|',('loaner_count', '=', 0),('is_loaners_check', '=', False)]}">
+                                attrs="{'invisible': ['|',('loaner_count', '=', 0),('is_loaners_check', '=', False)]}"
+                                groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head,ppts_service_request.service_request_group_user">
+
                             <field name="loaner_count" widget="statinfo" string="Loaner"/>
                         </button>
                         <button name="action_view_returns" type="object" class="oe_stat_button" string="Returns"

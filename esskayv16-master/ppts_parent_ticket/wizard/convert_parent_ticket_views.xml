@@ -18,8 +18,8 @@
                 </group>
                 <footer>
                     <button name="action_parent_ticket_create" string="Convert to PT" type="object"
-                            class="btn-primary"/>
-                    <button string="Cancel" class="btn-default" special="cancel"/>
+                            class="btn btn-warning"/>
+                    <button string="Cancel" class="btn btn-danger" special="cancel"/>
                 </footer>
             </form>
         </field>

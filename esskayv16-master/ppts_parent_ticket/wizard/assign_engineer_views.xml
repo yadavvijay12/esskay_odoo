@@ -17,11 +17,11 @@
                     </group>
                 </group>
                 <footer>
-                    <button name="action_assign_engineer" string="Assign User" type="object" class="btn-primary"
+                    <button name="action_assign_engineer" string="Assign User" type="object" class="btn btn-warning"
                             attrs="{'invisible': [('is_assign_to_user','=', True)]}"/>
-                    <button name="action_reassign_engineer" string="Re-Assign User" type="object" class="btn-primary"
+                    <button name="action_reassign_engineer" string="Re-Assign User" type="object" class="btn btn-warning"
                             attrs="{'invisible': [('is_assign_to_user','=', False)]}"/>
-                    <button string="Cancel" class="btn-default" special="cancel"/>
+                    <button string="Cancel" class="btn btn-danger" special="cancel"/>
                 </footer>
             </form>
         </field>
@@ -56,10 +56,10 @@
                 </group>
                 <footer>
                     <button name="action_child_assign_engineer" string="Assign Engineer" type="object"
-                            class="btn-primary" attrs="{'invisible': [('is_assign_to_user','=', True)]}"/>
+                            class="btn btn-warning" attrs="{'invisible': [('is_assign_to_user','=', True)]}"/>
                     <button name="action_child_reassign_engineer" string="Re-Assign Engineer" type="object"
-                            class="btn-primary" attrs="{'invisible': [('is_assign_to_user','=', False)]}"/>
-                    <button string="Cancel" class="btn-default" special="cancel"/>
+                           class="btn btn-warning" attrs="{'invisible': [('is_assign_to_user','=', False)]}"/>
+                    <button string="Cancel" class="btn btn-danger" special="cancel"/>
                 </footer>
             </form>
         </field>

@@ -125,3 +125,9 @@ access_check_available,check.available,model_availability_engineer,base.group_us
 access_fse_view_only,fse.view.only,model_res_partner,ppts_service_request.service_request_group_user,1,0,0,0
 
 access_view_tickets,view.warranty.tickets,model_view_warranty_tickets,base.group_user,1,1,1,1
+
+access_live_location,geo.location,model_geo_location,base.group_user,1,1,1,1
+
+access_lat_long,lat.long,model_lat_long,base.group_user,1,1,1,1
+
+

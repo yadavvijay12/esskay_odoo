@@ -24,12 +24,12 @@
 
                     <!-- Without Approval -->
                     <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            type="object"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"  class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            type="object"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!-- END Without Approval -->
 
@@ -69,12 +69,12 @@
 
                     <!-- Without Approval -->
                     <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            type="object"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            type="object"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!-- END Without Approval -->
                 </xpath>
@@ -113,12 +113,12 @@
 
                     <!-- Without Approval -->
                     <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            type="object"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            type="object"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!-- END Without Approval -->
                 </xpath>
@@ -157,12 +157,12 @@
 
                     <!-- Without Approval -->
                     <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
-                            type="object" class="btn btn-warning"
-                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            type="object"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            type="object"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!-- END Without Approval -->
                 </xpath>
@@ -201,12 +201,12 @@
 
                     <!-- Without Approval -->
                     <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            type="object"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            type="object"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!-- END Without Approval -->
                 </xpath>
@@ -244,12 +244,12 @@
 
                     <!-- Without Approval -->
                     <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            type="object"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            type="object"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
 
                     <!-- END Without Approval -->
@@ -288,12 +288,12 @@
 
                     <!-- Without Approval -->
                     <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            type="object"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            type="object"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!-- END Without Approval -->
                 </xpath>
@@ -331,12 +331,12 @@
 
                     <!-- Without Approval -->
                     <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            type="object"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            type="object"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!-- END Without Approval -->
                 </xpath>
@@ -374,12 +374,12 @@
 
                     <!-- Without Approval -->
                     <button name="action_convert_pt_without_approval_wizard" string="Convert to Parent Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}"
+                            type="object"
+                            attrs="{'invisible': ['|',('state','!=','in_review'),('is_required_approval', '=', True)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_convert_ct_without_approval_wizard" string="Convert to Child Ticket"
-                            type="object" class="oe_highlight"
-                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}"
+                            type="object"
+                            attrs="{'invisible': ['|','|',('state','not in',('in_review')),('is_required_approval', '=', True), ('is_from_ct', '=', False)]}" class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
 
                     <!-- END Without Approval -->

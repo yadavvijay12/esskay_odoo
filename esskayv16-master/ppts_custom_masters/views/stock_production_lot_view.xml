@@ -10,31 +10,31 @@
             <xpath expr="/form/sheet" position="before">
                 <header>
                     <field name="is_transfer_done" invisible="1"/>
-                    <button name="action_service_request" string="Create SR" type="object" class="oe_highlight"
+                    <button name="action_service_request" string="Create SR" type="object" class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_parent_ticket" string="Create Ticket" type="object"
-                            class="oe_highlight"
+                           class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
-                    <button name="state_active_button" string="Active" type="object" class="oe_highlight"
+                    <button name="state_active_button" string="Active" type="object" class="btn btn-info"
                             attrs="{'invisible': [('state', '=', 'state_active')]}"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="state_inactive_button" string="Inactive"
                             attrs="{'invisible': [('state', '=', 'state_inactive')]}" type="object"
-                            class="oe_highlight"
+                           class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="state_not_traceable_button"
                             attrs="{'invisible': [('state', '=', 'state_not_traceable')]}" string="Not traceable"
-                            type="object" class="oe_highlight"
+                            type="object" class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="state_not_repairable_button"
                             attrs="{'invisible': [('state', '=', 'state_not_repairable')]}" string="Not Repairable"
-                            type="object" class="oe_highlight"
+                            type="object" class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
-                    <button name="action_internal_transfer" string="Create Transfer" type="object" class="oe_highlight"
+                    <button name="action_internal_transfer" string="Create Transfer" type="object" class="btn btn-info"
                             attrs="{'invisible': [('is_transfer_done', '=', True)]}"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="create_sale_order" string="Create Sale Order" type="object"
-                            class="oe_highlight"
+                            class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="state_active,state_inactive,state_not_traceable,state_not_repairable"/>

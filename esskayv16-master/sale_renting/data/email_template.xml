@@ -15,9 +15,9 @@
                         <br/>
                         Cat No : <t t-out="object.name or ''"></t>,
                         <br/>
-<!--                        Product Sr. No : <t t-out="object.product_code_no or ''"></t>,-->
-<!--                        <br/>-->
-                       Loaner Created
+                        <!--                        Product Sr. No : <t t-out="object.product_code_no or ''"></t>,-->
+                        <!--                        <br/>-->
+                        Loaner Created
                         <br/>
                         <br/>
 
@@ -41,5 +41,60 @@
                 </div>
             </field>
         </record>
+
+        <record id="email_template_loaner_return_notify" model="mail.template">
+            <field name="name">Loaner Return Date Notify</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="email_from">{{ object.company_id.email }}</field>
+            <field name="email_to">{{ ctx.get('email_to') if ctx.get('email_to') else object.partner_id.email }}</field>
+            <field name="subject">Ref {{ object.name }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="html">
+                <p>Hello
+                    <b>
+                        <t t-out="object.partner_id.name or ''"></t>
+                    </b>
+                    ,
+                </p>
+                <p>Your Loaner for expiry with in one day
+                    <b>
+                        <t t-out="object.name or ''"></t>
+                    </b>
+                    has been processed.
+                </p>
+                <p>If you have any questions, please let us know.</p>
+                <p>Best regards,</p>
+            </field>
+        </record>
+
+
+        <record id="email_template_loaner_return_expiry_notify" model="mail.template">
+            <field name="name">Loaner Return Expiry Notify</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="email_from">{{ object.company_id.email }}</field>
+            <field name="email_to">{{ ctx.get('email_to') if ctx.get('email_to') else object.partner_id.email }}</field>
+            <field name="subject">Ref {{ object.name }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="html">
+                <p>Hello
+                    <b>
+                        <t t-out="object.partner_id.name or ''"></t>
+                    </b>
+                    ,
+                </p>
+                <p>Your Loaner for
+                    <b>
+                        <t t-out="object.name or ''"></t>
+                    </b>
+                    has been processed. expiry
+                </p>
+                <p>If you have any questions, please let us know.</p>
+                <p>Best regards,</p>
+            </field>
+        </record>
+
+
     </data>
 </odoo>

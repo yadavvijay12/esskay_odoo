@@ -34,13 +34,13 @@
                     <button
                             name="action_contract_send"
                             type="object"
-                            string="Send by Email"
+                            string="Send by Email" class="btn btn-info"
                             attrs="{'invisible': [('is_terminated','=',True)]}"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
                     />
                     <button
                             name="recurring_create_invoice"
-                            type="object"
+                            type="object" class="btn btn-info"
                             attrs="{'invisible': ['|', ('create_invoice_visibility', '=', False),('generation_type','!=','invoice')]}"
                             string="Create invoices"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
@@ -48,14 +48,13 @@
                     <!--                     groups="base.group_no_one"-->
                     <button
                             name="action_expired_contract"
-                            type="object" class="btn-primary"
-                            string="Expired"
+                            type="object"  string="Expired" class="btn btn-info"
                             attrs="{'invisible': [('state', '!=', 'started')]}"
                             groups="contract.can_terminate_contract"
                     />
                     <button
                             name="action_terminate_contract"
-                            type="object" class="btn-primary"
+                            type="object" class="btn btn-info"
                             string="Renew"
                             attrs="{'invisible': [('state', 'not in', ('started', 'completed'))]}"
                             groups="contract.can_terminate_contract"
@@ -63,20 +62,20 @@
                     <button
                             name="action_cancel_contract_termination"
                             type="object"
-                            string="Cancel Contract" class="btn-primary"
+                            string="Cancel Contract" class="btn btn-info"
                             attrs="{'invisible': [('state', '!=', 'started')]}"
                             groups="contract.can_terminate_contract"
                     />
                     <button
                             name="action_create_schedule"
                             type="object"
-                            string="Generate Schedule" class="btn-primary"
+                            string="Generate Schedule" class="btn btn-info"
                             groups="contract.can_terminate_contract"
                     />
 
                     <button name="send_for_approval" string="Send for Approval" type="object"
                             attrs="{'invisible': [('state','!=','new')]}"
-                            class="btn btn-primary"
+                            class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button
                             name="action_create_sr_maintenance"
@@ -97,7 +96,7 @@
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
 
                     />
-                    <button type="object" string="Preview" name="action_preview"
+                    <button type="object" string="Preview" name="action_preview" class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
                     />
                     <field name="state" widget="statusbar" statusbar_visible="new,started,approved,completed"/>

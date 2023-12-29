@@ -287,7 +287,7 @@
                 <xpath expr="//form/sheet/notebook/page[@name='customer_selection']/group/group//div/field[@name='street2']"
                        position="after">
                     <field name="city_id" class="o_address_city" placeholder="City"
-                           attrs="{'readonly': [('state','not in',('new'))]}" force_save="1"/>/>
+                           attrs="{'readonly': [('state','not in',('new'))]}" force_save="1"/>
                 </xpath>
 
                 <xpath expr="//form/sheet/notebook/page[@name='customer_selection']/group/group" position="inside">

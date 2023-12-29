@@ -1205,5 +1205,86 @@
         <!--        </record>-->
 
 
+        <record id="mail_template_loaner_completed_child_ticket" model="mail.template">
+            <field name="name">Child Ticket : Loaner Completed</field>
+            <field name="model_id" ref="model_child_ticket"/>
+            <field name="subject">{{object.name}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.parent_ticket_id.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        Child Ticket ID :  <t t-out="object.name or ''"></t>,
+                        <br/>
+                        Loaner is Completed.
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Esskay Team.
+
+                        <t t-if="object.user_id">
+                            <t t-out="object.user_id.signature or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <span>
+                            *** This is an automatically generated email,Please do not reply***
+                        </span>
+                    </p>
+                </div>
+            </field>
+            <field name="report_template" ref="loaner_report_config"/>
+            <field name="report_name">Loaner Completed{{ (object.name or '').replace('/','_') }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="mail_template_rational_work_end_ticket" model="mail.template">
+            <field name="name">Child Ticket : Work Completed</field>
+            <field name="model_id" ref="model_child_ticket"/>
+            <field name="subject">{{object.name}} | {{object.service_category_id.name}} |
+                {{object.service_type_id.name}} | {{object.parent_ticket_id.partner_id.name}}
+            </field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hi Team,
+                        <br/>
+                        <br/>
+                        Child Ticket ID :  <t t-out="object.name or ''"></t>,
+                        <br/>
+                        Work Completed.
+                        <br/>
+
+                        Regards,
+                        <br/>
+                        Esskay Team.
+
+                        <t t-if="object.user_id">
+                            <t t-out="object.user_id.signature or ''"/>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+                        <span>
+                            *** This is an automatically generated email,Please do not reply***
+                        </span>
+                    </p>
+                </div>
+            </field>
+            <field name="report_template" ref="action_rational_tsr_report_config"/>
+            <field name="report_name">Work Completed{{ (object.name or '').replace('/','_') }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+
     </data>
 </odoo>

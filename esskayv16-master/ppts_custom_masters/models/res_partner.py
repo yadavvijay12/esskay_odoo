@@ -12,6 +12,16 @@ class ResCompany(models.Model):
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    @api.model
+    def default_get(self, default_fields):
+        values = super().default_get(default_fields)
+        values['company_id'] = self.env.company.id
+        return values
+
+    company_id = fields.Many2one('res.company', 'Company', index=True, default=lambda self: self.env.company)
+    current_company_id = fields.Many2one('res.company', 'Current Company', index=True, default=lambda self: self.env.company)
+
+
     def _get_default_customer_ac(self):
         company_id = self.env.company
         if company_id:
@@ -638,6 +648,7 @@ class AssetTickets(models.Model):
 
     product_id = fields.Many2one('product.product', string="Product")
     custom_ticket_id = fields.Many2one("service.request", string="Ticket")
+
 
 
 class CustomerDealerinfo(models.Model):

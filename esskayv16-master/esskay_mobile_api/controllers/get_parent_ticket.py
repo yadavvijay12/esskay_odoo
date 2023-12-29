@@ -1111,9 +1111,11 @@ class APIController(http.Controller):
             #     parent_id = request.env['parent.ticket'].sudo().browse(int(parent_ticket_id))
             #     parent_id._onchange_task_list_ids()
             if child_ticket_id:
+                _logger.info('#########################\n            *************************************    \n ')
                 task = request.env['tasks.master.line'].sudo().create(task_field_dic)
+                _logger.info('\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n',task)
                 child_id = request.env['child.ticket'].sudo().browse(int(child_ticket_id))
-                _logger.info('*************************************', task)
+                _logger.info('            *************************************     ', task)
                 child_id._onchange_task_list_ids()
                 attachments=[]
                 attachment_name= 1

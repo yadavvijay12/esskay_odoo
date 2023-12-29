@@ -12,8 +12,8 @@
                     </group>
                 </group>
                 <footer>
-                    <button name="action_child_ticket_create" string="Convert to CT" type="object" class="btn-primary"/>
-                    <button string="Cancel" class="btn-default" special="cancel"/>
+                    <button name="action_child_ticket_create" string="Convert to CT" type="object" class="btn btn-warning"/>
+                    <button string="Cancel" class="btn btn-danger" special="cancel"/>
                 </footer>
             </form>
         </field>

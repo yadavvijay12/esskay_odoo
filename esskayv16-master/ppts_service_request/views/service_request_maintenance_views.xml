@@ -75,16 +75,16 @@
                     <!--                            attrs="{'invisible': ['|',('state','!=','waiting_for_approval'),('is_required_approval', '=',False)]}"-->
                     <!--                            groups="ppts_service_request.service_request_group_ct_user" class="oe_highlight"/>-->
                     <button string="Close" name="action_ticket_close" type="object"
-                            attrs="{'invisible': [('state','not in',['approved','resumed'])]}"
-                            groups="ppts_service_request.service_request_group_ct_user" class="oe_highlight"/>
-                    <button string="SEND BY MAIL" name="action_send_mail" type="object"
+                            attrs="{'invisible': [('state','not in',['approved','resumed'])]}" class="btn btn-info"
+                            groups="ppts_service_request.service_request_group_ct_user" />
+                    <button string="Send By Mail" name="action_send_mail" type="object" class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user"/>
                     <!--check availability request-->
                     <!--                    <button string="Check Available Request" name="check_availability_request" type="object"-->
                     <!--                            class="oe_highlight"-->
                     <!--                            attrs="{'invisible':[('state','!=','new')]}"/>-->
                     <button string="Reopen Ticket" name="service_request_reopen"
-                            groups="ppts_service_request.service_request_group_ct_user"
+                            groups="ppts_service_request.service_request_group_ct_user" class="btn btn-info"
                             attrs="{'invisible':[('state','not in',['cancelled','closed'])]}" type="object"/>
                     <button string="Resume" name="service_request_resume"
                             groups="ppts_service_request.service_request_group_ct_user"
@@ -113,7 +113,7 @@
                     <button string="Hold" name="action_request_hold" type="object"
                             attrs="{'invisible':[('state','not in',['approved'])]}"
                             groups="ppts_service_request.service_request_group_ct_user" class="btn btn-danger"/>
-                    <button string="Cancel" name="action_request_cancel" type="object"
+                    <button string="Cancel" name="action_request_cancel" type="object" class="btn btn-danger"
                             attrs="{'invisible':[('state','in',['cancelled','new'])]}"
                             groups="ppts_service_request.service_request_group_ct_user"/>
 

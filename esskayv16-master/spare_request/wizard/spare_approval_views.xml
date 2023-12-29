@@ -13,7 +13,7 @@
                     <footer>
                         <button name="action_send_for_spare_approval" string="Send for Approval" type="object" class="btn-warning" attrs="{'invisible':[('is_spare_approval', '=',False)]}"/>
                         <button name="action_send_for_approval" string="Confirm" type="object" class="btn-warning" attrs="{'invisible':[('is_spare_approval', '=',True)]}"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
+                        <button string="Cancel" class="btn btn-danger" special="cancel"/>
                     </footer>
                 </form>
             </field>

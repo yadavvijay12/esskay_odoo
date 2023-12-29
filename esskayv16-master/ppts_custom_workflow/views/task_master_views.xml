@@ -44,6 +44,7 @@
                             <field name="approval_type_id"
                                    attrs="{'invisible': [('is_request_approval', '=', False)], 'required': [('is_request_approval', '=', True)]}"/>
                             <field name="repair_location_id" invisible="1"/>
+                            <field name="is_send_email"/>
                             <field name="is_ressign_engineer"/>
                             <field name="is_send_email"/>
                             <field name="is_maintenance_completed" invisible="1"/>

@@ -43,10 +43,12 @@
         'report/spare_indent.xml',
         'report/se_inhouse_repair_form.xml',
         'report/tsr_pm.xml',
+        'report/rational_tsr_report_child_ticket.xml',
         'report/loaner_report.xml',
         'views/stock_lot_view.xml',
         'views/stock_picking_views.xml',
         'views/res_partner_view.xml',
+        'views/live_location.xml',
         'views/parent_ticket_menus.xml',  # Last because referencing actions defined in previous files
     ],
     # 'qweb': ['static/src/xml/relational_utils.xml'

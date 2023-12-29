@@ -23,6 +23,7 @@ class ChildTicket(models.Model):
         tasks_all_ids = self.env["tasks.master"].search([])
         return tasks_all_ids.ids
 
+    # fields
     name = fields.Char(string='Child Ticket ID', copy=False, default="New")
     child_ticket_id_alias = fields.Char(string='Child Ticket ID Alias', copy=False)
     child_configuration = fields.Char(string='Child Configuration', copy=False)
@@ -149,6 +150,7 @@ class ChildTicket(models.Model):
     parent_child_ticket_id = fields.Many2one('child.ticket', string='Parent Child Ticket', copy=False)
     task_value_notify = fields.Many2one('tasks.master', string="Notify Task")
     parent_count = fields.Integer(compute='_compute_parent_count')
+    expense_count = fields.Integer(compute='_compute_expense_count')
     new_create_child_ticket = fields.Char(string='Id', related='parent_ticket_id.child_ticket_ids.name',
                                           order='id desc')
     is_inventory_checks = fields.Boolean(string="Inventory Check")
@@ -201,7 +203,9 @@ class ChildTicket(models.Model):
     repair_warranty_end_date = fields.Date(string="Repair Warranty End Date",
                                            help='Manual / Updated by system end of Ticket & Warranty certificate Generation',
                                            related='stock_lot_id.repair_warranty_end_date')
-    is_status_reassign=fields.Boolean(string="Status Ressign")
+    is_status_reassign = fields.Boolean(string="Status Ressign")
+    maintenance_start_date = fields.Datetime(string="Maintenace start Date")
+    maintenance_end_date = fields.Datetime(string="Maintenace end Date")
 
     def action_check_availability_engineer(self):
         # Search for users who belong to a specific group but not another group and are part of the current team
@@ -291,6 +295,11 @@ class ChildTicket(models.Model):
         # Parent ticket ids counts
         for record in self:
             record.parent_count = self.env['parent.ticket'].search_count([('child_ticket_id', '=', record.id)])
+
+    def _compute_expense_count(self):
+        # Parent ticket ids counts
+        for record in self:
+            record.expense_count = self.env['hr.expense'].search_count([('child_ticket_id', '=', record.id)])
 
     @api.depends('child_configuration_id')
     # When you selct the child configuration, automattically fill the child ticket type based on configuration
@@ -460,6 +469,11 @@ class ChildTicket(models.Model):
             'reached_site': reach_site.strftime("%d-%b-%Y %I:%M %p") if reached_site else '',
             'work_end': job_end_time.strftime("%d-%b-%Y %I:%M %p") if work_end else '',
             'received_engineer': received_by_engineer.strftime("%d-%b-%Y %I:%M %p") if received_engineer else '',
+            'maintenance_date': self.maintenance_start_date.strftime(
+                "%d-%b-%Y %I:%M %p") if self.maintenance_start_date else '',
+            'maintenance_end_date': self.maintenance_end_date.strftime(
+                "%d-%b-%Y %I:%M %p") if self.maintenance_end_date else '',
+
         }
         return docargs
 
@@ -508,6 +522,25 @@ class ChildTicket(models.Model):
 
             }
         }
+
+    def action_expences(self):
+        self.ensure_one()
+        context = {
+            "default_name": "Expence",
+            "default_child_ticket_id": self.id or False,
+
+        }
+        context.update(self.env.context)
+        return {
+            'name': "Expense",
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'hr.expense',
+            "target": "new",
+            "context": context,
+        }
+
+
 
     def action_view_invoice(self):
         self.ensure_one()
@@ -594,6 +627,14 @@ class ChildTicket(models.Model):
                 mails += ', '.join(teams)
                 if child_template_id:
                     child_template_id.with_context(email_to=mails).sudo().send_mail(self.id, force_send=True)
+
+            elif self.request_type_id.ticket_type == 'sr_loaner':
+                child_template_id = self.env.ref('ppts_parent_ticket.mail_template_loaner_completed_child_ticket')
+                teams = self.team_id.mapped('member_ids.login')
+                mails += ', '.join(teams)
+                if child_template_id:
+                    child_template_id.with_context(email_to=mails).sudo().send_mail(self.id, force_send=True)
+
             elif self.request_type_id.ticket_type == 'sr_factory_repair':
                 sr_factory_repair_template_id = self.env.ref(
                     'ppts_parent_ticket.mail_template_fr_factory_repair_child_ticket')
@@ -729,7 +770,7 @@ class ChildTicket(models.Model):
             'parent_ticket_id': self.parent_ticket_id.id or False,
             'child_ticket_id': self.id or False,
             'team_id': self.team_id.id or False,
-            'service_request_id': self.service_type_id.id or False,
+            'service_request_id': self.service_request_id.id or False,
             'order_line': [(0, 0, {
                 'product_id': self.product_id.id,
                 'is_rental': True,
@@ -863,6 +904,8 @@ class ChildTicket(models.Model):
             'target': 'new',
             'context': {'default_reason_type': 'close'}
         }
+
+
 
     # Child Ticket Sequences
     @api.model
@@ -1505,7 +1548,15 @@ class ChildTicket(models.Model):
 
     # Smart Button - Expenses
     def action_view_expenses(self):
-        return True
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Expense',
+            'view_mode': 'tree,form',
+            'res_model': 'hr.expense',
+            'domain': [('child_ticket_id', '=', self.id)],
+            'context': "{'create': False}"
+        }
 
     # Smart Button - Timesheet
     def action_view_timesheet(self):
@@ -1725,6 +1776,14 @@ class TasksMasterLine(models.Model):
                 if template_id:
                     template_id.with_context(email_to=mails, email_cc=mails_cc).sudo().send_mail(
                         record.child_ticket_id.id, force_send=True)
+
+            if record.is_work_end and record.child_ticket_id:
+                if record.child_ticket_id.company_id.is_word_end_report == True:
+                    template_id = self.env.ref('ppts_parent_ticket.mail_template_rational_work_end_ticket')
+                if template_id:
+                    template_id.with_context(email_to=mails, email_cc=mails_cc).sudo().send_mail(
+                        record.child_ticket_id.id, force_send=True)
+
             if record.is_check_oem_warranty and record.child_ticket_id:
                 # child_ticket = self.env['parent.ticket'].search([('id', '=', record.child_ticket_id.id)])
                 stock_lot_obj = self.env['stock.lot'].search([('name', '=', record.child_ticket_id.stock_lot_id.name)])

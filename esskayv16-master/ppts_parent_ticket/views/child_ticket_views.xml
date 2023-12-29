@@ -193,6 +193,13 @@
                                            attrs="{'invisible': [('is_open_feedback_check', '!=', True)]}"/>
                                     <field name="is_open_feedback_check" invisible="1"/>
 
+                                    <field name="customer_received_date"
+                                           attrs="{'invisible': [('is_customer_received_date', '!=', True)]}"/>
+                                    <field name="customer_dispatched_date"
+                                           attrs="{'invisible': [('is_customer_dispatched_date', '!=', True)]}"/>
+                                    <field name="is_customer_received_date" invisible="1"/>
+                                    <field name="is_customer_dispatched_date" invisible="1"/>
+
 
                                 </group>
                                 <group name="feedback" string="Feedback"
@@ -220,6 +227,8 @@
                                            force_save="1"/>
                                     <field name="final_report_comments"
                                            attrs="{'required': [('is_work_end', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>
+
+
                                 </group>
                                 <group name="geo_location" string="Geo Location"
                                        attrs="{'invisible': [('is_geo_location', '=', False)]}">
@@ -439,14 +448,14 @@
                     <field name="is_send_for_approvals" invisible="1" help="Send for Approval button hide"/>
                     <field name="is_ar_hold_tick" invisible="1" help="One2many Line Readonly"/>
                     <field name="is_ar_hold" invisible="1" help="AR Hold Button"/>
-                    <button name="action_send_mail" string="SEND BY EMAIL" type="object" class="btn btn-info"
+                    <button name="action_send_mail" string="Send By Email" type="object" class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user"
                             attrs="{'invisible': [('state','in',('closed', 'cancel'))]}"/>
                     <button name="action_send_acknowledgment" string="Send Acknowledgement" type="object"
                             groups="ppts_service_request.service_request_group_ct_user"
                             class="btn btn-info" attrs="{'invisible': [('state','in',('closed', 'cancel'))]}"/>
                     <button name="action_generate_report_installation_child_ticket" type="object"
-                            string="Generate Report" class="btn btn-outline-primary"
+                            string="Generate Report" class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user"
                             attrs="{'invisible': [('state', 'not in', 'closed')]}"/>
                     <button name="ar_hold" string="AR Hold" type="object" class="btn btn-info"
@@ -456,7 +465,7 @@
                             attrs="{'invisible': [('is_ar_hold_tick','=', False)]}"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!-- Status Update-->
-                    <button name="reset_to_new" string="Reset" type="object" class="btn btn-outline-primary"
+                    <button name="reset_to_new" string="Reset" type="object" class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user"
                             attrs="{'invisible':[('state', 'not in', ('closed', 'cancel'))]}"/>
                     <button name="action_status_update" string="Status Update" type="object" class="btn btn-info"
@@ -491,12 +500,14 @@
                     <field name="is_installation_created" invisible="1"/>
                     <button name="action_create_installation" string="Start Installation" type="object"
                             class="btn btn-info"
-                            attrs="{'invisible': ['|', ('is_create_installation','=', False), ('is_installation_created','=', True)]}"/>
+                            groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
+                            attrs="{'invisible': ['|', ('is_create_installation','=', False), ('is_installation_created','=',
+                    True)]}"/>
                     <!-- End Status Update -->
 
                     <button string="Send for Review" name="action_for_review" type="object"
                             groups="ppts_service_request.service_request_group_ct_user"
-                            attrs="{'invisible': [('state','!=','new')]}" class="btn btn-info"/>
+                            attrs="{'invisible': [('state','!=','new')]}" class="btn btn-warning"/>
 
                     <!--                    New Button-->
                     <!--                    <button name="send_for_approval" string="Send for Approval" type="object"-->
@@ -509,7 +520,7 @@
                             class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_process_loaner" string="Process Loaner" type="object"
-                            class="btn btn-info"
+                            class="btn btn-warning"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
                             attrs="{'invisible': ['|', ('is_create_loaner','=', False), ('loaner_count', '!=', 0)]}"/>
                     <!--                    New Button-->
@@ -523,7 +534,6 @@
                             confirm="Are you sure you want to Cancel this ticket"
                             attrs="{'invisible':[('state', '!=', 'in_review'),('state', '!=', 'waiting_for_approval'),('state', '!=', 'approved')]}"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
-
 
 
                     <button name="action_check_availability_engineer" string="Check Engineer Availability" type="object"
@@ -545,6 +555,13 @@
                             class="btn btn-info"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user"
                             attrs="{'invisible': ['|',('id', '=', False),('state', 'in', ('cancel','closed'))]}"/>
+
+                    <button name="action_expences" type="object" string="Expenses"
+                            class="btn btn-info"
+                            groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user"
+                            attrs="{'invisible': ['|',('id', '=', False),('state', 'in', ('cancel','closed'))]}"/>
+
+
                     <field name="state" widget="statusbar"
                            statusbar_visible="new,in_review,waiting_for_approval,approved,closed"/>
                 </header>
@@ -559,11 +576,32 @@
                         </strong>
                     </div>
                 </div>
+
+                <div class="alert alert-success text-center o_form_header alert-dismissible" role="status"
+                     attrs="{'invisible': [('is_create_loaner', '=', False)]}">
+                    <button class="btn-close" data-bs-dismiss="alert" aria-label="Close"/>
+                    <div>
+                        <strong>Please contact
+                            <field name="create_uid" readonly="1"
+                                   options="{'no_edit': True, 'no_create': True, 'no_open': True}"/>
+                            to process the loaner.
+                        </strong>
+                    </div>
+                </div>
+
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_parent_ticket_ct" type="object" class="oe_stat_button"
                                 string="Parent Ticket" icon="fa-list" attrs="{'invisible': [('parent_count', '=', 0)]}">
                             <field name="parent_count" widget="statinfo" string="Parent Ticket"/>
+                        </button>
+                        <button name="action_view_loaner_order" type="object" class="oe_stat_button"
+                                icon="fa-pencil-square-o"
+                                attrs="{'invisible': [('loaner_count', '=', 0)]}"
+                                groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head,ppts_service_request.service_request_group_user"
+
+                        >
+                            <field name="loaner_count" widget="statinfo" string="Loaner"/>
                         </button>
                         <button name="action_view_send_for_approvals" type="object" class="oe_stat_button"
                                 icon="fa-list" attrs="{'invisible': [('approvals_count', '=', 0)]}">
@@ -600,8 +638,14 @@
 
                         <button name="action_view_reports" type="object" class="oe_stat_button" string="Reports"
                                 icon="fa-list"/>
-                        <button name="action_view_expenses" type="object" class="oe_stat_button" string="Expenses"
-                                icon="fa-list"/>
+                        <!--                        -->
+                        <!--                        <button name="action_view_expenses" type="object" class="oe_stat_button" string="Expenses"-->
+                        <!--                                icon="fa-list"/>-->
+                        <button name="action_view_expenses" type="object" class="oe_stat_button"
+                                string="Expenses" icon="fa-list" attrs="{'invisible': [('expense_count', '=', 0)]}">
+                            <field name="expense_count" widget="statinfo" string="Expenses"/>
+                        </button>
+
                         <button name="action_view_timesheet" type="object" class="oe_stat_button" string="Timesheet"
                                 icon="fa-list"/>
                         <button name="action_view_purchase_request" type="object" class="oe_stat_button"
@@ -610,11 +654,12 @@
                                 attrs="{'invisible': ['|',('transfer_count', '=', 0),('is_inventory_checks', '=', False)]}">
                             <field name="transfer_count" widget="statinfo" string="Transfers"/>
                         </button>
-                        <button name="action_view_loaner_order" type="object" class="oe_stat_button"
-                                icon="fa-pencil-square-o"
-                                attrs="{'invisible': ['|',('loaner_count', '=', 0),('is_loaners_checks', '=', False)]}">
-                            <field name="loaner_count" widget="statinfo" string="Loaner"/>
-                        </button>
+                        <!--                        <button name="action_view_loaner_order" type="object" class="oe_stat_button"-->
+                        <!--                                icon="fa-pencil-square-o"-->
+                        <!--                                attrs="{'invisible': ['|',('loaner_count', '=', 0),('is_loaners_checks', '=', False)]}">-->
+                        <!--                            <field name="loaner_count" widget="statinfo" string="Loaner"/>-->
+                        <!--                        </button>-->
+
                         <button name="action_view_contract" type="object" class="oe_stat_button" string="Contract"
                                 icon="fa-list"/>
                         <button name="action_view_invoice" type="object" class="oe_stat_button" string="Invoice"
@@ -731,6 +776,8 @@
                             <field name="call_received_id" readonly="1"
                                    options='{"no_open": True, "no_create": True}'/>
                             <field name="present_engineer_id" readonly="1"/>
+                            <field name="maintenance_start_date" invisible="1"/>
+                            <field name="maintenance_end_date" invisible="1"/>
                         </group>
                         <group>
 
@@ -928,6 +975,9 @@
                                     <field name="next_task_ids" widget="many2many_tags" readonly="1" force_save="1"/>
                                     <field name="status" invisible="1"/>
                                     <field name="Commants"/>
+                                    <!--                                    <field name="customer_received_date" />-->
+                                    <!--                                    <field name="customer_dispatched_date"/>-->
+
 
                                     <!--                            <button name="button_tasks_update" string="Update" type="object" class="btn-primary"-->
                                     <!--                                    icon="fa-cloud-upload"/>-->
@@ -1019,6 +1069,14 @@
                                                    attrs="{'invisible': [('is_open_feedback_check', '!=', True)]}"/>
                                             <field name="is_open_feedback_check" invisible="1"/>
                                             <field name="is_check_attachment" invisible="1"/>
+
+                                            <field name="customer_received_date"
+                                                   attrs="{'invisible': [('is_customer_received_date', '!=', True)]}"/>
+                                            <field name="customer_dispatched_date"
+                                                   attrs="{'invisible': [('is_customer_dispatched_date', '!=', True)]}"/>
+                                            <field name="is_customer_received_date" invisible="1"/>
+                                            <field name="is_customer_dispatched_date" invisible="1"/>
+
                                         </group>
                                         <group name="feedback" string="Feedback"
                                                attrs="{'invisible': [('is_open_feedback_sign', '=', False)]}">
@@ -1045,6 +1103,32 @@
                                                    force_save="1"/>
                                             <field name="final_report_comments"
                                                    attrs="{'required': [('is_work_end', '=', True)], 'readonly': [('is_edit_after_submit', '=', True)]}"/>
+                                            <field name="company_id" invisible="1"/>
+                                            <field name="is_company_work_end" invisible="1"/>
+                                            <field name="unit_type"
+                                                   attrs="{'invisible':[('is_company_work_end','=',False)]}"/>
+                                            <field name="supply"
+                                                   attrs="{'invisible':[('is_company_work_end','=',False)]}"/>
+                                            <field name="volts"
+                                                   attrs="{'invisible':[('is_company_work_end','=',False)]}"/>
+                                            <field name="frequency"
+                                                   attrs="{'invisible':[('is_company_work_end','=',False)]}"/>
+                                            <field name="current"
+                                                   attrs="{'invisible':[('is_company_work_end','=',False)]}"/>
+                                            <field name="watts"
+                                                   attrs="{'invisible':[('is_company_work_end','=',False)]}"/>
+                                            <field name="software_updated"
+                                                   attrs="{'invisible':[('is_company_work_end','=',False)]}"/>
+                                            <field name="service_data_downloaded"
+                                                   attrs="{'invisible':[('is_company_work_end','=',False)]}"/>
+                                            <field name="haccp_downloaded"
+                                                   attrs="{'invisible':[('is_company_work_end','=',False)]}"/>
+                                            <field name="waranty_part_replaced"
+                                                   attrs="{'invisible':[('is_company_work_end','=',False)]}"/>
+                                            <field name="defective_part_collected"
+                                                   attrs="{'invisible':[('is_company_work_end','=',False)]}"/>
+
+
                                         </group>
                                         <group name="geo_location" string="Geo Location"
                                                attrs="{'invisible': [('is_geo_location', '=', False)]}">

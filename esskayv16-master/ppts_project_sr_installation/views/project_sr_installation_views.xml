@@ -62,11 +62,11 @@
                     <!--                           options="{'clickable': '1', 'fold_field': 'fold'}"-->
                     <!--                           attrs="{'invisible': [('project_id', '!=', False)]}" domain="[('user_id', '=', uid)]"/>-->
                     <!--                    Installation Buttons-->
-                    <button name="action_start_installation" type="object" string="Start" class="btn btn-success"
+                    <button name="action_start_installation" type="object" string="Start" class="btn btn-warning"
                             attrs="{'invisible': [('installation_state', 'not in', ['new'])]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_in_progress_installation" type="object" string="In Progress"
-                            class="btn btn-info" attrs="{'invisible': [('installation_state', 'not in', ['started'])]}"
+                            class="btn btn-warning" attrs="{'invisible': [('installation_state', 'not in', ['started'])]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!--                    PHASE 2-->
                     <!--                    <button name="action_ready_for_testing_installation" type="object" string="Ready for Testing" class="btn btn-info" attrs="{'invisible': [('installation_state', 'not in', ['in_progress'])]}"/>-->
@@ -74,12 +74,12 @@
                     <!--                    <button name="action_return_installation" type="object" string="Returns" class="btn btn-warning" attrs="{'invisible': [('installation_state', 'not in', ['in_progress'])]}"/>-->
                     <!--                    <button name="action_request_approval_installation" type="object" string="Request for Approval" class="btn-primary" attrs="{'invisible': ['|',('installation_state','!=','completed'),('is_send_for_approvals', '=',True)]}"/>-->
 
-                    <button name="action_create_expense" type="object" string="Submit Expense" class="oe_highlight"
+                    <button name="action_create_expense" type="object" string="Submit Expense" class="btn btn-info"
                             attrs="{'invisible': ['|',('installation_state','!=','completed'),('is_state_close','=',True)]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!--                                                attrs="{'invisible': ['|',('expense_count', '!=', 0),('installation_state','!=','completed'),('is_state_close','=',True)]}"-->
 
-                    <button string="Send Mail" name="action_send_mail" type="object"
+                    <button string="Send Mail" name="action_send_mail" type="object" class="btn btn-info"
                             attrs="{'invisible': [('installation_state', 'not in', ['started','in_progress'])]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!--                    <button name="action_return_spares_installation" type="object" string="Return Spares" class="btn btn-outline-primary" attrs="{'invisible': [('installation_state', '=', 'new')]}"/>-->
@@ -88,7 +88,7 @@
 
 
                     <button name="action_generate_report_installation" type="object" string="Generate Report"
-                            class="btn btn-outline-primary"
+                           class="btn btn-info"
                             attrs="{'invisible': [('installation_state', '!=', 'completed'),('is_state_close','=',False)]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!--  attrs="{'invisible': ['&amp;',('installation_state', '!=', 'completed'),('is_state_close','=',True)]}"-->
@@ -96,12 +96,12 @@
                             attrs="{'invisible': [('installation_state', 'not in', ['started','in_progress'])]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_complete_installation_wiz" type="object" string="Complete"
-                            class="btn btn-success" attrs="{'invisible': [('installation_state', '!=', 'in_progress')]}"
+                            class="btn btn-warning" attrs="{'invisible': [('installation_state', '!=', 'in_progress')]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
-                    <button name="%(installation_reason_action)d" type="action" string="On Hold" class="btn btn-warning"
+                    <button name="%(installation_reason_action)d" type="action" string="On Hold" class="btn btn-danger"
                             attrs="{'invisible': [('installation_state', '!=', 'in_progress')]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
-                    <button name="action_resume" type="object" string="Resume" class="btn btn-warning"
+                    <button name="action_resume" type="object" string="Resume" class="btn btn-info"
                             attrs="{'invisible': [('installation_state', '!=', 'on_hold')]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                 </header>

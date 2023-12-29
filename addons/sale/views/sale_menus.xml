@@ -100,7 +100,6 @@
                     name="Tags"
                     action="sales_team.sales_team_crm_tag_action"
                     sequence="10"/>
-
             </menuitem>
 
             <menuitem id="prod_config_main"

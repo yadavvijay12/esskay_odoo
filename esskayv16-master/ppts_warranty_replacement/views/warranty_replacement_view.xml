@@ -21,22 +21,22 @@
                             confirm="Are you sure you want to void the authorized transaction? This action can't be undone."
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
                             attrs="{'invisible': [('authorized_transaction_ids', '=', [])]}"/>
-                    <button id="create_invoice" name="%(sale.action_view_sale_advance_payment_inv)d"
-                            string="Create Invoice"
-                            type="action" class="btn-primary" data-hotkey="q"
+                    <button id="create_invoice" string="Create Invoice"
+                            name="%(sale.action_view_sale_advance_payment_inv)d"
+                            type="action" class="btn btn-info" data-hotkey="q"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
                             attrs="{'invisible': [('invoice_status', '!=', 'to invoice')]}"/>
                     <button id="create_invoice_percentage" name="%(sale.action_view_sale_advance_payment_inv)d"
-                            string="Create Invoice"
+                            string="Create Invoice" class="btn btn-info"
                             type="action" context="{'default_advance_payment_method': 'percentage'}" data-hotkey="q"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
                             attrs="{'invisible': ['|',('invoice_status', '!=', 'no'), ('state', '!=', 'sale')]}"/>
                     <button name="action_quotation_send" string="Send by Email" type="object" states="draft"
-                            class="btn-primary" data-hotkey="g"
+                            class="btn btn-info" data-hotkey="g"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
-                    <button name="action_quotation_send" type="object" string="Send PRO-FORMA Invoice"
+                    <button name="action_quotation_send" string="Send PRO-FORMA Invoice" type="object"
+                            class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
-                            class="btn-primary"
                             attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('invoice_count','&gt;=',1)]}"
                             context="{'proforma': True}" invisible="1"/>
                     <button name="action_confirm" id="action_confirm" data-hotkey="v"
@@ -48,17 +48,20 @@
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
                             attrs="{'invisible': [('state', 'not in', ['draft'])]}" invisible="1"/>
                     <button name="action_quotation_send" type="object" string="Send PRO-FORMA Invoice"
+                            class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"
                             attrs="{'invisible': ['|', ('state', '=', 'draft'), ('invoice_count','&gt;=',1)]}"
                             context="{'proforma': True}"/>
                     <button name="action_quotation_send" string="Send by Email" type="object" states="sent,sale"
+                            class="btn btn-info"
                             data-hotkey="g"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
-                    <button name="action_cancel" type="object" string="Cancel"
+                    <button name="action_cancel" type="object" string="Cancel" class="btn btn-danger"
                             attrs="{'invisible': ['|','|', ('state', 'not in', ['draft', 'sent','sale']), ('id', '=', False),('wr_state', 'not in', ['start','in_progress','on_hold'])]}"
                             data-hotkey="z"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_draft" states="cancel" type="object" string="Set to Quotation" data-hotkey="w"
+                            class="btn btn-info"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!--                    Warranty Request Buttons-->
                     <button name="action_start_wr_process" type="object" string="Started" class="btn btn-warning"
@@ -73,7 +76,7 @@
                     <button name="action_ready_for_qc" type="object" string="Ready for Quality Check"
                             class="btn btn-info" attrs="{'invisible': [('wr_state', 'not in', ['in_progress'])]}"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
-                    <button name="action_wr_return" type="object" string="Returns" class="btn btn-primary"
+                    <button name="action_wr_return" type="object" string="Returns" class="btn btn-info"
                             attrs="{'invisible': [('wr_state', 'not in', ['completed'])]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!--                    <button name="action_wr_cancel" type="object" string="Cancel" class="btn btn-danger" attrs="{'invisible': [('wr_state', 'not in', ['start','in_progress','on_hold'])]}" groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>-->
@@ -85,19 +88,19 @@
                     <!--                    <button name="action_wr_on_hold" type="object" string="On Hold" class="btn btn-warning" attrs="{'invisible': [('wr_state', 'not in', ['waiting_for_approval'])]}"/>-->
                     <!--                    <button name="action_wr_reject" type="object" string="Reject" class="btn btn-danger" attrs="{'invisible': [('wr_state', 'not in', ['waiting_for_approval'])]}"/>-->
                     <button name="action_wr_return_spares" type="object" string="Return Spares"
-                            class="btn btn-outline-primary"
+                            class="btn btn-info"
                             attrs="{'invisible': [('wr_state', 'not in', ['in_progress'])]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_wr_update_asset" type="object" string="Update Asset details"
-                            class="btn btn-outline-primary"
+                            class="btn btn-info"
                             attrs="{'invisible': [('wr_state', 'not in', ['in_progress'])]}"
                             groups="ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_wr_generate_report" type="object" string="Generate Report"
-                            class="btn btn-outline-primary"
+                            class="btn btn-info"
                             attrs="{'invisible': [('wr_state', 'not in', ['in_progress'])]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <button name="action_create_service_request_wizard" type="object" string="Create SR"
-                            class="btn btn-primary" attrs="{'invisible': [('wr_state', 'not in', ['completed'])]}"
+                            class="btn btn-info" attrs="{'invisible': [('wr_state', 'not in', ['completed'])]}"
                             groups="ppts_service_request.service_request_group_user,ppts_service_request.service_request_group_ct_user,ppts_service_request.service_request_group_manager,ppts_service_request.service_request_national_head"/>
                     <!--                    <button name="action_create_installation" type="object" string="Installation" class="btn btn-primary" attrs="{'invisible': [('wr_state', 'not in', ['completed'])]}"/>-->
                     <button name="action_wr_complete" type="object" string="Complete" class="btn btn-warning"
